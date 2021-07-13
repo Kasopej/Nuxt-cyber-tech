@@ -1,10 +1,10 @@
 <template>
   <v-form
-    @submit.prevent="updatePassword"
     ref="passwordreset"
     v-model="valid"
     class="pa-8 col-12"
     lazy-validation
+    @submit.prevent="updatePassword"
   >
     <nav class="text-center pb-4">
       Already have an account?

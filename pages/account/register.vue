@@ -1,9 +1,9 @@
 <template>
   <v-form
-    @submit.prevent="signUp"
     ref="signUpForm"
     v-model="valid"
     class="pa-8 col-12"
+    @submit.prevent="signUp"
   >
     <nav class="text-center pb-4">
       Already have an account?
@@ -16,7 +16,7 @@
 
     <section>
       <v-text-field
-        v-model="FORM.firstname"
+        v-model="FORM.firstName"
         dense
         required
         outlined
@@ -25,7 +25,7 @@
       ></v-text-field>
 
       <v-text-field
-        v-model="FORM.lastname"
+        v-model="FORM.lastName"
         dense
         required
         outlined
@@ -180,7 +180,7 @@ export default {
         await this.$axios
           .post(URL, PAYLOAD)
           .then((response) => {
-            this.$router.replace('/')
+            this.$router.push('/account/confirm-email')
           })
           .catch((error) => {
             this.$store.commit('notification/SHOW', {

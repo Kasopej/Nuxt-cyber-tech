@@ -1,10 +1,10 @@
 <template>
   <v-form
-    @submit.prevent="login()"
     ref="form"
     v-model="valid"
     class="pa-8 col-12"
     lazy-validation
+    @submit.prevent="login()"
   >
     <div class="text-center pb-4">
       Don’t have an account?
@@ -15,7 +15,7 @@
       Welcome Back!
     </header>
 
-    <v-form @submit.prevent="login" ref="loginForm">
+    <v-form ref="loginForm" @submit.prevent="login">
       <v-text-field
         v-model="FORM.email"
         dense

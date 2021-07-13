@@ -7,11 +7,11 @@
     <v-stepper-items>
       <v-stepper-content step="1">
         <v-form
-          @submit.prevent="sendEmail"
           ref="form1"
           v-model="valid"
           class="pa-8 col-12"
           lazy-validation
+          @submit.prevent="sendEmail"
         >
           <div class="text-center pb-4">
             Enter your email and we’ll send you a link to reset your password
