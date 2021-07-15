@@ -14,7 +14,7 @@
     <v-form ref="form1" v-model="validate">
       <v-row>
         <v-col cols="12" md="8">
-          <v-row>
+          <v-row class="d-none">
             <v-col>
               <v-switch
                 v-model="FORM.visibility"
@@ -196,6 +196,8 @@
               block
               outlined
               multiple
+              @change="handleAttachment"
+              ref="attachments"
               label="Attachments"
             />
           </section>
@@ -253,7 +255,7 @@ export default {
       descriptionPreview: null,
 
       program: this.$store.state.program.data,
-      scopes: [],
+      scopes: [] || null,
 
       FORM: {
         visibility: true,
@@ -334,16 +336,24 @@ export default {
 
   created() {
     const scopes = this.program.scope
+    if (this.program.scope.length === 0) {
+      this.scopes = ['No data']
+
+      return
+    }
 
     let index = 0
-    this.scopes = scopes.map((element) => {
-      let temp = ''
-      Object.entries(element).forEach((entry) => {
-        temp += `<${entry[0].toUpperCase()}: ${entry[1]}>\t`
-      })
+    this.scopes =
+      scopes.map((element) => {
+        let temp = ''
+        Object.entries(element).forEach((entry) => {
+          temp += `<${entry[0].toUpperCase()}: ${entry[1]}>\t`
+        })
 
-      return { label: temp, index: ++index }
-    })
+        return { label: temp, index: ++index }
+      }) || 'No Data'
+
+    console.log(this.$store.state.program)
   },
 
   methods: {
@@ -368,13 +378,28 @@ export default {
           visibility: this.FORM.visibility ? 'Public' : 'Private',
         }
 
+        const formData = new FormData()
+        formData.append('title', `${this.FORM.title}`)
+        formData.append('description', `${this.FORM.description}`)
+        formData.append('reportedto', `${this.program.companyId}`)
+        formData.append('scope', `${this.FORM.scope}`)
+        formData.append('cveid', `${this.FORM.cveid}`)
+        formData.append('bugtype', `${this.FORM.bugtype}`)
+        formData.append('notification', `${this.FORM.notification}`)
+        formData.append(
+          'visibility',
+          this.FORM.visibility ? 'Public' : 'Private'
+        )
+
+        console.log(formData)
+
         // patch for scope field until backend make it OPTIONAL
         PAYLOAD.scope = PAYLOAD.scope ? PAYLOAD.scope : 'None'
 
-        const URL = `create/submission/${programId}`
+        const URL = `/create-submission/${programId}`
         // Make upload request to the API
         await this.$axios
-          .$post(URL, PAYLOAD)
+          .$post(URL, formData)
           .then((res) => {
             this.dialog = true
           })
@@ -390,6 +415,64 @@ export default {
           .finally(() => {
             this.$nuxt.$loading.finish()
           })
+      }
+    },
+    handleAttachment(input) {
+      if (input.length > 0) {
+        const attachment = input
+        const formData = new FormData()
+        const allowedFileType = ['pdf', 'png', 'jpg', 'zip', 'rar']
+        for (let index = 0; index < attachment.length; index++) {
+          const fileChecker = attachment[index].name.substring(
+            attachment[index].name.lastIndexOf('.') + 1,
+            attachment[index].name.length
+          )
+          if (
+            allowedFileType.includes(fileChecker) &&
+            attachment[index].size <= 400000
+          ) {
+            formData.append('file', attachment[index])
+          } else {
+            this.$store.commit('notification/SHOW', {
+              color: 'accent',
+              icon: 'mdi-alert-outline',
+              text:
+                'One or more invalid files or file size. Accepted files are pdf, jpg, jpeg, png, zip or rar',
+            })
+          }
+        }
+      }
+    },
+    // async uploadAttachment() {
+    //   const URL = `create/submission/${programId}`
+    //   // Make upload request to the API
+    //   await this.$axios
+    //     .$post(URL, PAYLOAD)
+    //     .then((res) => {
+    //       this.dialog = true
+    //     })
+    //     .catch((error) => {
+    //       this.$store.commit('notification/SHOW', {
+    //         color: 'accent',
+    //         icon: 'mdi-alert-outline',
+    //         text: error.response
+    //           ? error.response.data.message
+    //           : 'Something occured. Please try again',
+    //       })
+    //     })
+    //     .finally(() => {
+    //       this.$nuxt.$loading.finish()
+    //     })
+    // },
+    confirmFileLength(file, cb) {
+      if (file.length <= 5) {
+        cb()
+      } else {
+        this.$store.commit('notification/SHOW', {
+          color: 'accent',
+          icon: 'mdi-alert-outline',
+          text: 'You can only upload a maximum of 5 attachments or files',
+        })
       }
     },
   },
