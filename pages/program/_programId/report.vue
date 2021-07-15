@@ -253,6 +253,7 @@ export default {
       dialog: false,
       validate: true,
       descriptionPreview: null,
+      fileArray: [],
 
       program: this.$store.state.program.data,
       scopes: [] || null,
@@ -352,8 +353,6 @@ export default {
 
         return { label: temp, index: ++index }
       }) || 'No Data'
-
-    console.log(this.$store.state.program)
   },
 
   methods: {
@@ -391,7 +390,12 @@ export default {
           this.FORM.visibility ? 'Public' : 'Private'
         )
 
-        console.log(formData)
+        if (this.fileArray.length > 0) {
+          // const newFileArray = this.handleAttachment(this.FORM.attachments)
+          for (let index = 0; index < this.fileArray.length; index++) {
+            formData.append('files', `${this.fileArray[index]}`)
+          }
+        }
 
         // patch for scope field until backend make it OPTIONAL
         PAYLOAD.scope = PAYLOAD.scope ? PAYLOAD.scope : 'None'
@@ -418,9 +422,8 @@ export default {
       }
     },
     handleAttachment(input) {
-      if (input.length > 0) {
+      if (input.length <= 5) {
         const attachment = input
-        const formData = new FormData()
         const allowedFileType = ['pdf', 'png', 'jpg', 'zip', 'rar']
         for (let index = 0; index < attachment.length; index++) {
           const fileChecker = attachment[index].name.substring(
@@ -429,9 +432,9 @@ export default {
           )
           if (
             allowedFileType.includes(fileChecker) &&
-            attachment[index].size <= 400000
+            attachment[index].size <= 52428800
           ) {
-            formData.append('file', attachment[index])
+            this.fileArray.push(attachment[index])
           } else {
             this.$store.commit('notification/SHOW', {
               color: 'accent',
@@ -441,6 +444,12 @@ export default {
             })
           }
         }
+      } else {
+        this.$store.commit('notification/SHOW', {
+          color: 'accent',
+          icon: 'mdi-alert-outline',
+          text: 'only a Maximum of 5 files can be uploaded',
+        })
       }
     },
     // async uploadAttachment() {
@@ -464,17 +473,17 @@ export default {
     //       this.$nuxt.$loading.finish()
     //     })
     // },
-    confirmFileLength(file, cb) {
-      if (file.length <= 5) {
-        cb()
-      } else {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: 'You can only upload a maximum of 5 attachments or files',
-        })
-      }
-    },
+    // confirmFileLength(file, cb) {
+    //   if (file.length <= 5) {
+    //     cb()
+    //   } else {
+    //     this.$store.commit('notification/SHOW', {
+    //       color: 'accent',
+    //       icon: 'mdi-alert-outline',
+    //       text: 'You can only upload a maximum of 5 attachments or files',
+    //     })
+    //   }
+    // },
   },
 }
 </script>
