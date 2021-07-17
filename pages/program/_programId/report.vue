@@ -336,6 +336,7 @@ export default {
   },
 
   created() {
+    console.log(this.program.companyId._id)
     const scopes = this.program.scope
     if (this.program.scope.length === 0) {
       this.scopes = ['No data']
@@ -373,7 +374,7 @@ export default {
         const PAYLOAD = {
           ...this.FORM,
           programId,
-          reportedto: this.program.companyId,
+          reportedto: this.program.companyId._id,
           visibility: this.FORM.visibility ? 'Public' : 'Private',
         }
 
@@ -389,13 +390,18 @@ export default {
           'visibility',
           this.FORM.visibility ? 'Public' : 'Private'
         )
+        // formData.append('files', `${this.fileArray}`)
 
-        if (this.fileArray.length > 0) {
-          // const newFileArray = this.handleAttachment(this.FORM.attachments)
-          for (let index = 0; index < this.fileArray.length; index++) {
-            formData.append('files', `${this.fileArray[index]}`)
-          }
+        for (const file of this.fileArray) {
+          formData.append('files', file)
         }
+
+        // if (this.fileArray.length > 0) {
+        //   // const newFileArray = this.handleAttachment(this.FORM.attachments)
+        //   for (let index = 0; index < this.fileArray.length; index++) {
+        //     formData.append('files', `${this.fileArray[index]}`)
+        //   }
+        // }
 
         // patch for scope field until backend make it OPTIONAL
         PAYLOAD.scope = PAYLOAD.scope ? PAYLOAD.scope : 'None'
@@ -422,6 +428,7 @@ export default {
       }
     },
     handleAttachment(input) {
+      console.log(input)
       if (input.length <= 5) {
         const attachment = input
         const allowedFileType = ['pdf', 'png', 'jpg', 'zip', 'rar']
@@ -452,38 +459,6 @@ export default {
         })
       }
     },
-    // async uploadAttachment() {
-    //   const URL = `create/submission/${programId}`
-    //   // Make upload request to the API
-    //   await this.$axios
-    //     .$post(URL, PAYLOAD)
-    //     .then((res) => {
-    //       this.dialog = true
-    //     })
-    //     .catch((error) => {
-    //       this.$store.commit('notification/SHOW', {
-    //         color: 'accent',
-    //         icon: 'mdi-alert-outline',
-    //         text: error.response
-    //           ? error.response.data.message
-    //           : 'Something occured. Please try again',
-    //       })
-    //     })
-    //     .finally(() => {
-    //       this.$nuxt.$loading.finish()
-    //     })
-    // },
-    // confirmFileLength(file, cb) {
-    //   if (file.length <= 5) {
-    //     cb()
-    //   } else {
-    //     this.$store.commit('notification/SHOW', {
-    //       color: 'accent',
-    //       icon: 'mdi-alert-outline',
-    //       text: 'You can only upload a maximum of 5 attachments or files',
-    //     })
-    //   }
-    // },
   },
 }
 </script>

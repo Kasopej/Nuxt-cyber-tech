@@ -22,7 +22,10 @@
           <submission-report-summary-tab :submission="submission" />
         </v-tab-item>
         <v-tab-item>
-          <submission-description-tab :submission="submission" />
+          <submission-description-tab
+            :submissionAttachment="submissionAttachment"
+            :submission="submission"
+          />
         </v-tab-item>
         <v-tab-item> <submission-comment-tab /> </v-tab-item>
       </v-tabs>
@@ -37,6 +40,7 @@ export default {
     return {
       tab: 0,
       submission: null,
+      submissionAttachment: [],
       // submission: this.$store.state.submission.data,
 
       breadcrumbsItems: [
@@ -57,11 +61,29 @@ export default {
 
   async fetch() {
     const URL = `/get-submission/${this.$route.params.submissionId}`
+    const attachmentURL = `/get-submission-attachments/${this.$route.params.submissionId}`
     // Make upload request to the API
     await this.$axios
-      .$get(URL, this.FORM)
+      .$get(URL)
       .then((res) => {
+        console.log(Object.keys(res.data[0].reportedto))
         this.submission = res.data[0]
+        console.log(this.submission)
+      })
+      .catch((error) => {
+        this.$store.commit('notification/SHOW', {
+          color: 'accent',
+          icon: 'mdi-alert-outline',
+          text: error.response
+            ? error.response.data.message
+            : 'Something occured. Please try again',
+        })
+      })
+    await this.$axios
+      .$get(attachmentURL)
+      .then((res) => {
+        console.log(res)
+        this.submissionAttachment = res.data
       })
       .catch((error) => {
         this.$store.commit('notification/SHOW', {

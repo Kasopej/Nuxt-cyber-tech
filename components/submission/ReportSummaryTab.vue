@@ -22,7 +22,7 @@
             <nuxt-link
               :to="`/program/${submission.reportedto}/`"
               class="primary--text"
-              >{{ submission.reportedto }}</nuxt-link
+              >{{ submission.reportedto.comapny }}</nuxt-link
             >
           </v-col>
         </v-row>
@@ -97,6 +97,9 @@ export default {
         { severtity: 'CRITICAL', price: '0' },
       ],
     }
+  },
+  create() {
+    console.log(this.submission)
   },
 }
 </script>
