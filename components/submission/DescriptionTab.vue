@@ -6,6 +6,7 @@
       <h3 class="mt-3">Download Attachment</h3>
       <div>
         <a
+          class="d-flex flex-column"
           v-for="(attachment, index) in submissionAttachment"
           :href="attachment"
           :key="`attach-${index}`"

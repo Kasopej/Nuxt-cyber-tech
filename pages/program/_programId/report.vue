@@ -381,7 +381,7 @@ export default {
         const formData = new FormData()
         formData.append('title', `${this.FORM.title}`)
         formData.append('description', `${this.FORM.description}`)
-        formData.append('reportedto', `${this.program.companyId}`)
+        formData.append('reportedto', `${this.program.companyId._id}`)
         formData.append('scope', `${this.FORM.scope}`)
         formData.append('cveid', `${this.FORM.cveid}`)
         formData.append('bugtype', `${this.FORM.bugtype}`)
