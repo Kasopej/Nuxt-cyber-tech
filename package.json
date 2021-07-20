@@ -21,8 +21,10 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/pwa": "^3.3.5",
-    "core-js": "^3.9.1",
-    "nuxt": "^2.15.4"
+    "file-loader": "^6.2.0",
+    "nuxt": "^2.15.4",
+    "url-loader": "^4.1.1",
+    "vue-select": "^3.11.2"
   },
   "devDependencies": {
     "@nuxt/types": "~2.15.0",

@@ -1,5 +1,6 @@
 <template>
   <main>
+    <form action=""></form>
     <v-breadcrumbs
       large
       divider="»"
@@ -44,15 +45,91 @@
                 This describes the severity level of the Vulnerability
               </div>
             </header>
-            <v-autocomplete
-              v-model="FORM.scope"
-              label="Traget Scope"
-              item-value="value"
-              item-text="label"
-              :items="scopes"
-              outlined
-            >
-            </v-autocomplete>
+            <!--            <v-autocomplete-->
+            <!--              v-model="FORM.scope"-->
+            <!--              label="Target Scope"-->
+            <!--              :items="scopes"-->
+            <!--              outlined-->
+            <!--              filled-->
+            <!--            >-->
+            <!--              <template v-slot:item="data">-->
+            <!--                <v-list-item-content>-->
+            <!--                  <v-list-item-title v-html="data.item.options">-->
+            <!--                  </v-list-item-title>-->
+            <!--                  <v-list-item-subtitle-->
+            <!--                    v-html="data.item.label"-->
+            <!--                  ></v-list-item-subtitle>-->
+            <!--                </v-list-item-content>-->
+            <!--              </template>-->
+            <!--            </v-autocomplete>-->
+
+            <div class="autocomplete">
+              <div
+                :class="isVisible ? 'outline' : 'inline'"
+                class="input"
+                @click="toggleVisiblity"
+              >
+                <span v-if="selectedScope"
+                  >{{ selectedScope.options }} - {{ selectedScope.label }}</span
+                >
+                <span v-else>Target Scope</span>
+                <div class="drop-down-icon">
+                  <svg
+                    v-show="!isVisible"
+                    class="drop-up"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M0 0h24v24H0z" fill="none" />
+                    <path
+                      d="M12 11.828l-2.828 2.829-1.415-1.414L12 9l4.243 4.243-1.415 1.414L12 11.828z"
+                    />
+                  </svg>
+                  <svg
+                    v-show="isVisible"
+                    class="drop-down"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M0 0h24v24H0z" fill="none" />
+                    <path
+                      d="M12 15l-4.243-4.243 1.415-1.414L12 12.172l2.828-2.829 1.415 1.414z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div
+                v-show="isVisible"
+                :class="isVisible ? 'outline' : 'inline'"
+                class="popover"
+              >
+                <input
+                  v-model="query"
+                  placeholder="Search for scope"
+                  class="input-search form-group form-control"
+                  type="text"
+                />
+                <div class="no-data" v-if="filteredScope.length === 0">
+                  No data Available
+                </div>
+                <div class="options">
+                  <ul>
+                    <li
+                      v-for="(option, index) in filteredScope"
+                      :key="index"
+                      @click="clientClicked(option)"
+                    >
+                      <span class="option">{{ option.options }}</span>
+                      <span class="label">{{ option.label }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </section>
 
           <section>
@@ -250,6 +327,9 @@ export default {
 
   data() {
     return {
+      isVisible: false,
+      query: '',
+      selectedScope: null,
       dialog: false,
       validate: true,
       descriptionPreview: null,
@@ -336,31 +416,54 @@ export default {
   },
 
   created() {
-    console.log(this.program.companyId._id)
     const scopes = this.program.scope
+
+    this.getScopeOptions(scopes)
     if (this.program.scope.length === 0) {
       this.scopes = ['No data']
 
-      return
+      // return
     }
-
-    let index = 0
-    this.scopes =
-      scopes.map((element) => {
-        let temp = ''
-        Object.entries(element).forEach((entry) => {
-          temp += `<${entry[0].toUpperCase()}: ${entry[1]}>\t`
-        })
-
-        return { label: temp, index: ++index }
-      }) || 'No Data'
   },
-
+  computed: {
+    filteredScope() {
+      const searchTerm = this.query.toLowerCase()
+      if (searchTerm === '') {
+        return this.scopes
+      }
+      return this.scopes.filter((item) => {
+        return Object.values(item).some((word) =>
+          String(word).toLowerCase().includes(searchTerm)
+        )
+      })
+    },
+  },
   methods: {
     clearPreview() {
       this.descriptionPreview = null
     },
-
+    toggleVisiblity() {
+      this.isVisible = !this.isVisible
+    },
+    clientClicked(option) {
+      this.selectedScope = option
+      this.isVisible = false
+    },
+    getScopeOptions(scopeList) {
+      const filler = []
+      console.log(scopeList)
+      for (let i = 0; i < scopeList.length; i++) {
+        for (const [key, value] of Object.entries(scopeList[i])) {
+          const optionFiller = {
+            label: `${key}`,
+            options: value,
+          }
+          filler.push(optionFiller)
+        }
+      }
+      console.log(filler)
+      this.scopes = filler || 'No Scope data'
+    },
     previewdescription() {
       const converter = new showdown.Converter()
       this.descriptionPreview = converter.makeHtml(this.FORM.description)
@@ -382,7 +485,7 @@ export default {
         formData.append('title', `${this.FORM.title}`)
         formData.append('description', `${this.FORM.description}`)
         formData.append('reportedto', `${this.program.companyId._id}`)
-        formData.append('scope', `${this.FORM.scope}`)
+        formData.append('scope', `${this.selectedScope.options}`)
         formData.append('cveid', `${this.FORM.cveid}`)
         formData.append('bugtype', `${this.FORM.bugtype}`)
         formData.append('notification', `${this.FORM.notification}`)
@@ -391,17 +494,10 @@ export default {
           this.FORM.visibility ? 'Public' : 'Private'
         )
         // formData.append('files', `${this.fileArray}`)
-
+        //
         for (const file of this.fileArray) {
           formData.append('files', file)
         }
-
-        // if (this.fileArray.length > 0) {
-        //   // const newFileArray = this.handleAttachment(this.FORM.attachments)
-        //   for (let index = 0; index < this.fileArray.length; index++) {
-        //     formData.append('files', `${this.fileArray[index]}`)
-        //   }
-        // }
 
         // patch for scope field until backend make it OPTIONAL
         PAYLOAD.scope = PAYLOAD.scope ? PAYLOAD.scope : 'None'
@@ -462,3 +558,108 @@ export default {
   },
 }
 </script>
+<style scoped lang="scss">
+.autocomplete {
+  min-width: 350px !important;
+  position: relative;
+  margin-bottom: 10px;
+  //height: 38px;
+
+  .input {
+    height: 56px;
+    border-radius: 3px;
+    border: 2px solid lightgray;
+    box-shadow: 0 0 10px #eceaea;
+    padding: 5px 10px;
+    cursor: text;
+    width: 100% !important;
+    font-size: 16px;
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .drop-down-icon {
+      position: absolute;
+      right: 0;
+      top: 0;
+      margin-top: 15px;
+    }
+  }
+  .outline {
+    border: 2px solid #c504da;
+  }
+  .inline {
+    border: 2px solid lightgray;
+  }
+
+  .popover {
+    position: absolute;
+    border: 2px solid lightgray;
+    top: 58px;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 3px;
+    text-align: center;
+    max-width: 100%;
+    padding: 10px;
+    z-index: 30;
+
+    .no-data {
+      height: auto;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      box-shadow: 0 0 10px #4c4040;
+      padding: 15px;
+    }
+
+    .input-search {
+      width: 100% !important;
+      border: 1px solid lightgray;
+      border-radius: 3px;
+      padding: 10px;
+
+      &:focus {
+        outline: 2px solid #c504da;
+      }
+    }
+
+    .options {
+      max-height: 180px;
+      overflow-y: scroll;
+      margin-top: 5px;
+
+      ul {
+        list-style-type: none;
+        text-align: left;
+        padding-left: 0;
+
+        li {
+          border-bottom: 1px solid lightgray;
+          padding: 10px;
+          cursor: pointer;
+          background: #f1f1f1;
+
+          .option {
+            display: block;
+            font-weight: 400;
+          }
+          .label {
+            font-size: 12px;
+          }
+
+          &:hover {
+            background: lightgray;
+            color: #000;
+            .option {
+              display: block;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>

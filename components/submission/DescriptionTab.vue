@@ -4,7 +4,7 @@
     <hr />
     <div>
       <h3 class="mt-3">Download Attachment</h3>
-      <div>
+      <div v-if="submissionAttachment.length > 0">
         <a
           class="d-flex flex-column"
           v-for="(attachment, index) in submissionAttachment"
@@ -13,6 +13,9 @@
           target="_blank"
           >Download Attachment</a
         >
+      </div>
+      <div v-else>
+        <p>No Attachments</p>
       </div>
     </div>
   </main>

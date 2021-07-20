@@ -58,7 +58,9 @@ export default {
       ],
     }
   },
-
+  mounted() {
+    console.log(this.submission)
+  },
   async fetch() {
     const URL = `/get-submission/${this.$route.params.submissionId}`
     const attachmentURL = `/get-submission-attachments/${this.$route.params.submissionId}`
@@ -68,7 +70,6 @@ export default {
       .then((res) => {
         console.log(Object.keys(res.data[0].reportedto))
         this.submission = res.data[0]
-        console.log(this.submission)
       })
       .catch((error) => {
         this.$store.commit('notification/SHOW', {

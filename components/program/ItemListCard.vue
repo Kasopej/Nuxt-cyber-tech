@@ -24,7 +24,11 @@
 
           <aside class="text-no-wrap">
             <span
-              class="primary--text text-caption text--darken-2 font-weight-bold py-2 px-sm-4 py-sm-0"
+              :class="{
+                'purple-bg': program.status === 'In Progress',
+                'red-bg': program.status === 'Draft',
+              }"
+              class="primary--texts text-caption text--darken-2 font-weight-bold py-2 px-sm-4 py-sm-0"
               v-text="program.status"
             />
 
@@ -73,3 +77,15 @@ export default {
   },
 }
 </script>
+<style scoped lang="scss">
+.red-bg {
+  background-color: red;
+  color: white;
+  border-radius: 80px;
+}
+.purple-bg {
+  background-color: purple;
+  color: white;
+  border-radius: 80px;
+}
+</style>
