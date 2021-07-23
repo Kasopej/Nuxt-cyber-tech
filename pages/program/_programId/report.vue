@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main v-if="program">
     <form action=""></form>
     <v-breadcrumbs
       large
@@ -277,6 +277,18 @@
               ref="attachments"
               label="Attachments"
             />
+            <!--            <div class="">-->
+            <!--              <v-btn-->
+            <!--                small-->
+            <!--                color="error"-->
+            <!--                @click="-->
+            <!--                  () => {-->
+            <!--                    fileArray = []-->
+            <!--                  }-->
+            <!--                "-->
+            <!--                >Clear Attachments</v-btn-->
+            <!--              >-->
+            <!--            </div>-->
           </section>
         </v-col>
 
@@ -414,16 +426,40 @@ export default {
       ],
     }
   },
+  async fetch() {
+    // const program = await fetch(
+    //   `/company/get-program/${this.$route.params.programId}`
+    // ).then((res) => res)
+    // console.log(this.$route.params)
+    // console.log(program)
 
-  created() {
-    const scopes = this.program.scope
+    const URL = `/get-programs?limit=15`
+    // Make upload request to the API
+    await this.$axios
+      .$get(URL, this.FORM)
+      .then((res) => {
+        const mainProgram = res.data.docs.filter((program) => {
+          return program._id === this.$route.params.programId
+        })
+        this.program = mainProgram[0]
+        if (this.program.scope.length === 0) {
+          this.scopes = ['No data']
+        }
+        this.getScopeOptions(this.program.scope)
+      })
+      .catch((error) => {
+        this.$store.commit('notification/SHOW', {
+          color: 'accent',
+          icon: 'mdi-alert-outline',
+          text: error.response
+            ? error.response.data.message
+            : 'Something occured. Please try again',
+        })
+      })
+  },
 
-    this.getScopeOptions(scopes)
-    if (this.program.scope.length === 0) {
-      this.scopes = ['No data']
-
-      // return
-    }
+  mounted() {
+    // const clearAttach = document.getElementsByClassName('v-input__icon--clear')
   },
   computed: {
     filteredScope() {
@@ -451,7 +487,6 @@ export default {
     },
     getScopeOptions(scopeList) {
       const filler = []
-      console.log(scopeList)
       for (let i = 0; i < scopeList.length; i++) {
         for (const [key, value] of Object.entries(scopeList[i])) {
           const optionFiller = {
@@ -461,7 +496,6 @@ export default {
           filler.push(optionFiller)
         }
       }
-      console.log(filler)
       this.scopes = filler || 'No Scope data'
     },
     previewdescription() {
@@ -524,7 +558,6 @@ export default {
       }
     },
     handleAttachment(input) {
-      console.log(input)
       if (input.length <= 5) {
         const attachment = input
         const allowedFileType = ['pdf', 'png', 'jpg', 'zip', 'rar']

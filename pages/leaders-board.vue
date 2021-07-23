@@ -30,5 +30,24 @@ export default {
       ],
     }
   },
+  async fetch() {
+    const URL = `/get-leaders-board/?page={1}&limit={10}`
+    // Make upload request to the API
+    await this.$axios
+      .$get(URL)
+      .then((res) => {
+        console.log(res)
+        // this.pagination.length = res.data.totalPages
+      })
+      .catch((error) => {
+        this.$store.commit('notification/SHOW', {
+          color: 'accent',
+          icon: 'mdi-alert-outline',
+          text: error.response
+            ? error.response.data.message
+            : 'Something occured. Please try again',
+        })
+      })
+  },
 }
 </script>

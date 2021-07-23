@@ -64,8 +64,13 @@ export default {
   methods: {
     openDetails(program) {
       this.$store.commit('program/SAVE_DATA', program)
-
-      this.$router.push(`/program/00${program._id}/`)
+      // this.$router.push(`/program/00${program._id}/`)
+      this.$router.push({
+        path: `/program/${program._id}`,
+        params: {
+          id: program._id,
+        },
+      })
     },
   },
 }

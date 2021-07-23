@@ -1,6 +1,7 @@
 <template>
   <v-hover v-slot="{ hover }">
     <v-card
+      v-if="program.companyId"
       class="d-flex align-center mt-6 overflow-x-hidden"
       :class="hover && hoverable ? 'secondary' : ''"
     >
@@ -18,6 +19,7 @@
       >
         <div class="d-sm-flex justify-space-between text-capitalize">
           <header
+            v-if="program"
             class="headline font-weight-medium accent--text"
             v-text="program.companyId.company[0].name"
           />
@@ -25,10 +27,10 @@
           <aside class="text-no-wrap">
             <span
               :class="{
-                'purple-bg': program.status === 'In Progress',
+                'green-bg': program.status === 'In Progress',
                 'red-bg': program.status === 'Draft',
               }"
-              class="primary--texts text-caption text--darken-2 font-weight-bold py-2 px-sm-4 py-sm-0"
+              class="primary--texts status-chip text-caption text--darken-2 font-weight-bold py-3 px-sm-4 py-sm-0"
               v-text="program.status"
             />
 
@@ -83,9 +85,13 @@ export default {
   color: white;
   border-radius: 80px;
 }
-.purple-bg {
-  background-color: purple;
-  color: white;
+.green-bg {
+  background-color: #7dca7d;
+  color: black;
   border-radius: 80px;
+  border: 4px solid #66e766;
+}
+.status-chip {
+  padding: 0px 10px !important;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main v-if="program">
     <nav>
       <v-breadcrumbs divider="»" :items="breadcrumbsItems" class="pa-0 py-4" />
     </nav>
@@ -70,7 +70,7 @@ export default {
     return {
       page: 0,
 
-      program: this.$store.state.program.data,
+      program: null,
       submissions: [],
 
       breadcrumbsItems: [
@@ -88,7 +88,28 @@ export default {
       ],
     }
   },
-
+  async fetch() {
+    // if you are the next developer working on this , replace the api call below to fetch the program details alone from the end point
+    const URL = `/get-programs?limit=15`
+    // Make upload request to the API
+    await this.$axios
+      .$get(URL)
+      .then((res) => {
+        const mainProgram = res.data.docs.filter((program) => {
+          return program._id === this.$route.params.programId
+        })
+        this.program = mainProgram[0]
+      })
+      .catch((error) => {
+        this.$store.commit('notification/SHOW', {
+          color: 'accent',
+          icon: 'mdi-alert-outline',
+          text: error.response
+            ? error.response.data.message
+            : 'Something occured. Please try again',
+        })
+      })
+  },
   computed: {
     description() {
       const converter = new showdown.Converter()

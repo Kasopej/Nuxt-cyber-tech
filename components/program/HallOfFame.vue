@@ -34,5 +34,10 @@ export default {
   props: {
     programId: { type: String, default: null },
   },
+  data() {
+    return {
+      page: 1,
+    }
+  },
 }
 </script>

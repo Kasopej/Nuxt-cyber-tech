@@ -7,6 +7,10 @@
           <v-col class="text-capitalize">{{ submission.actionstate }}</v-col>
         </v-row>
         <v-row>
+          <v-col class="font-weight-medium" cols="3">SCOPE</v-col>
+          <v-col class="text-lowercase">{{ submission.scope }}</v-col>
+        </v-row>
+        <v-row>
           <v-col class="font-weight-medium" cols="3">REPORTED BY</v-col>
           <v-col>
             <nuxt-link
@@ -98,7 +102,7 @@ export default {
       ],
     }
   },
-  create() {
+  created() {
     console.log(this.submission)
   },
 }
