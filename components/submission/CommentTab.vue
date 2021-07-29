@@ -13,8 +13,9 @@
     </section>
 
     <section v-else>
+      <!-- v-for="comment in sortedComment()" -->
       <div
-        v-for="comment in sortedComment()"
+        v-for="comment in comments"
         :key="comment._id"
         class="comment d-flex"
       >
