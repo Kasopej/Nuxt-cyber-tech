@@ -6,51 +6,62 @@
       @click="openDetails(submission)"
     >
       <v-img
-        src="/img/dummy.jpg"
-        width="250"
-        height="200"
-        :max-width="$vuetify.breakpoint.mobile ? '100px' : '250px'"
+        :src="submission.thumbnail || '/img/dummy.jpg'"
+        :max-width="$vuetify.breakpoint.mobile ? '108px' : '150px'"
+        class="rounded-0"
         cover
       />
 
       <section
-        style="min-height: 200px"
-        class="flex-grow-1 fill-height w-full d-flex flex-column justify-space-between pa-2 pa-md-4"
+        class="flex-grow-1 w-full d-flex flex-column justify-space-between pa-1 pa-md-2"
       >
-        <div class="d-sm-flex justify-space-between text-capitalize">
+        <div class="d-sm-flex justify-space-between text-capitalize text-small">
           <header
-            class="subtitle-1 font-weight-medium accent--text"
+            class="body-2 font-weight-medium accent--text text-medium"
             v-text="submission.programId.title"
           />
 
           <aside class="text-no-wrap">
             <span
-              class="primary--text text-caption text--darken-2 font-weight-bold py-2 px-sm-4 py-sm-0"
+              class="primary--text text-caption text--darken-2 font-weight-bold py-md-2 px-sm-4 text-small"
               v-text="submission.actionstate"
             />
 
-            <v-icon color="accent">{{
+            <v-icon color="accent" :size="iconSize()">{{
               submission.visibility == 'Public' ? 'mdi-eye' : 'mdi-eye-off'
             }}</v-icon>
           </aside>
         </div>
 
-        <div class="d-none d-sm-inline grey--text text--darken-2 text-no-wrap">
-          <v-icon small class="primary--text mr-2">mdi-factory</v-icon>
-          <span class="text-capitalize" v-text="submission.title" />
+        <div
+          class="d-none d-sm-inline grey--text body-2 text--darken-2 text-no-wrap"
+        >
+          <v-icon :size="iconSize()" class="primary--text mr-2"
+            >mdi-factory</v-icon
+          >
+          <span
+            class="d-inline-block text-truncate text-wrap text-capitalize text-small"
+            v-text="desiredLength(submission.title)"
+          ></span>
         </div>
 
-        <div class="pb-1 text-no-wrap grey--text text--darken-2">
-          <v-icon small class="primary--text mr-2">mdi-tag</v-icon>
+        <div class="text-no-wrap grey--text body-2 text--darken-2 text-small">
+          <v-icon :size="iconSize()" class="primary--text mr-2">mdi-tag</v-icon>
           <span v-text="submission.bugtype" />
         </div>
-        <div class="pb-1 text-no-wrap grey--text text--darken-2">
-          <v-icon small class="primary--text mr-2">mdi-gift-outline</v-icon>
+
+        <div class="text-no-wrap grey--text body-2 text--darken-2 text-small">
+          <v-icon :size="iconSize()" class="primary--text mr-2"
+            >mdi-gift-outline</v-icon
+          >
           <strong>$0</strong>
           <span>Per Vulnerability</span>
         </div>
-        <div class="text-no-wrap grey--text text--darken-2">
-          <v-icon small class="primary--text mr-2">mdi-clock-outline</v-icon>
+
+        <div class="text-no-wrap grey--text body-2 text--darken-2 text-small">
+          <v-icon :size="iconSize()" class="primary--text mr-2"
+            >mdi-clock-outline</v-icon
+          >
           <span v-text="new Date(submission.date).toLocaleDateString()" />
         </div>
       </section>
@@ -69,6 +80,26 @@ export default {
     openDetails(submission) {
       this.$router.push(`/submission/${submission._id}/`)
     },
+
+    desiredLength(text) {
+      return text.slice(0, 35)
+    },
+
+    iconSize() {
+      return this.$vuetify.breakpoint.mobile ? 12 : 16
+    },
   },
 }
 </script>
+
+<style scoped>
+@media screen and (max-width: 425px) {
+  .text-medium {
+    font-size: 10px !important;
+  }
+
+  .text-small {
+    font-size: 10px !important;
+  }
+}
+</style>

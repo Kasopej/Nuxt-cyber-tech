@@ -10,7 +10,7 @@
         :key="filter"
         color="accent"
         :outlined="status != filter"
-        class="text-capitalize pa-4 mr-3"
+        class="text-capitalize text-caption pa-1 pa-md-2 mr-1 mr-md-2 mb-2"
         @click="changeFilter(filter)"
       >
         {{ filter }}
@@ -26,9 +26,11 @@
     </section>
 
     <section v-else-if="submissions.length">
-      <article v-for="submission in submissions" :key="submission._id">
-        <submission-item-list-card :submission="submission" />
-      </article>
+      <v-row no-gutters>
+        <v-col v-for="submission in submissions" :key="submission._id" md="6">
+          <submission-item-list-card :submission="submission" />
+        </v-col>
+      </v-row>
     </section>
 
     <section v-else>
@@ -74,7 +76,7 @@ export default {
   },
 
   async fetch() {
-    const URL = `/get-all-submissions/${this.status}`
+    const URL = `/get-all-submissions/${this.status}` // ?page={page}&limit={limit}
     // Make upload request to the API
     await this.$axios
       .$get(URL, this.FORM)

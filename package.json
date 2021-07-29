@@ -21,6 +21,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/pwa": "^3.3.5",
+    "dayjs": "^1.10.6",
     "file-loader": "^6.2.0",
     "nuxt": "^2.15.4",
     "url-loader": "^4.1.1",

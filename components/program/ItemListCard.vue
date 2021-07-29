@@ -1,26 +1,25 @@
 <template>
+  <!-- <v-container fluid> -->
   <v-hover v-slot="{ hover }">
     <v-card
       v-if="program.companyId"
-      class="d-flex align-center mt-6 overflow-x-hidden"
+      class="card-item d-flex align-center mt-6 overflow-x-hidden"
       :class="hover && hoverable ? 'secondary' : ''"
     >
       <v-img
         :src="program.thumbnail || '/img/dummy.jpg'"
-        width="250"
-        height="200"
-        :max-width="$vuetify.breakpoint.mobile ? '100px' : '250px'"
+        :max-width="$vuetify.breakpoint.mobile ? '110px' : '150px'"
+        class="rounded-0"
         cover
       />
 
       <section
-        style="min-height: 200px"
-        class="flex-grow-1 fill-height w-full d-flex flex-column justify-space-between pa-2 pa-md-4"
+        class="flex-grow-1 w-full d-flex flex-column justify-space-between px-1 py-0 pa-md-2"
       >
         <div class="d-sm-flex justify-space-between text-capitalize">
           <header
             v-if="program"
-            class="headline font-weight-medium accent--text"
+            class="body-1 font-weight-medium accent--text text-medium"
             v-text="program.companyId.company[0].name"
           />
 
@@ -30,7 +29,7 @@
                 'green-bg': program.status === 'In Progress',
                 'red-bg': program.status === 'Draft',
               }"
-              class="primary--texts status-chip text-caption text--darken-2 font-weight-bold py-3 px-sm-4 py-sm-0"
+              class="primary--texts status-chip text-caption text--darken-2 text-small font-weight-bold py-3 px-sm-4 py-sm-0"
               v-text="program.status"
             />
 
@@ -41,26 +40,30 @@
         </div>
 
         <div
-          class="d-none d-sm-inline grey--text text--darken-2 text-no-wrap py-"
+          class="d-none d-sm-inline body-2 grey--text text--darken-2 text-no-wrap py-1"
         >
           <v-icon small class="primary--text mr-2">mdi-factory</v-icon>
-          <span class="text-capitalize" v-text="program.title" />
+          <span class="text-capitalize text-small" v-text="program.title" />
         </div>
-        <div class="pb-1 text-no-wrap grey--text text--darken-2">
+
+        <div class="body-2 text-no-wrap grey--text text--darken-2 text-small">
           <v-icon small class="primary--text mr-2">mdi-account-outline</v-icon>
           <span v-text="program.type" />
         </div>
-        <div class="pb-1 text-no-wrap grey--text text--darken-2">
+
+        <div class="body-2 text-no-wrap grey--text text--darken-2">
           <v-icon small class="primary--text mr-2">mdi-gift-outline</v-icon>
           <strong>$0</strong>
           <span>Per Vulnerability</span>
         </div>
-        <div class="d-flex justify-space-between">
-          <div class="pb-1 text-no-wrap grey--text text--darken-2">
+
+        <div class="d-flex justify-space-between body-2">
+          <div class="text-no-wrap grey--text text--darken-2">
             <v-icon small class="primary--text mr-2">mdi-flag-outline</v-icon>
             <span>Safe Habour</span>
           </div>
-          <div class="pb-1 text-no-wrap grey--text text-caption text--darken-2">
+
+          <div class="text-no-wrap grey--text text-caption text--darken-2">
             Managed by
             <strong class="primary--text">Tecklabspace</strong>
           </div>
@@ -68,6 +71,7 @@
       </section>
     </v-card>
   </v-hover>
+  <!-- </v-container> -->
 </template>
 
 <script>
@@ -77,8 +81,15 @@ export default {
     program: { type: Object, default: () => {} },
     showVisibility: { type: Boolean, default: false },
   },
+
+  methods: {
+    iconSize() {
+      return this.$vuetify.breakpoint.mobile ? 12 : 16
+    },
+  },
 }
 </script>
+
 <style scoped lang="scss">
 .red-bg {
   background-color: red;
@@ -93,5 +104,19 @@ export default {
 }
 .status-chip {
   padding: 0px 10px !important;
+}
+
+.card-item:nth-child(odd) {
+  margin-right: 10px;
+}
+
+@media screen and (max-width: 425px) {
+  .text-medium {
+    font-size: 10px !important;
+  }
+
+  .text-small {
+    font-size: 10px !important;
+  }
 }
 </style>

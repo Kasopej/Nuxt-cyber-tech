@@ -24,11 +24,17 @@
     </v-col>
 
     <v-col cols="12" md="6">
-      <dashboard-announcement />
+      <dashboard-announcement v-if="notificationState" />
     </v-col>
   </v-row>
 </template>
 
 <script>
-export default {}
+export default {
+  computed: {
+    notificationState() {
+      return this.$store.state.notification.showNotification
+    },
+  },
+}
 </script>

@@ -22,7 +22,7 @@
       />
       <v-spacer />
 
-      <v-btn icon>
+      <v-btn icon @click="toggleNotification">
         <v-icon color="accent">mdi-bell</v-icon>
       </v-btn>
 
@@ -125,6 +125,10 @@ export default {
     toggleDarkMode() {
       this.$store.commit('settings/TOGGLE_DARK_MODE')
       this.$vuetify.theme.dark = this.$store.state.settings.darkMode
+    },
+
+    toggleNotification() {
+      this.$store.commit('notification/UPDATE_NOTIFICATION_STATE')
     },
   },
 }

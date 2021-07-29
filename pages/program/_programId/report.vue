@@ -113,7 +113,7 @@
                   class="input-search form-group form-control"
                   type="text"
                 />
-                <div class="no-data" v-if="filteredScope.length === 0">
+                <div v-if="filteredScope.length === 0" class="no-data">
                   No data Available
                 </div>
                 <div class="options">
@@ -268,14 +268,14 @@
             </header>
 
             <v-file-input
+              ref="attachments"
               v-model="FORM.attachments"
               chips
               block
               outlined
               multiple
-              @change="handleAttachment"
-              ref="attachments"
               label="Attachments"
+              @change="handleAttachment"
             />
             <!--            <div class="">-->
             <!--              <v-btn-->
@@ -457,10 +457,6 @@ export default {
         })
       })
   },
-
-  mounted() {
-    // const clearAttach = document.getElementsByClassName('v-input__icon--clear')
-  },
   computed: {
     filteredScope() {
       const searchTerm = this.query.toLowerCase()
@@ -473,6 +469,10 @@ export default {
         )
       })
     },
+  },
+
+  mounted() {
+    // const clearAttach = document.getElementsByClassName('v-input__icon--clear')
   },
   methods: {
     clearPreview() {

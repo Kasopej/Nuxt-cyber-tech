@@ -23,7 +23,7 @@
         </v-tab-item>
         <v-tab-item>
           <submission-description-tab
-            :submissionAttachment="submissionAttachment"
+            :submission-attachment="submissionAttachment"
             :submission="submission"
           />
         </v-tab-item>
@@ -57,9 +57,6 @@ export default {
         { disabled: true, text: 'Submissions Details' },
       ],
     }
-  },
-  mounted() {
-    console.log(this.submission)
   },
   async fetch() {
     const URL = `/get-submission/${this.$route.params.submissionId}`
@@ -95,6 +92,9 @@ export default {
             : 'Something occured. Please try again',
         })
       })
+  },
+  mounted() {
+    console.log(this.submission)
   },
 }
 </script>

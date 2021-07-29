@@ -9,25 +9,29 @@
     </section>
 
     <section v-else-if="programs.length">
-      <article
-        v-for="program in programs"
-        :key="program._id"
-        @click="openDetails(program)"
-      >
-        <program-item-list-card :program="program" hoverable />
-      </article>
+      <v-row no-gutters>
+        <v-col
+          v-for="program in programs"
+          :key="program._id"
+          md="6"
+          @click="openDetails(program)"
+        >
+          <program-item-list-card :program="program" hoverable />
+        </v-col>
+      </v-row>
     </section>
 
     <section v-else>
       <partials-empty-data text="No Programs Found" />
     </section>
 
-    <div class="text-center py-8">
+    <!-- TODO: Replace pagination with auto fetch on page scroll -->
+    <!-- <div class="text-center py-8">
       <v-pagination
         v-model="pagination.page"
         :length="pagination.length"
       ></v-pagination>
-    </div>
+    </div> -->
   </main>
 </template>
 

@@ -13,36 +13,50 @@
     </section>
 
     <section v-else>
-      <div v-for="comment in comments" :key="comment._id" class="d-flex pb-4">
-        <v-card class="flex-grow-1 pa-3 rounded-tr-xl rounded-bl-xl">
-          <header class="d-sm-flex justify-space-between flex-grow-1">
-            <section class="d-flex align-center">
-              <v-avatar color="secondary" size="32">
-                <v-icon color="primary" size="28">{{
-                  comment.accounttype == 'company'
-                    ? 'mdi-factory'
-                    : 'mdi-account-circle'
-                }}</v-icon>
-              </v-avatar>
-              <div
-                class="subtitle-1 primary--text font-weight-bold ml-2"
-                v-text="comment.accountId"
-              />
-            </section>
+      <div
+        v-for="comment in sortedComment()"
+        :key="comment._id"
+        class="comment d-flex"
+      >
+        <v-avatar color="secondary" size="40" class="avatar mt-1 mr-2">
+          <v-icon color="primary" size="39">{{
+            comment.accounttype == 'company'
+              ? 'mdi-factory'
+              : 'mdi-account-circle'
+          }}</v-icon>
+        </v-avatar>
 
-            <time
-              class="grey--text font-weight-medium"
-              v-text="new Date(comment.createdAt).toLocaleString()"
-            />
+        <v-card class="flex-grow-1 pa-3" elevation="0" outlined>
+          <header class="d-sm-flex justify-space-between flex-grow-1">
+            <div class="comment__info body-2 text-small">
+              <a
+                href="http://"
+                target="_blank"
+                rel="noopener noreferrer"
+                v-text="comment.accountId"
+              ></a>
+              <span class="action">action performed</span>
+              <a href="http://" target="_blank" rel="noopener noreferrer"
+                >recepient</a
+              >
+            </div>
+
+            <time class="grey--text body-2 text-small"
+              >{{ customDate(comment.createdAt) }}
+            </time>
+            <!-- v-text="new Date(comment.createdAt).toLocaleString()" -->
           </header>
 
-          <article class="py-4" v-html="convertCommentHTML(comment.comment)" />
+          <article
+            class="py-4 body-1 text-medium"
+            v-html="convertCommentHTML(comment.comment)"
+          ></article>
 
           <footer class="text-right">
             <span
-              class="accent--text font-weight-medium"
+              class="accent--text text-caption font-weight-medium"
               v-text="comment.status"
-            />
+            ></span>
             <v-icon small class="ml-2" color="accent">{{
               comment.type == 'Public' ? 'mdi-eye' : 'mdi-eye-off'
             }}</v-icon>
@@ -97,6 +111,10 @@
 
 <script>
 import showdown from 'showdown'
+import dayjs from 'dayjs'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import 'assets/styles/custom.css'
 
 export default {
   data() {
@@ -126,7 +144,17 @@ export default {
       })
   },
 
+  created() {
+    dayjs.extend(relativeTime)
+    dayjs.extend(localizedFormat)
+  },
+
   methods: {
+    sortedComment() {
+      return this.comments.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+      // return this.comments.sort((a, b) => (a.updatedAt > b.updatedAt ? 1 : -1))
+    },
+
     convertCommentHTML(val) {
       const converter = new showdown.Converter()
       return converter.makeHtml(val)
@@ -165,6 +193,47 @@ export default {
           })
       }
     },
+
+    customDate(date) {
+      if (!date) {
+        return null
+      }
+      if (dayjs(date).fromNow().includes('year')) {
+        return `on ${dayjs(date).format('D MMM YYYY')}`
+      }
+      const fromNowMonth = dayjs(date).fromNow().includes('month')
+      const currentYear = new Date().getFullYear()
+      const isThisYear = parseInt(String(date).slice(0, 4), 10) === currentYear
+      if (fromNowMonth && isThisYear) {
+        return `on ${dayjs(date).format('D MMM')}`
+      }
+      return dayjs(date).fromNow()
+    },
   },
 }
 </script>
+
+<style scoped>
+.comment:not(:last-child) {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.comment:not(:last-child)::before {
+  position: absolute;
+  top: 26px;
+  left: 20px;
+  content: '';
+  width: 0;
+  height: calc(100% + 10px);
+  border-left: 2px solid #f9eded;
+}
+
+.comment__info a {
+  text-decoration: none;
+}
+
+.comment__info a:hover {
+  text-decoration: underline;
+}
+</style>

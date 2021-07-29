@@ -6,6 +6,7 @@ export const state = () => ({
   text: null,
   icon: null,
   timeout: 5000,
+  showNotification: false,
 })
 
 export const mutations = {
@@ -27,5 +28,9 @@ export const mutations = {
     state.color = null
     state.status = false
     state.timeout = 5000
+  },
+
+  UPDATE_NOTIFICATION_STATE(state) {
+    state.showNotification = !state.showNotification
   },
 }
