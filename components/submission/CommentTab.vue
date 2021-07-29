@@ -114,7 +114,7 @@ import showdown from 'showdown'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import relativeTime from 'dayjs/plugin/relativeTime'
-import 'assets/styles/custom.css'
+// import 'assets/styles/custom.css'
 
 export default {
   data() {

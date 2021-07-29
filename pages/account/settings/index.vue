@@ -74,7 +74,8 @@ export default {
   },
 
   methods: {
-    async uploadPhoto() {
+    // async uploadPhoto() {
+    uploadPhoto() {
       if (this.FILE) {
         this.labelText = 'Please wait...'
 
@@ -84,14 +85,14 @@ export default {
         // formData.append('userId', this.USER.id)
         this.FILE_BLOB = URL.createObjectURL(this.FILE)
 
-        try {
-          const response = await this.$axios.$post('/update-profile-picture', {
-            formData: this.FILE_BLOB,
-          })
-          console.log(response)
-        } catch (error) {
-          console.error(error)
-        }
+        // try {
+        //   const response = await this.$axios.post('/update-profile-picture', {
+        //     formData: this.FILE_BLOB,
+        //   })
+        //   console.log(response)
+        // } catch (error) {
+        //   console.error(error)
+        // }
       }
     },
   },
