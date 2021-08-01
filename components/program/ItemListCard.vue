@@ -1,8 +1,7 @@
 <template>
-  <!-- <v-container fluid> -->
   <v-hover v-slot="{ hover }">
     <v-card
-      v-if="program.companyId"
+      v-if="program.companyId._id"
       class="card-item d-flex align-center mt-6 overflow-x-hidden"
       :class="hover && hoverable ? 'secondary' : ''"
     >
@@ -71,7 +70,6 @@
       </section>
     </v-card>
   </v-hover>
-  <!-- </v-container> -->
 </template>
 
 <script>

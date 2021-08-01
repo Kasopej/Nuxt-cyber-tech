@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
-            v-model="FORM.profile.firstname"
+            v-model="FORM.profile.firstName"
             block
             outlined
             label="First Name"
@@ -13,7 +13,7 @@
         </v-col>
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
-            v-model="FORM.profile.lastname"
+            v-model="FORM.profile.lastName"
             block
             outlined
             label="Last Name"
