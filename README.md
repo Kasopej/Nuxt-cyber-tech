@@ -18,3 +18,14 @@ $ yarn generate
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+
+## How to use
+
+* Ensure you have the enviroment variables set before starting your server.
+* In case you are unable to retrieve any response, try creating before retrieving a response. Your account may not have access to the defaults data.
+
+## Needs Improvement
+
+* [] Login data persistence
+
+* [] Data fetching and (event or) request management or grouping

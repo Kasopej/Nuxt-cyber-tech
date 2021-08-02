@@ -12,6 +12,9 @@
       <program-item-list-card :program="program" show-visibility />
     </article>
 
+    <!-- <div v-if="program">{{ program }}</div> -->
+    <!-- {{ program.companyId }} -->
+
     <v-form ref="form1" v-model="validate">
       <v-row>
         <v-col cols="12" md="8">
@@ -186,7 +189,7 @@
             />
           </section>
 
-          <section>
+          <!-- <section>
             <header class="py-4">
               <div class="headline pb-4">CVE Identifier</div>
               <div class="grey--text text--darken-2">
@@ -201,7 +204,7 @@
               label="CVE Id"
               :rules="[...rules.required]"
             />
-          </section>
+          </section> -->
 
           <section>
             <header class="py-4">
@@ -307,17 +310,21 @@
         </v-checkbox>
       </section>
 
-      <v-row class="py-6">
-        <v-col>
-          <v-btn text large color="accent" @click="$router.go(-1)"
-            >Cancel</v-btn
-          > </v-col
-        ><v-col>
-          <v-btn block large color="primary" @click="submitReport()"
-            >Submit Report</v-btn
-          >
-        </v-col>
-      </v-row>
+      <div class="py-6">
+        <v-btn
+          text
+          large
+          color="accent"
+          class="px-2 py-1"
+          @click="$router.go(-1)"
+        >
+          Cancel
+        </v-btn>
+
+        <v-btn large color="primary" class="px-2 py-1" @click="submitReport()">
+          Submit Report
+        </v-btn>
+      </div>
     </v-form>
 
     <v-dialog v-model="dialog" persistent max-width="500">
@@ -347,7 +354,7 @@ export default {
       descriptionPreview: null,
       fileArray: [],
 
-      program: this.$store.state.program.data,
+      program: null,
       scopes: [] || null,
 
       FORM: {
@@ -436,7 +443,7 @@ export default {
     const URL = `/get-programs?limit=15`
     // Make upload request to the API
     await this.$axios
-      .$get(URL, this.FORM)
+      .$get(URL)
       .then((res) => {
         const mainProgram = res.data.docs.filter((program) => {
           return program._id === this.$route.params.programId
@@ -469,6 +476,10 @@ export default {
         )
       })
     },
+  },
+
+  updated() {
+    this.program = this.$store.state.program.data
   },
 
   mounted() {

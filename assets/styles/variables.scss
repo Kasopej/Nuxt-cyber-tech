@@ -2,3 +2,12 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+
+/* Adjusting the v-expansion-panel SASS variables
+**  Reduced all values = (y / 2) - 4px // where y is the value
+*/
+$expansion-panel-active-margin: 4px !default;
+$expansion-panel-header-min-height: 20px !default;
+$expansion-panel-active-header-min-height: 28px !default;
+$expansion-panel-header-padding: 4px 8px !default;
+$expansion-panel-content-padding: 0 8px 4px !default;
