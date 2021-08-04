@@ -4,7 +4,7 @@
       <label class="pt-8">
         <v-avatar size="250">
           <v-img
-            :src="FILE_BLOB || USER.image || '/img/dummy.jpg'"
+            :src="USER.user.profile[0].image || '/img/dummy.jpg'"
             class="rounded"
             cover
           />
@@ -16,13 +16,86 @@
           {{ labelText }}
         </div>
         <v-file-input
-          v-model="FILE"
           class="d-none"
           accept="image/jpeg, image/png"
-          @change="uploadPhoto()"
+          @change="selectImage"
         />
       </label>
     </section>
+
+    <div v-if="progress">
+      <v-progress-linear
+        v-model="progress"
+        color="light-blue"
+        height="25"
+        reactive
+        class="my-2"
+      >
+        <strong>{{ progress }} %</strong>
+      </v-progress-linear>
+    </div>
+
+    <v-alert v-if="message" border="left" color="blue-grey" dark class="my-2">
+      {{ message }}
+    </v-alert>
+
+    <!-- <div>
+      <v-row no-gutters justify="center" align="center">
+        <v-col cols="8">
+          <v-file-input
+            show-size
+            label="Select Image"
+            accept="image/*"
+            @change="selectImage"
+          ></v-file-input>
+        </v-col>
+
+        <v-col cols="4" class="pl-2">
+          <v-btn color="success" dark small @click="updateProfilePicture">
+            Upload
+            <v-icon right dark>mdi-cloud-upload</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+
+      <div v-if="progress">
+        <div>
+          <v-progress-linear
+            v-model="progress"
+            color="light-blue"
+            height="25"
+            reactive
+          >
+            <strong>{{ progress }} %</strong>
+          </v-progress-linear>
+        </div>
+      </div>
+
+      <v-alert v-if="message" border="left" color="blue-grey" dark>
+        {{ message }}
+      </v-alert>
+
+      <div v-if="previewImage">
+        <div>
+          <img class="preview my-3" :src="previewImage" alt="" />
+        </div>
+      </div>
+
+      <v-alert v-if="message" border="left" color="blue-grey" dark>
+        {{ message }}
+      </v-alert>
+
+      <v-card v-if="imageInfos.length > 0" class="mx-auto">
+        <v-list>
+          <v-subheader>List of Images</v-subheader>
+          <v-list-item-group color="primary">
+            <v-list-item v-for="(image, index) in imageInfos" :key="index">
+              <a :href="image.url">{{ image.name }}</a>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-card>
+    </div> -->
 
     <v-tabs grow class="elevation-2 py-4">
       <v-tab>
@@ -70,6 +143,16 @@ export default {
       FILE_BLOB: null,
 
       USER: this.$store.state.auth.user,
+
+      currentImage: undefined,
+      previewImage: undefined,
+
+      progress: 0,
+      message: '',
+
+      imageInfos: [],
+
+      selectedFile: null,
     }
   },
 
@@ -93,6 +176,60 @@ export default {
         // } catch (error) {
         //   console.error(error)
         // }
+      }
+    },
+
+    selectImage(image) {
+      this.currentImage = image
+      this.previewImage = URL.createObjectURL(this.currentImage)
+      this.progress = 0
+      this.message = ''
+      this.updateProfilePicture()
+    },
+
+    onFileChanged(event) {
+      this.selectedFile = event.target.files[0]
+    },
+
+    async updateProfilePicture() {
+      if (this.currentImage) {
+        this.labelText = 'Please wait...'
+        // FIXME: Seems not working well on local machine
+        // TODO: Uncomment sections below to use JSON to replace formData so as to support all browsers
+        console.log(this.currentImage, this.previewImage)
+
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            // 'Content-Type': this.currentImage.type,
+          },
+        }
+
+        const formData = new FormData()
+        formData.append('image', this.currentImage, this.currentImage.name)
+
+        try {
+          // const response = await this.$axios.post(
+          await this.$axios.post(
+            '/update-profile-picture',
+            formData,
+            // this.currentImage,
+            // this.previewImage,
+            config,
+            { timeout: 20000 },
+            {
+              onUploadProgress: (progressEvent) => {
+                console.log(progressEvent.loaded / progressEvent.total)
+                return progressEvent.loaded / progressEvent
+              },
+            }
+          )
+
+          // console.log(response)
+          this.labelText = ''
+        } catch (e) {
+          // console.log(e)
+        }
       }
     },
   },

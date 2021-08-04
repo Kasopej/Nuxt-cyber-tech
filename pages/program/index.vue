@@ -72,6 +72,7 @@ export default {
       const NAMED_URL = program.title.toLowerCase().replace(/ /g, '-')
 
       this.$router.push({
+        // path: `/program/${program._id}`,
         path: `/program/${NAMED_URL}`,
         params: {
           id: program,

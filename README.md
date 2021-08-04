@@ -26,6 +26,15 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ## Needs Improvement
 
-* [] Login data persistence
+[] Login data persistence
+[] Data fetching and (event or) request management or grouping
+[] Profile image handling
+[] Unresolved CORS issues resulting to 403 and 404 errors on profile on local machine
 
-* [] Data fetching and (event or) request management or grouping
+## Today Task
+
+[x] Nothing here
+
+## Next Tasks
+
+[] 2FA Implementation
