@@ -206,6 +206,32 @@
             />
           </section> -->
 
+          <v-row>
+            <v-col cols="12">
+              <div class="headline pb-4">CVSS Identifier</div>
+              <v-slider
+                v-model="FORM.cveid"
+                thumb-label
+                max="5.0"
+                min="0.0"
+                step="0.1"
+                ticks
+                hide-details
+              >
+                <template #append>
+                  <v-text-field
+                    v-model="FORM.cveid"
+                    class="mt-0 pt-0"
+                    hide-details
+                    single-line
+                    type="number"
+                    style="width: 60px"
+                  ></v-text-field>
+                </template>
+              </v-slider>
+            </v-col>
+          </v-row>
+
           <section>
             <header class="py-4">
               <div class="headline pb-4">Bug Description</div>
@@ -265,7 +291,7 @@
             <header class="py-4">
               <div class="headline py-4">Attachments</div>
               <div class="grey--text text--darken-2">
-                You can attach multiple files (up to 20). Please keep individual
+                You can attach multiple files (up to 5). Please keep individual
                 upload size under 400MB.
               </div>
             </header>
@@ -428,7 +454,7 @@ export default {
         {
           text: 'Report Vulnerability',
           disabled: true,
-          to: '/prrogram/add/',
+          to: '/program/add/',
         },
       ],
     }
@@ -446,7 +472,11 @@ export default {
       .$get(URL)
       .then((res) => {
         const mainProgram = res.data.docs.filter((program) => {
-          return program._id === this.$route.params.programId
+          // return program._id === this.$route.params.programId
+          return (
+            program.title.toLowerCase().replace(/ /g, '-') ===
+            this.$route.params.programId
+          )
         })
         this.program = mainProgram[0]
         if (this.program.scope.length === 0) {
@@ -571,7 +601,7 @@ export default {
     handleAttachment(input) {
       if (input.length <= 5) {
         const attachment = input
-        const allowedFileType = ['pdf', 'png', 'jpg', 'zip', 'rar']
+        const allowedFileType = ['pdf', 'png', 'jpg', 'jpeg', 'zip', 'rar']
         for (let index = 0; index < attachment.length; index++) {
           const fileChecker = attachment[index].name.substring(
             attachment[index].name.lastIndexOf('.') + 1,

@@ -106,6 +106,7 @@ export default {
       .$get(URL)
       .then((res) => {
         const mainProgram = res.data.docs.filter((program) => {
+          // program._id === this.$route.params.programId
           return (
             program.title.toLowerCase().replace(/ /g, '-') ===
             this.$route.params.programId
