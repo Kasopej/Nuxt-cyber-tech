@@ -1,7 +1,7 @@
 <template>
   <v-hover v-slot="{ hover }">
     <v-card
-      v-if="program.companyId._id"
+      v-if="program.companyId"
       class="card-item d-flex align-center mt-6 overflow-x-hidden"
       :class="hover && hoverable ? 'secondary' : ''"
     >
@@ -9,7 +9,6 @@
         :src="program.thumbnail || '/img/dummy.jpg'"
         :max-width="$vuetify.breakpoint.mobile ? '110px' : '150px'"
         class="rounded-0"
-        cover
       />
 
       <section

@@ -1,5 +1,6 @@
 <template>
   <main class="px-3 py-6 text-caption text-sm-body-2 text-md-body-1">
+    {{ submission }}
     <v-row>
       <v-col cols="12" md="8">
         <v-row>
@@ -10,6 +11,7 @@
           >
             ACTION STATE
           </v-col>
+
           <v-col
             class="pl-2 py-1 py-sm-2 py-md-3 text-capitalize"
             cols="12"

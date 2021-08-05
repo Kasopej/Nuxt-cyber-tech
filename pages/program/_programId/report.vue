@@ -217,6 +217,7 @@
                 step="0.1"
                 ticks
                 hide-details
+                :rules="[...rules.required]"
               >
                 <template #append>
                   <v-text-field
@@ -226,6 +227,7 @@
                     single-line
                     type="number"
                     style="width: 60px"
+                    :rules="[...rules.required]"
                   ></v-text-field>
                 </template>
               </v-slider>
@@ -485,13 +487,7 @@ export default {
         this.getScopeOptions(this.program.scope)
       })
       .catch((error) => {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: error.response
-            ? error.response.data.message
-            : 'Something occured. Please try again',
-        })
+        this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
   computed: {
@@ -508,13 +504,21 @@ export default {
     },
   },
 
-  updated() {
-    this.program = this.$store.state.program.data
-  },
+  // created() {
+  //   console.log('created', this.program)
+  //   this.program = this.$store.state.program.data
+  // },
 
-  mounted() {
-    // const clearAttach = document.getElementsByClassName('v-input__icon--clear')
-  },
+  // updated() {
+  //   console.log('updated', this.program)
+  //   this.program = this.$store.state.program.data
+  // },
+
+  // mounted() {
+  //   console.log('mounted', this.program)
+  //   this.program = this.$store.state.program.data
+  //   // const clearAttach = document.getElementsByClassName('v-input__icon--clear')
+  // },
   methods: {
     clearPreview() {
       this.descriptionPreview = null
@@ -545,6 +549,7 @@ export default {
     },
 
     async submitReport() {
+      console.log(this.$refs.form1)
       if (this.$refs.form1.validate()) {
         this.$nuxt.$loading.start()
 
@@ -552,14 +557,16 @@ export default {
         const PAYLOAD = {
           ...this.FORM,
           programId,
-          reportedto: this.program.companyId._id,
+          // reportedto: this.program.companyId._id,
+          reportedto: 'this.program.companyId._id',
           visibility: this.FORM.visibility ? 'Public' : 'Private',
         }
 
         const formData = new FormData()
         formData.append('title', `${this.FORM.title}`)
         formData.append('description', `${this.FORM.description}`)
-        formData.append('reportedto', `${this.program.companyId._id}`)
+        // formData.append('reportedto', `${this.program.companyId._id}`)
+        formData.append('reportedto', 'this.program.companyId._id')
         formData.append('scope', `${this.selectedScope.options}`)
         formData.append('cveid', `${this.FORM.cveid}`)
         formData.append('bugtype', `${this.FORM.bugtype}`)
@@ -583,17 +590,14 @@ export default {
           .$post(URL, formData)
           .then((res) => {
             this.dialog = true
+            console.log('Successful')
           })
           .catch((error) => {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              icon: 'mdi-alert-outline',
-              text: error.response
-                ? error.response.data.message
-                : 'Something occured. Please try again',
-            })
+            console.log(error)
+            this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {
+            console.log('Finally')
             this.$nuxt.$loading.finish()
           })
       }
@@ -613,25 +617,23 @@ export default {
           ) {
             this.fileArray.push(attachment[index])
           } else {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              icon: 'mdi-alert-outline',
-              text:
-                'One or more invalid files or file size. Accepted files are pdf, jpg, jpeg, png, zip or rar',
-            })
+            this.$store.dispatch(
+              'notification/warningSnackbar',
+              'One or more invalid files or file size. Accepted files are pdf, jpg, jpeg, png, zip or rar'
+            )
           }
         }
       } else {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: 'only a Maximum of 5 files can be uploaded',
-        })
+        this.$store.dispatch(
+          'notification/warningSnackbar',
+          'only a Maximum of 5 files can be uploaded'
+        )
       }
     },
   },
 }
 </script>
+
 <style scoped lang="scss">
 .autocomplete {
   min-width: 350px !important;

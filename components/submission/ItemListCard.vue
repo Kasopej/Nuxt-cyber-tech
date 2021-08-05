@@ -9,7 +9,6 @@
         :src="submission.thumbnail || '/img/dummy.jpg'"
         :max-width="$vuetify.breakpoint.mobile ? '108px' : '150px'"
         class="rounded-0"
-        cover
       />
 
       <section

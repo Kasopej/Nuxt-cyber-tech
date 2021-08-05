@@ -183,12 +183,7 @@ export default {
             this.$router.push('/account/confirm-email')
           })
           .catch((error) => {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              text: error.response
-                ? error.response.data.message
-                : "Sorry, that didn't work. Please try again",
-            })
+            this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {
             this.$nuxt.$loading.finish()

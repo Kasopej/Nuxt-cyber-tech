@@ -34,3 +34,30 @@ export const mutations = {
     state.showNotification = !state.showNotification
   },
 }
+
+export const actions = {
+  failureSnackbar({ commit }, responseState, message) {
+    commit('SHOW', {
+      color: 'error',
+      icon: 'mdi-alert-outline',
+      text: message || "Sorry, that didn't work. Please try again.",
+    })
+
+    console.log(responseState)
+  },
+
+  warningSnackbar({ commit }, message) {
+    commit('SHOW', {
+      color: 'warning',
+      icon: 'mdi-alert-outline',
+      text: message,
+    })
+  },
+
+  successSnackbar({ commit }, appendText) {
+    commit('SHOW', {
+      icon: 'mdi-check',
+      text: `${appendText} successfully`,
+    })
+  },
+}

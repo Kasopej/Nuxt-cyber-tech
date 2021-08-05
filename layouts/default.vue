@@ -30,13 +30,11 @@
         <template #activator="{ on, attrs }">
           <v-btn icon class="mx-4" v-bind="attrs" v-on="on">
             <v-avatar color="secondary">
-              <!-- <v-img
-                  v-if="USER.image"
-                  cover
-                  :src="USER.image"
-                  alt="Profile"
-                /> -->
-              <v-icon color="primary" size="50">mdi-account-circle</v-icon>
+              <v-img
+                v-if="USER"
+                :src="USER.profile[0].image || '/img/dummy.jpg'"
+                alt="Profile"
+              />
             </v-avatar>
           </v-btn>
         </template>
