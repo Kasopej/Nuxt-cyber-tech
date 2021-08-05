@@ -1,6 +1,5 @@
 <template>
   <main class="px-3 py-6 text-caption text-sm-body-2 text-md-body-1">
-    {{ submission }}
     <v-row>
       <v-col cols="12" md="8">
         <v-row>

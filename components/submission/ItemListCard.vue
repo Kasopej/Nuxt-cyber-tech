@@ -1,7 +1,10 @@
 <template>
+  <!-- <div> -->
+  <!-- <div class="card">Hello</div> -->
+  <!-- </div> -->
   <v-hover v-slot="{ hover }">
     <v-card
-      class="d-flex align-center mt-6 overflow-x-hidden"
+      class="d-flex align-center mt-6 mx-1 overflow-x-hidden"
       :class="hover ? 'secondary' : ''"
       @click="openDetails(submission)"
     >
