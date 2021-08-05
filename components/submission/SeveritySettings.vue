@@ -311,10 +311,10 @@ export default {
 
   methods: {
     saveChanges() {
-      this.$store.commit('notification/SHOW', {
-        color: 'accent',
-        text: 'Feature not availabble at the moment',
-      })
+      this.$store.dispatch(
+        'notification/warningSnackbar',
+        'Feature not available at the moment'
+      )
     },
   },
 }

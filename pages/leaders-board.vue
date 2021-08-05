@@ -25,10 +25,10 @@
             <tr v-for="(leader, index) in leaderBoard" :key="`leader-${index}`">
               <td>{{ index + 1 }}</td>
               <td>
-                <v-avatar size="35" class="mr-4" v-if="leader.profile[0].image">
+                <v-avatar v-if="leader.profile[0].image" size="35" class="mr-4">
                   <img :src="leader.profile[0].image" alt="" />
                 </v-avatar>
-                <v-avatar size="35" class="mr-4" v-else>
+                <v-avatar v-else size="35" class="mr-4">
                   <v-icon color="accent">mdi-account-circle</v-icon></v-avatar
                 >{{ leader.profile[0].username }}
                 <v-avatar size="30">
@@ -79,13 +79,7 @@ export default {
         // this.pagination.length = res.data.totalPages
       })
       .catch((error) => {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: error.response
-            ? error.response.data.message
-            : 'Something occured. Please try again',
-        })
+        this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
   mounted() {},

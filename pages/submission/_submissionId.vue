@@ -69,13 +69,7 @@ export default {
         this.submission = res.data[0]
       })
       .catch((error) => {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: error.response
-            ? error.response.data.message
-            : 'Something occured. Please try again',
-        })
+        this.$store.dispatch('notification/failureSnackbar', error)
       })
     await this.$axios
       .$get(attachmentURL)
@@ -84,17 +78,8 @@ export default {
         this.submissionAttachment = res.data
       })
       .catch((error) => {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: error.response
-            ? error.response.data.message
-            : 'Something occured. Please try again',
-        })
+        this.$store.dispatch('notification/failureSnackbar', error)
       })
-  },
-  mounted() {
-    console.log(this.submission)
   },
 }
 </script>

@@ -185,19 +185,13 @@ export default {
         await this.$axios
           .$patch(URL, PAYLOAD)
           .then(() => {
-            this.$store.commit('notification/SHOW', {
-              icon: 'mdi-check',
-              text: 'Profile Updated Successfully',
-            })
+            this.$store.dispatch(
+              'notification/successSnackbar',
+              'Profile updated'
+            )
           })
           .catch((error) => {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              icon: 'mdi-alert-outline',
-              text: error.response
-                ? error.response.data.message
-                : "Sorry, that didn't work. Please try again",
-            })
+            this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {
             this.$nuxt.$loading.finish()

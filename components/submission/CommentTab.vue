@@ -13,39 +13,32 @@
     </section>
 
     <section v-else>
-      <!-- v-for="comment in sortedComment()" -->
       <div
         v-for="comment in comments"
         :key="comment._id"
         class="comment d-flex"
       >
         <v-avatar color="secondary" size="40" class="avatar mt-1 mr-2">
-          <v-icon color="primary" size="39">{{
-            comment.accounttype == 'company'
-              ? 'mdi-factory'
-              : 'mdi-account-circle'
-          }}</v-icon>
+          <v-img
+            contain
+            :src="comment.hunterId.profile[0].image || '/img/dummy.jpg'"
+            alt="Profile"
+          />
         </v-avatar>
 
         <v-card class="flex-grow-1 pa-3" elevation="0" outlined>
           <header class="d-sm-flex justify-space-between flex-grow-1">
             <div class="comment__info body-2 text-small">
-              <a
-                href="http://"
-                target="_blank"
-                rel="noopener noreferrer"
-                v-text="comment.accountId"
-              ></a>
-              <span class="action">action performed</span>
-              <a href="http://" target="_blank" rel="noopener noreferrer"
-                >recepient</a
-              >
+              <!-- <span class="action">action performed</span> -->
+              <a href="http://" target="_blank" rel="noopener noreferrer">
+                {{ comment.hunterId.profile[0].username }}
+              </a>
             </div>
 
-            <time class="grey--text body-2 text-small"
-              >{{ customDate(comment.createdAt) }}
+            <time class="grey--text body-2 text-small">
+              {{ customDate(comment.createdAt) }}
+              <span>({{ new Date(comment.createdAt).toLocaleString() }})</span>
             </time>
-            <!-- v-text="new Date(comment.createdAt).toLocaleString()" -->
           </header>
 
           <article
@@ -135,13 +128,7 @@ export default {
         this.comments = res.data.docs
       })
       .catch((error) => {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: error.response
-            ? error.response.data.message
-            : "Sorry, that didn't work. Please try again",
-        })
+        this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
 
@@ -173,21 +160,15 @@ export default {
             this.FORM = {}
             this.commentPreview = null
 
-            this.$store.commit('notification/SHOW', {
-              icon: 'mdi-check',
-              text: 'Comment Submitted Successfully',
-            })
+            this.$store.dispatch(
+              'notification/successSnackbar',
+              'Comment submitted'
+            )
 
             this.$fetch()
           })
           .catch((error) => {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              icon: 'mdi-alert-outline',
-              text: error.response
-                ? error.response.data.message
-                : "Sorry, that didn't work. Please try again",
-            })
+            this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {
             this.$nuxt.$loading.finish()
@@ -236,5 +217,9 @@ export default {
 
 .comment__info a:hover {
   text-decoration: underline;
+}
+
+time span {
+  font-size: 10px;
 }
 </style>
