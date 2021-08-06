@@ -2,7 +2,7 @@
   <v-hover v-slot="{ hover }">
     <v-card
       v-if="program.companyId"
-      class="card-item d-flex align-center mt-6 overflow-x-hidden"
+      class="d-flex align-center mt-6 mx-1 overflow-x-hidden"
       :class="hover && hoverable ? 'secondary' : ''"
     >
       <v-img
@@ -101,10 +101,6 @@ export default {
 }
 .status-chip {
   padding: 0px 10px !important;
-}
-
-.card-item:nth-child(odd) {
-  margin-right: 10px;
 }
 
 @media screen and (max-width: 425px) {

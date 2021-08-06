@@ -1,5 +1,6 @@
 <template>
   <main v-if="program">
+    <!-- {{ program }} -->
     <form action=""></form>
     <v-breadcrumbs
       large
@@ -535,7 +536,7 @@ export default {
       for (let i = 0; i < scopeList.length; i++) {
         for (const [key, value] of Object.entries(scopeList[i])) {
           const optionFiller = {
-            label: `${key}`,
+            label: key,
             options: value,
           }
           filler.push(optionFiller)
@@ -549,32 +550,31 @@ export default {
     },
 
     async submitReport() {
-      console.log(this.$refs.form1)
       if (this.$refs.form1.validate()) {
         this.$nuxt.$loading.start()
 
-        const programId = this.$route.params.programId
+        // const programId = this.$route.params.programId
+        const programId = this.program._id
         const PAYLOAD = {
           ...this.FORM,
           programId,
-          // reportedto: this.program.companyId._id,
-          reportedto: 'this.program.companyId._id',
+          reportedto: this.program.companyId.company[0].name,
           visibility: this.FORM.visibility ? 'Public' : 'Private',
         }
 
         const formData = new FormData()
-        formData.append('title', `${this.FORM.title}`)
-        formData.append('description', `${this.FORM.description}`)
-        // formData.append('reportedto', `${this.program.companyId._id}`)
-        formData.append('reportedto', 'this.program.companyId._id')
-        formData.append('scope', `${this.selectedScope.options}`)
-        formData.append('cveid', `${this.FORM.cveid}`)
-        formData.append('bugtype', `${this.FORM.bugtype}`)
-        formData.append('notification', `${this.FORM.notification}`)
+        formData.append('title', this.FORM.title)
+        formData.append('bugtype', this.FORM.bugtype)
+        formData.append('scope', this.selectedScope.options)
+        formData.append('reportedto', this.program.companyId.company[0].name)
+        formData.append('cveid', this.FORM.cveid)
         formData.append(
           'visibility',
           this.FORM.visibility ? 'Public' : 'Private'
         )
+        formData.append('description', this.FORM.description)
+        formData.append('severity', this.FORM.technicalSeverity)
+        // formData.append('notification', `${this.FORM.notification}`)
         // formData.append('files', `${this.fileArray}`)
         //
         for (const file of this.fileArray) {
@@ -594,12 +594,24 @@ export default {
           })
           .catch((error) => {
             console.log(error)
-            this.$store.dispatch('notification/failureSnackbar', error)
+            if (error.code || error.message) {
+              this.$store.dispatch('notification/failureSnackbar', error)
+            } else {
+              this.$store.dispatch(
+                'notification/warningSnackbar',
+                'Something seems not working appropriately.'
+              )
+            }
           })
           .finally(() => {
             console.log('Finally')
             this.$nuxt.$loading.finish()
           })
+      } else {
+        this.$store.dispatch(
+          'notification/warningSnackbar',
+          'Kindly complete the form to proceed.'
+        )
       }
     },
     handleAttachment(input) {

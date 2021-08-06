@@ -140,22 +140,43 @@ export default {
 
     async updateProfilePicture() {
       if (this.currentImage) {
-        this.labelText = 'Please wait...'
         // FIXME: Seems not working well on local machine (firefox)
         // TODO: Uncomment sections below to use JSON to replace formData for more browsers support
-        console.log(this.currentImage, this.previewImage)
+        console.log(
+          'Current Image: ',
+          this.currentImage,
+          'Preview Image: ',
+          this.previewImage
+        )
 
         const config = {
           headers: {
-            'Content-Type': 'multipart/form-data',
-            // 'Content-Type': this.currentImage.type,
+            // 'Content-Type': 'multipart/form-data',
+            'Content-Type': this.currentImage.type,
           },
         }
 
         const formData = new FormData()
-        formData.append('image', this.currentImage, this.currentImage.name)
+        formData.append(
+          // 'profile[0].image',
+          'image',
+          this.currentImage,
+          this.currentImage.name
+        )
+        console.log(this.currentImage.name)
+        // formData.append('image', this.currentImage)
+        // formData.append('image', this.previewImage)
+        console.log(
+          'Is currentImage of type Blob: ',
+          this.currentImage instanceof Blob
+        )
+        console.log(
+          'Is previewImage of type Blob: ',
+          this.previewImage instanceof Blob
+        )
 
         try {
+          this.labelText = 'Please wait, uploading...'
           console.log('Trying...')
 
           const response = await this.$axios.post(
@@ -164,25 +185,34 @@ export default {
             formData,
             // this.currentImage,
             // this.previewImage,
-            config,
-            // { timeout: 20000 },
-            {
-              onUploadProgress: (progressEvent) => {
-                console.log(progressEvent.loaded / progressEvent.total)
-                return progressEvent.loaded / progressEvent
-              },
-            }
+            config
+            // // { timeout: 20000 },
+            // {
+            //   onUploadProgress: (progressEvent) => {
+            //     console.log(progressEvent.loaded / progressEvent.total)
+            //     return progressEvent.loaded / progressEvent
+            //   },
+            // }
           )
 
           console.log(response)
           console.log('Success')
           this.labelText = 'Click to change'
         } catch (e) {
+          alert('Hello')
           console.log(e)
           console.log('Failure')
+          console.log(e.code, e.message)
           this.labelText = 'Click to change'
 
-          this.$store.dispatch('notification/failureSnackbar', '')
+          if (e.code || e.message) {
+            this.$store.dispatch('notification/failureSnackbar', e)
+          } else {
+            this.$store.dispatch(
+              'notification/warningSnackbar',
+              'Something seems not working appropriately.'
+            )
+          }
         }
       }
     },

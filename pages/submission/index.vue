@@ -17,8 +17,6 @@
       </v-btn>
     </header>
 
-    {{ submissions }}
-
     <section v-if="$fetchState.pending">
       <v-skeleton-loader v-for="i in 3" :key="i" type="article" />
     </section>

@@ -1,5 +1,6 @@
 <template>
   <main class="px-3 py-6">
+    {{ comments }}
     <section v-if="$fetchState.pending">
       <v-skeleton-loader v-for="i in 3" :key="i" type="article" />
     </section>
@@ -20,10 +21,18 @@
       >
         <v-avatar color="secondary" size="40" class="avatar mt-1 mr-2">
           <v-img
+            v-if="comment.hunterId || comment.company"
             contain
-            :src="comment.hunterId.profile[0].image || '/img/dummy.jpg'"
+            :src="comment.hunterId.profile[0].image || comment.company.image"
             alt="Profile"
           />
+          <v-icon v-else color="primary" size="39">
+            {{
+              comment.accounttype === 'company'
+                ? 'mdi-factory'
+                : 'mdi-account-circle'
+            }}
+          </v-icon>
         </v-avatar>
 
         <v-card class="flex-grow-1 pa-3" elevation="0" outlined>
@@ -31,7 +40,9 @@
             <div class="comment__info body-2 text-small">
               <!-- <span class="action">action performed</span> -->
               <a href="http://" target="_blank" rel="noopener noreferrer">
-                {{ comment.hunterId.profile[0].username }}
+                {{
+                  comment.hunterId.profile[0].username || 'comment.company.name'
+                }}
               </a>
             </div>
 
@@ -191,6 +202,11 @@ export default {
       }
       return dayjs(date).fromNow()
     },
+
+    // checkResponse(option1, option2) {
+    //   comment.accounttype == 'company'
+    //   if()
+    // },
   },
 }
 </script>
