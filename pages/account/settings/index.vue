@@ -140,6 +140,22 @@ export default {
 
     async updateProfilePicture() {
       if (this.currentImage) {
+        // const reader = new FileReader()
+
+        // reader.onload = (e) => {
+        //   this.uploadData({
+        //     index,
+        //     value: e.target.result,
+        //     name: file.name,
+        //     size: file.size / 1000,
+        //     extension: fileNameSplit[fileNameSplit.length - 1],
+        //     type: this.docType,
+        //     view,
+        //   });
+        // };
+        // console.log(reader.readAsDataURL(this.currentImage))
+        // reader.readAsDataURL(file);
+
         // FIXME: Seems not working well on local machine (firefox)
         // TODO: Uncomment sections below to use JSON to replace formData for more browsers support
         console.log(
@@ -149,23 +165,17 @@ export default {
           this.previewImage
         )
 
-        const config = {
-          headers: {
-            // 'Content-Type': 'multipart/form-data',
-            'Content-Type': this.currentImage.type,
-          },
-        }
+        // const config = {
+        //   headers: {
+        //     // 'Content-Type': 'multipart/form-data',
+        //     'Content-Type': this.currentImage.type,
+        //   },
+        // }
 
         const formData = new FormData()
-        formData.append(
-          // 'profile[0].image',
-          'image',
-          this.currentImage,
-          this.currentImage.name
-        )
+        formData.append('image', this.currentImage, this.currentImage.name)
+
         console.log(this.currentImage.name)
-        // formData.append('image', this.currentImage)
-        // formData.append('image', this.previewImage)
         console.log(
           'Is currentImage of type Blob: ',
           this.currentImage instanceof Blob
@@ -182,11 +192,7 @@ export default {
           const response = await this.$axios.post(
             // await this.$axios.post(
             '/update-profile-picture',
-            formData,
-            // this.currentImage,
-            // this.previewImage,
-            config
-            // // { timeout: 20000 },
+            this.previewImage
             // {
             //   onUploadProgress: (progressEvent) => {
             //     console.log(progressEvent.loaded / progressEvent.total)
@@ -199,10 +205,11 @@ export default {
           console.log('Success')
           this.labelText = 'Click to change'
         } catch (e) {
-          alert('Hello')
+          // alert('Hello')
           console.log(e)
           console.log('Failure')
           console.log(e.code, e.message)
+          console.log('request', e.request)
           this.labelText = 'Click to change'
 
           if (e.code || e.message) {
