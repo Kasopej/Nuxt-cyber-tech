@@ -1,6 +1,5 @@
 <template>
   <main class="px-3 py-6">
-    {{ comments }}
     <section v-if="$fetchState.pending">
       <v-skeleton-loader v-for="i in 3" :key="i" type="article" />
     </section>
@@ -19,30 +18,39 @@
         :key="comment._id"
         class="comment d-flex"
       >
-        <v-avatar color="secondary" size="40" class="avatar mt-1 mr-2">
-          <v-img
-            v-if="comment.hunterId || comment.company"
-            contain
-            :src="comment.hunterId.profile[0].image || comment.company.image"
-            alt="Profile"
-          />
-          <v-icon v-else color="primary" size="39">
-            {{
-              comment.accounttype === 'company'
-                ? 'mdi-factory'
-                : 'mdi-account-circle'
-            }}
-          </v-icon>
-        </v-avatar>
+        <SubmissionCommentCardImage
+          v-if="comment.hunterId"
+          :name="comment.hunterId.profile[0].username"
+          :user-type="comment.accountType"
+          :image="comment.hunterId.profile[0].image"
+        />
+
+        <SubmissionCommentCardImage
+          v-else
+          :name="comment.accountId.company[0].name"
+          :user-type="comment.accountType"
+          :image="comment.accountId.company[0].image"
+        />
 
         <v-card class="flex-grow-1 pa-3" elevation="0" outlined>
           <header class="d-sm-flex justify-space-between flex-grow-1">
             <div class="comment__info body-2 text-small">
-              <!-- <span class="action">action performed</span> -->
-              <a href="http://" target="_blank" rel="noopener noreferrer">
-                {{
-                  comment.hunterId.profile[0].username || 'comment.company.name'
-                }}
+              <span class="action">Comment by</span>
+              <a
+                v-if="comment.hunterId"
+                href="http://"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ comment.hunterId.profile[0].username }}
+              </a>
+              <a
+                v-else
+                href="http://"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ comment.accountId.company[0].name }}
               </a>
             </div>
 

@@ -13,6 +13,7 @@
         <v-col
           v-for="program in programs"
           :key="program._id"
+          cols="12"
           md="6"
           @click="openDetails(program)"
         >
