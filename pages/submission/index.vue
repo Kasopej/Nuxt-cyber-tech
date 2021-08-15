@@ -41,18 +41,15 @@
     <section v-else>
       <partials-empty-data caption="No Submissions Found" />
     </section>
-
-    <footer class="text-center py-8">
-      <v-pagination
-        v-model="pagination.page"
-        :length="pagination.length"
-      ></v-pagination>
-    </footer>
   </main>
 </template>
 
 <script>
+import scrollDetection from '@/utils/mixins/reloadScrollDetect'
+
 export default {
+  mixins: [scrollDetection],
+
   data() {
     return {
       status: 'all',
@@ -67,7 +64,7 @@ export default {
       ],
 
       submissions: [],
-      pagination: { page: 0, length: 1 },
+      pagination: { page: 1, length: 0 },
 
       breadcrumbsItems: [
         {
@@ -88,16 +85,52 @@ export default {
       .then((res) => {
         this.submissions = res.data.docs
         this.pagination.length = res.data.totalPages
+        this.pagination.pages++
       })
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
 
+  watch: {
+    shouldLoadMore(newState, oldState) {
+      if (oldState === false) {
+        this.loadMoreSubmissions()
+      }
+
+      if (newState === true) {
+        console.log('I am loading more')
+      }
+    },
+  },
+
+  created() {
+    this.updatePageDetails(this.pagination.page, '/submission/')
+  },
+
   methods: {
     changeFilter(filter) {
       this.status = filter
       this.$fetch()
+    },
+
+    async loadMoreSubmissions() {
+      if (this.pagination.page < this.pagination.length) {
+        const URL = `/get-all-submissions/${this.status}?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
+
+        try {
+          const response = await this.$axios.$get(URL, this.FORM)
+
+          this.submissions.push(response.data.docs)
+          this.pagination.page++
+        } catch (e) {
+          this.$store.dispatch('notification/failureSnackbar', e)
+        }
+      } else
+        this.$store.dispatch(
+          'notification/warningSnackbar',
+          'Nothing to load more'
+        )
     },
   },
 }

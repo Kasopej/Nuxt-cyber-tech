@@ -21,20 +21,33 @@
             <td class="px-6 py-4">Researcher</td>
             <td class="pa-4">Points</td>
           </thead>
-          <tbody>
+          <tbody v-if="leaderBoard">
             <tr v-for="(leader, index) in leaderBoard" :key="`leader-${index}`">
               <td>{{ index + 1 }}</td>
+              <!-- <span>{{ leader }}</span> -->
               <td>
-                <v-avatar v-if="leader.profile[0].image" size="35" class="mr-4">
-                  <img :src="leader.profile[0].image" alt="" />
+                <v-avatar v-if="leader.image" size="35" class="mr-4">
+                  <img :src="leader.image" :alt="leader.username" />
                 </v-avatar>
                 <v-avatar v-else size="35" class="mr-4">
                   <v-icon color="accent">mdi-account-circle</v-icon></v-avatar
-                >{{ leader.profile[0].username }}
+                >{{ leader.username }}
                 <v-avatar size="30">
-                  <img v-if="index === 0" src="/img/gold-medal.png" alt="" />
-                  <img v-if="index === 1" src="/img/silver-medal.png" alt="" />
-                  <img v-if="index === 2" src="/img/bronze-medal.png" alt="" />
+                  <img
+                    v-if="index === 0"
+                    src="/img/gold-medal.png"
+                    alt="Top Leader"
+                  />
+                  <img
+                    v-if="index === 1"
+                    src="/img/silver-medal.png"
+                    alt="First Runner-up"
+                  />
+                  <img
+                    v-if="index === 2"
+                    src="/img/bronze-medal.png"
+                    alt="Second Runner-up"
+                  />
                 </v-avatar>
               </td>
               <td>{{ leader.points }}</td>
@@ -64,23 +77,16 @@ export default {
   },
   async fetch() {
     const URL = `/get-leaders-board`
-    // Make upload request to the API
-    await this.$axios
-      .$get(URL)
-      .then((res) => {
-        console.log(res.data)
-        const sum = res.data.docs
-        this.leaderBoard = res.data.docs
-        this.totalPoints = sum.reduce(function (a, b) {
-          return a + b.points
-        }, 0)
-
-        console.log(this.totalPoints)
-        // this.pagination.length = res.data.totalPages
-      })
-      .catch((error) => {
-        this.$store.dispatch('notification/failureSnackbar', error)
-      })
+    try {
+      const response = await this.$axios.$get(URL)
+      const sum = response.data
+      this.leaderBoard = sum
+      this.totalPoints = sum.reduce(function (a, b) {
+        return a + b.points
+      }, 0)
+    } catch (e) {
+      this.$store.dispatch('notification/failureSnackbar', e)
+    }
   },
   mounted() {},
   methods: {},

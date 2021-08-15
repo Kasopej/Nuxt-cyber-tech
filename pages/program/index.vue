@@ -37,30 +37,70 @@
 </template>
 
 <script>
+import scrollDetection from '@/utils/mixins/reloadScrollDetect'
+
 export default {
+  mixins: [scrollDetection],
+
   data() {
     return {
-      pagination: { page: 0, length: 1 },
+      pagination: { page: 1, length: 0 },
 
       programs: [],
     }
   },
 
   async fetch() {
-    const URL = `/get-programs?limit=15`
+    const URL = `/get-programs?limit=${this.$store.state.program.pageLimit}`
     // Make upload request to the API
     await this.$axios
       .$get(URL, this.FORM)
       .then((res) => {
         this.programs = res.data.docs
         this.pagination.length = res.data.totalPages
+        this.pagination.page++
       })
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
 
+  watch: {
+    shouldLoadMore(newState, oldState) {
+      if (oldState === false) {
+        this.loadMorePrograms()
+      }
+
+      if (newState === true) {
+        console.log('I am loading more')
+      }
+    },
+  },
+
+  created() {
+    this.updatePageDetails(this.pagination.page, '/program/')
+  },
+
   methods: {
+    async loadMorePrograms() {
+      if (this.pagination.page < this.pagination.length) {
+        const URL = `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
+
+        try {
+          const response = await this.$axios.$get(URL, this.FORM)
+
+          this.programs.push(response.data.docs)
+          this.pagination.page++
+        } catch (e) {
+          this.$store.dispatch('notification/failureSnackbar', e)
+        }
+      } else
+        this.$store.dispatch(
+          'notification/warningSnackbar',
+          'Nothing to load more'
+        )
+    },
+
     openDetails(program) {
       this.$store.commit('program/SAVE_DATA', program)
       // this.$router.push(`/program/00${program._id}/`)

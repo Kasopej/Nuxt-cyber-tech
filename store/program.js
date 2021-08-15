@@ -3,6 +3,7 @@ export const strict = false
 export const state = () => ({
   data: {},
   payload: {},
+  pageLimit: 16,
 })
 
 export const mutations = {

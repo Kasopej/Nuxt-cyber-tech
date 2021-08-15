@@ -48,7 +48,6 @@
       </v-tab-item>
 
       <v-tab-item class="pa-4">
-        <div>Hello Papi</div>
         <section v-if="submissions.length">
           <article v-for="submission in submissions" :key="submission._id">
             <submission-item-list-card :submission="submission" />
@@ -99,7 +98,7 @@ export default {
   },
   async fetch() {
     // if you are the next developer working on this , replace the api call below to fetch the program details alone from the end point
-    const URL = `/get-programs?limit=15`
+    const URL = `/get-programs?limit=${this.$store.state.program.pageLimit}`
     // Make upload request to the API
 
     await this.$axios
@@ -118,6 +117,7 @@ export default {
         this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
+
   computed: {
     description() {
       const converter = new showdown.Converter()

@@ -35,6 +35,16 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 [x] Nothing here
 
+[x] Add a button at the end of program to load more program
+
+[x] Add a button at the end of submission to load more submission
+
+[x] Fix the Leaders board
+
+[] Fix the submit report with attachments
+
 ## Next Tasks
 
 [] 2FA Implementation
+
+[] Fix the upload image in profile settings

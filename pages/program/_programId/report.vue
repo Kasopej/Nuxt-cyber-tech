@@ -469,7 +469,7 @@ export default {
     // console.log(this.$route.params)
     // console.log(program)
 
-    const URL = `/get-programs?limit=15`
+    const URL = `/get-programs?limit=${this.$store.state.program.pageLimit}`
     // Make upload request to the API
     await this.$axios
       .$get(URL)
@@ -505,21 +505,6 @@ export default {
     },
   },
 
-  // created() {
-  //   console.log('created', this.program)
-  //   this.program = this.$store.state.program.data
-  // },
-
-  // updated() {
-  //   console.log('updated', this.program)
-  //   this.program = this.$store.state.program.data
-  // },
-
-  // mounted() {
-  //   console.log('mounted', this.program)
-  //   this.program = this.$store.state.program.data
-  //   // const clearAttach = document.getElementsByClassName('v-input__icon--clear')
-  // },
   methods: {
     clearPreview() {
       this.descriptionPreview = null
