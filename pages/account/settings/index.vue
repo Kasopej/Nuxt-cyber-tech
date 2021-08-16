@@ -14,15 +14,18 @@
         >
           {{ labelText }}
         </div>
+        <!-- accept="image/png, image/jpg, image/jpeg" -->
         <v-file-input
           class="d-none"
-          accept="image/jpeg, image/png"
+          type="file"
+          name="myImage"
+          accept=".jpg, .jpeg, .png"
           @change="selectImage"
         />
       </label>
     </section>
 
-    <div v-if="progress">
+    <!-- <div v-if="progress">
       <v-progress-linear
         v-model="progress"
         color="light-blue"
@@ -32,11 +35,11 @@
       >
         <strong>{{ progress }} %</strong>
       </v-progress-linear>
-    </div>
+    </div> -->
 
-    <v-alert v-if="message" border="left" color="blue-grey" dark class="my-2">
+    <!-- <v-alert v-if="message" border="left" color="blue-grey" dark class="my-2">
       {{ message }}
-    </v-alert>
+    </v-alert> -->
 
     <!-- <div v-if="previewImage">
       <div>
@@ -154,7 +157,7 @@ export default {
         //   });
         // };
         // console.log(reader.readAsDataURL(this.currentImage))
-        // reader.readAsDataURL(file);
+        // const profileImage = reader.readAsDataURL(this.currentImage)
 
         // FIXME: Seems not working well on local machine (firefox)
         // TODO: Uncomment sections below to use JSON to replace formData for more browsers support
@@ -185,42 +188,72 @@ export default {
           this.previewImage instanceof Blob
         )
 
-        try {
-          this.labelText = 'Please wait, uploading...'
-          console.log('Trying...')
+        const URL = '/update-profile-picture'
 
-          const response = await this.$axios.post(
-            // await this.$axios.post(
-            '/update-profile-picture',
-            this.previewImage
-            // {
-            //   onUploadProgress: (progressEvent) => {
-            //     console.log(progressEvent.loaded / progressEvent.total)
-            //     return progressEvent.loaded / progressEvent
-            //   },
-            // }
-          )
-
-          console.log(response)
-          console.log('Success')
-          this.labelText = 'Click to change'
-        } catch (e) {
-          // alert('Hello')
-          console.log(e)
-          console.log('Failure')
-          console.log(e.code, e.message)
-          console.log('request', e.request)
-          this.labelText = 'Click to change'
-
-          if (e.code || e.message) {
-            this.$store.dispatch('notification/failureSnackbar', e)
-          } else {
+        await this.$axios
+          // .$patch(URL, this.currentImage)
+          // .$patch(URL, this.previewImage)
+          .$patch(URL, { profile: { image: this.currentImage } })
+          // .$patch(URL, { profile: [{ image: this.currentImage }] })
+          // .$patch(URL, { formData: this.currentImage })
+          // .$patch(URL, { image: this.previewImage })
+          // .$patch(URL, { formData: this.previewImage })
+          .then(() => {
             this.$store.dispatch(
-              'notification/warningSnackbar',
-              'Something seems not working appropriately.'
+              'notification/failureSnackbar',
+              'Profile updated'
             )
-          }
-        }
+          })
+          .catch((error) => {
+            this.$store.dispatch('notification/failureSnackbar', error)
+          })
+          .finally(() => {
+            this.$nuxt.$loading.finish()
+          })
+
+        // try {
+        //   this.labelText = 'Please wait, uploading...'
+        //   console.log('Trying...')
+
+        //   const response = await this.$axios.$patch(
+        //     '/update-profile-picture',
+        //     { formData: this.previewImage }
+        //     // { image: this.previewImage }
+        //     // this.previewImage
+        //     // this.currentImage
+        //     // formData
+        //     // profileImage
+        //     // { image: profileImage }
+
+        //     // URL.revokeObjectURL(objectURL)
+        //     // {
+        //     //   onUploadProgress: (progressEvent) => {
+        //     //     console.log(progressEvent.loaded / progressEvent.total)
+        //     //     return progressEvent.loaded / progressEvent
+        //     //   },
+        //     // }
+        //   )
+
+        //   console.log(response)
+        //   console.log('Success')
+        //   this.labelText = 'Click to change'
+        // } catch (e) {
+        //   // alert('Hello')
+        //   console.log(e)
+        //   console.log('Failure')
+        //   console.log(e.code, e.message)
+        //   console.log('request', e.request)
+        //   this.labelText = 'Click to change'
+
+        //   if (e.code || e.message) {
+        //     this.$store.dispatch('notification/failureSnackbar', e)
+        //   } else {
+        //     this.$store.dispatch(
+        //       'notification/warningSnackbar',
+        //       'Something seems not working appropriately.'
+        //     )
+        //   }
+        // }
       }
     },
   },
