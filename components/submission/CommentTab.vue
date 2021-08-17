@@ -78,6 +78,22 @@
       </div>
     </section>
 
+    <div class="text-center mt-8">
+      <v-btn
+        v-if="pagination.page < pagination.length"
+        color="primary"
+        elevation="2"
+        :loading="loadingMore"
+        small
+        rounded
+        @click="loadMoreComments"
+      >
+        Add More
+      </v-btn>
+    </div>
+
+    <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
+
     <v-form ref="commentForm">
       <div class="accent--text headline font-weight-bold py-4">
         Post A Respone
@@ -135,16 +151,20 @@ export default {
       FORM: {},
       comments: [],
       commentPreview: null,
+
+      pagination: { page: 1, length: 0 },
+      loadingMore: false,
     }
   },
 
   async fetch() {
-    const URLL = `/get-comments/${this.$route.params.submissionId}`
-    // Make upload request to the API
+    const URLL = `/get-comments/${this.$route.params.submissionId}?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
+
     await this.$axios
       .$get(URLL, this.FORM)
       .then((res) => {
         this.comments = res.data.docs
+        this.pagination.length = res.data.totalPages
       })
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
@@ -157,6 +177,24 @@ export default {
   },
 
   methods: {
+    async loadMoreComments() {
+      this.loadingMore = true
+      ++this.pagination.page
+
+      const URL = `/get-comments/${this.$route.params.submissionId}?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
+
+      try {
+        const response = await this.$axios.$get(URL, this.FORM)
+
+        this.loadingMore = false
+        this.comments.push(...response.data.docs)
+      } catch (e) {
+        --this.pagination.page
+        this.loadingMore = false
+        this.$store.dispatch('notification/failureSnackbar', e)
+      }
+    },
+
     sortedComment() {
       return this.comments.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
       // return this.comments.sort((a, b) => (a.updatedAt > b.updatedAt ? 1 : -1))

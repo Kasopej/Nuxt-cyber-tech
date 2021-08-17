@@ -116,6 +116,7 @@
                   placeholder="Search for scope"
                   class="input-search form-group form-control"
                   type="text"
+                  :rules="[...rules.required]"
                 />
                 <div v-if="filteredScope.length === 0" class="no-data">
                   No data Available
@@ -210,28 +211,34 @@
           <v-row>
             <v-col cols="12">
               <div class="headline pb-4">CVSS Identifier</div>
-              <v-slider
-                v-model="FORM.cveid"
-                thumb-label
-                max="5.0"
-                min="0.0"
-                step="0.1"
-                ticks
-                hide-details
-                :rules="[...rules.required]"
-              >
-                <template #append>
-                  <v-text-field
-                    v-model="FORM.cveid"
-                    class="mt-0 pt-0"
-                    hide-details
-                    single-line
-                    type="number"
-                    style="width: 60px"
-                    :rules="[...rules.required]"
-                  ></v-text-field>
-                </template>
-              </v-slider>
+              <v-card-text class="pt-0">
+                <v-slider
+                  v-model="FORM.cveid"
+                  :rules="[...rules.cvss]"
+                  hint="Must be above 0"
+                  persistent-hint
+                  thumb-label
+                  max="5.0"
+                  min="0.0"
+                  step="0.1"
+                  ticks
+                >
+                  <template #append>
+                    <v-text-field
+                      v-model="FORM.cveid"
+                      class="mt-0 pt-0"
+                      hide-details
+                      single-line
+                      type="number"
+                      max="5.0"
+                      min="0.0"
+                      step="0.1"
+                      style="width: 60px"
+                      :rules="[...rules.cvss]"
+                    ></v-text-field>
+                  </template>
+                </v-slider>
+              </v-card-text>
             </v-col>
           </v-row>
 
@@ -280,6 +287,7 @@
                 else
                 outlined
                 hide-details
+                :rules="[...rules.required]"
               />
 
               <div class="pt-2">
@@ -294,33 +302,29 @@
             <header class="py-4">
               <div class="headline py-4">Attachments</div>
               <div class="grey--text text--darken-2">
-                You can attach multiple files (up to 5). Please keep individual
-                upload size under 400MB.
+                You can attach up to 5 files. Total upload size is under 400MB.
               </div>
             </header>
 
             <v-file-input
               ref="attachments"
               v-model="FORM.attachments"
+              :rules="[
+                ...rules.attachments.empty,
+                ...rules.attachments.count,
+                ...rules.attachments.totalSize,
+                ...rules.attachments.type,
+              ]"
+              placeholder="Upload your documents"
               chips
               block
               outlined
               multiple
+              counter
+              :show-size="1000"
               label="Attachments"
-              @change="handleAttachment"
             />
-            <!--            <div class="">-->
-            <!--              <v-btn-->
-            <!--                small-->
-            <!--                color="error"-->
-            <!--                @click="-->
-            <!--                  () => {-->
-            <!--                    fileArray = []-->
-            <!--                  }-->
-            <!--                "-->
-            <!--                >Clear Attachments</v-btn-->
-            <!--              >-->
-            <!--            </div>-->
+            <!-- @change="handleAttachment" -->
           </section>
         </v-col>
 
@@ -369,6 +373,17 @@
 <script>
 import showdown from 'showdown'
 
+// const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i
+// const allowedTypes = [
+//   'image/jpeg',
+//   'image/png',
+//   'application/pdf',
+//   'application/zip',
+//   'application/rar',
+// ]
+
+// const selectedTypes = []
+
 export default {
   layout: 'dashboard',
   middleware: 'auth',
@@ -382,6 +397,14 @@ export default {
       validate: true,
       descriptionPreview: null,
       fileArray: [],
+      // allowedTypes: [
+      //   'image/jpeg',
+      //   'image/png',
+      //   'application/pdf',
+      //   'application/zip',
+      //   'application/rar',
+      // ],
+      // selectedTypes: [],
 
       program: null,
       scopes: [] || null,
@@ -424,6 +447,36 @@ export default {
       ],
 
       rules: {
+        attachments: {
+          type: [
+            (value) =>
+              !value ||
+              !this.attachmentTypeCheck(value) ||
+              'Only accepts are pdf, jpg, jpeg, png, zip or rar files.',
+          ],
+
+          totalSize: [
+            (value) =>
+              !value ||
+              this.attachmentSizeCheck(value) ||
+              'Attachments should be less than or equals 400 MB.',
+          ],
+
+          empty: [
+            (value) =>
+              !value || value.length > 0 || 'An attachment is required.',
+          ],
+
+          count: [
+            (value) =>
+              !value ||
+              value.length <= 5 ||
+              'Attachments cannot be more than 5 files.',
+          ],
+        },
+
+        cvss: [(v) => v > 0 || 'Must be above 0'],
+
         required: [(value) => !!value || 'This Field Is Required'],
         name: [
           (v) => !!v || 'Name is required',
@@ -463,14 +516,8 @@ export default {
     }
   },
   async fetch() {
-    // const program = await fetch(
-    //   `/company/get-program/${this.$route.params.programId}`
-    // ).then((res) => res)
-    // console.log(this.$route.params)
-    // console.log(program)
-
     const URL = `/get-programs?limit=${this.$store.state.program.pageLimit}`
-    // Make upload request to the API
+
     await this.$axios
       .$get(URL)
       .then((res) => {
@@ -570,15 +617,13 @@ export default {
         PAYLOAD.scope = PAYLOAD.scope ? PAYLOAD.scope : 'None'
 
         const URL = `/create-submission/${programId}`
-        // Make upload request to the API
+
         await this.$axios
           .$post(URL, formData)
           .then((res) => {
             this.dialog = true
-            console.log('Successful')
           })
           .catch((error) => {
-            console.log(error)
             if (error.code || error.message) {
               this.$store.dispatch('notification/failureSnackbar', error)
             } else {
@@ -589,7 +634,6 @@ export default {
             }
           })
           .finally(() => {
-            console.log('Finally')
             this.$nuxt.$loading.finish()
           })
       } else {
@@ -599,33 +643,33 @@ export default {
         )
       }
     },
-    handleAttachment(input) {
-      if (input.length <= 5) {
-        const attachment = input
-        const allowedFileType = ['pdf', 'png', 'jpg', 'jpeg', 'zip', 'rar']
-        for (let index = 0; index < attachment.length; index++) {
-          const fileChecker = attachment[index].name.substring(
-            attachment[index].name.lastIndexOf('.') + 1,
-            attachment[index].name.length
-          )
-          if (
-            allowedFileType.includes(fileChecker) &&
-            attachment[index].size <= 52428800
-          ) {
-            this.fileArray.push(attachment[index])
-          } else {
-            this.$store.dispatch(
-              'notification/warningSnackbar',
-              'One or more invalid files or file size. Accepted files are pdf, jpg, jpeg, png, zip or rar'
-            )
-          }
-        }
-      } else {
-        this.$store.dispatch(
-          'notification/warningSnackbar',
-          'only a Maximum of 5 files can be uploaded'
-        )
-      }
+
+    attachmentTypeCheck(file) {
+      const allowedTypes = [
+        'image/jpeg',
+        'image/png',
+        'application/pdf',
+        'application/zip',
+        'application/rar',
+      ]
+
+      const truthyState = []
+
+      file.forEach((item, index) => {
+        truthyState.push(allowedTypes.includes(item.type))
+      })
+
+      return truthyState.includes(false)
+    },
+
+    attachmentSizeCheck(file) {
+      const sizes = []
+
+      file.forEach((item, index) => {
+        sizes.push(item.size)
+      })
+
+      return sizes.reduce((total, size) => total + size, 0) <= 40000000
     },
   },
 }

@@ -1,7 +1,7 @@
 const scrollDetection = {
   data() {
     return {
-      presentPage: 1,
+      // presentPage: 1,
       presentPath: 'null',
       shouldLoadMore: false,
 
@@ -15,43 +15,36 @@ const scrollDetection = {
   created() {
     this.shouldLoadMore = false
     window.addEventListener('scroll', this.onScroll)
-    console.log(this.$route.fullPath)
+    // console.log(this.$route.fullPath)
 
     window.addEventListener('resize', this.handleResize)
     this.handleResize()
   },
 
   methods: {
-    updatePageDetails(presentPage, presentPath) {
-      this.presentPage = presentPage
+    // updatePageDetails(presentPage, presentPath) {
+    updatePageDetails(presentPath) {
+      // this.presentPage = presentPage
       this.presentPath = presentPath
     },
 
     onScroll(e) {
       if (typeof window === 'undefined') return
-      const top = window.pageYOffset || e.target.scrollTop || 0
+      // const top = window.pageYOffset || e.target.scrollTop || 0
       const windowSize = window.innerHeight + Math.ceil(window.pageYOffset)
       let tolerance
 
       if (this.window.width <= 425) {
         tolerance = 40
-      } else tolerance = 30
+      } else tolerance = 60
 
       const bottom = windowSize + tolerance >= document.body.offsetHeight
-
-      if (top || !bottom) {
-        this.shouldLoadMore = false
-      }
-
-      // if (top > 100) {
-      //   console.log('Page loads more as you approach bottom.')
-      //   console.log(`Page ${this.presentPage}`)
-      // }
+      // const bottom = windowSize >= document.body.offsetHeight
 
       if (bottom && this.$route.fullPath === this.presentPath) {
-        console.log('Preparing to load more')
+        // console.log('Preparing to load more')
         this.shouldLoadMore = true
-      }
+      } else this.shouldLoadMore = false
     },
 
     handleResize() {
