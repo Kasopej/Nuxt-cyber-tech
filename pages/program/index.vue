@@ -26,79 +26,66 @@
       <partials-empty-data text="No Programs Found" />
     </section>
 
-    <!-- TODO: Replace pagination with auto fetch on page scroll -->
-    <!-- <div class="text-center py-8">
-      <v-pagination
-        v-model="pagination.page"
-        :length="pagination.length"
-      ></v-pagination>
-    </div> -->
+    <div class="text-center mt-8">
+      <v-btn
+        v-if="pagination.page < pagination.length"
+        color="primary"
+        elevation="2"
+        :loading="loadingMore"
+        small
+        rounded
+        @click="loadMorePrograms"
+      >
+        Add More
+      </v-btn>
+    </div>
+
+    <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
   </main>
 </template>
 
 <script>
-import scrollDetection from '@/utils/mixins/reloadScrollDetect'
-
 export default {
-  mixins: [scrollDetection],
-
   data() {
     return {
       pagination: { page: 1, length: 0 },
 
       programs: [],
+
+      loadingMore: false,
     }
   },
 
   async fetch() {
-    const URL = `/get-programs?limit=${this.$store.state.program.pageLimit}`
-    // Make upload request to the API
+    const URL = `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
     await this.$axios
       .$get(URL, this.FORM)
       .then((res) => {
         this.programs = res.data.docs
         this.pagination.length = res.data.totalPages
-        this.pagination.page++
       })
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
 
-  watch: {
-    shouldLoadMore(newState, oldState) {
-      if (oldState === false) {
-        this.loadMorePrograms()
-      }
-
-      if (newState === true) {
-        console.log('I am loading more')
-      }
-    },
-  },
-
-  created() {
-    this.updatePageDetails(this.pagination.page, '/program/')
-  },
-
   methods: {
     async loadMorePrograms() {
-      if (this.pagination.page < this.pagination.length) {
-        const URL = `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
+      this.loadingMore = true
+      ++this.pagination.page
 
-        try {
-          const response = await this.$axios.$get(URL, this.FORM)
+      const URL = `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
 
-          this.programs.push(response.data.docs)
-          this.pagination.page++
-        } catch (e) {
-          this.$store.dispatch('notification/failureSnackbar', e)
-        }
-      } else
-        this.$store.dispatch(
-          'notification/warningSnackbar',
-          'Nothing to load more'
-        )
+      try {
+        const response = await this.$axios.$get(URL, this.FORM)
+
+        this.loadingMore = false
+        this.programs.push(...response.data.docs)
+      } catch (e) {
+        --this.pagination.page
+        this.loadingMore = false
+        this.$store.dispatch('notification/failureSnackbar', e)
+      }
     },
 
     openDetails(program) {

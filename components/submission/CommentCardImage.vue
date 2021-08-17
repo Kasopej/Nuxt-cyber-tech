@@ -1,6 +1,6 @@
 <template>
   <v-avatar color="secondary" size="40" class="avatar mt-1 mr-2">
-    pro<v-img v-if="image" contain :src="image" :alt="name" />
+    <v-img v-if="image" contain :src="image" :alt="name" />
     <v-icon v-else color="primary" :size="userType === 'company' ? 28 : 38">
       {{ userType === 'company' ? 'mdi-factory' : 'mdi-account-circle' }}
     </v-icon>

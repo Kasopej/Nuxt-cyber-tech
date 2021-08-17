@@ -8,6 +8,22 @@
             cols="12"
             sm="3"
           >
+            REPORT SUMMARY
+          </v-col>
+
+          <v-col
+            class="pl-2 py-1 py-sm-2 py-md-3 text-capitalize"
+            cols="12"
+            sm="3"
+          >
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col
+            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
+            cols="12"
+            sm="3"
+          >
             ACTION STATE
           </v-col>
 
@@ -182,6 +198,8 @@
 </template>
 
 <script>
+import showdown from 'showdown'
+
 export default {
   props: {
     submission: { type: Object, default: () => {} },
@@ -197,8 +215,12 @@ export default {
       ],
     }
   },
-  created() {
-    console.log(this.submission)
+
+  methods: {
+    convertCommentHTML(val) {
+      const converter = new showdown.Converter()
+      return converter.makeHtml(val)
+    },
   },
 }
 </script>

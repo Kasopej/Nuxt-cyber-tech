@@ -41,15 +41,27 @@
     <section v-else>
       <partials-empty-data caption="No Submissions Found" />
     </section>
+
+    <div class="text-center mt-8">
+      <v-btn
+        v-if="pagination.page < pagination.length"
+        color="primary"
+        elevation="2"
+        :loading="loadingMore"
+        small
+        rounded
+        @click="loadMoreSubmissions"
+      >
+        Add More
+      </v-btn>
+    </div>
+
+    <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
   </main>
 </template>
 
 <script>
-import scrollDetection from '@/utils/mixins/reloadScrollDetect'
-
 export default {
-  mixins: [scrollDetection],
-
   data() {
     return {
       status: 'all',
@@ -74,38 +86,22 @@ export default {
         },
         { disabled: true, text: 'Leader board' },
       ],
+
+      loadingMore: false,
     }
   },
 
   async fetch() {
-    const URL = `/get-all-submissions/${this.status}` // ?page={page}&limit={limit}
-    // Make upload request to the API
+    const URL = `/get-all-submissions/${this.status}?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
     await this.$axios
       .$get(URL, this.FORM)
       .then((res) => {
         this.submissions = res.data.docs
         this.pagination.length = res.data.totalPages
-        this.pagination.pages++
       })
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
       })
-  },
-
-  watch: {
-    shouldLoadMore(newState, oldState) {
-      if (oldState === false) {
-        this.loadMoreSubmissions()
-      }
-
-      if (newState === true) {
-        console.log('I am loading more')
-      }
-    },
-  },
-
-  created() {
-    this.updatePageDetails(this.pagination.page, '/submission/')
   },
 
   methods: {
@@ -115,22 +111,21 @@ export default {
     },
 
     async loadMoreSubmissions() {
-      if (this.pagination.page < this.pagination.length) {
-        const URL = `/get-all-submissions/${this.status}?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
+      this.loadingMore = true
+      ++this.pagination.page
 
-        try {
-          const response = await this.$axios.$get(URL, this.FORM)
+      const URL = `/get-all-submissions/${this.status}?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
 
-          this.submissions.push(response.data.docs)
-          this.pagination.page++
-        } catch (e) {
-          this.$store.dispatch('notification/failureSnackbar', e)
-        }
-      } else
-        this.$store.dispatch(
-          'notification/warningSnackbar',
-          'Nothing to load more'
-        )
+      try {
+        const response = await this.$axios.$get(URL, this.FORM)
+
+        this.loadingMore = false
+        this.submissions.push(...response.data.docs)
+      } catch (error) {
+        --this.pagination.page
+        this.loadingMore = false
+        this.$store.dispatch('notification/failureSnackbar', error)
+      }
     },
   },
 }

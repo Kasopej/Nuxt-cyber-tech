@@ -65,7 +65,6 @@ export default {
     await this.$axios
       .$get(URL)
       .then((res) => {
-        console.log(Object.keys(res.data[0].reportedto))
         this.submission = res.data[0]
       })
       .catch((error) => {
@@ -74,7 +73,6 @@ export default {
     await this.$axios
       .$get(attachmentURL)
       .then((res) => {
-        console.log(res)
         this.submissionAttachment = res.data
       })
       .catch((error) => {
