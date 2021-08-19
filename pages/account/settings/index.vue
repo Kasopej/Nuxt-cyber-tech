@@ -3,10 +3,7 @@
     <section class="pb-8">
       <label class="pt-8">
         <v-avatar size="250">
-          <v-img
-            :src="USER.user.profile[0].image || '/img/dummy.jpg'"
-            class="rounded"
-          />
+          <v-img :src="USER_PIC" class="rounded" />
         </v-avatar>
         <div
           class="d-block grey--text text-center text-caption pt-3"
@@ -14,38 +11,16 @@
         >
           {{ labelText }}
         </div>
-        <!-- accept="image/png, image/jpg, image/jpeg" -->
         <v-file-input
+          v-model="FILE"
           class="d-none"
           type="file"
           name="myImage"
           accept=".jpg, .jpeg, .png"
-          @change="selectImage"
+          @change="uploadPhoto"
         />
       </label>
     </section>
-
-    <!-- <div v-if="progress">
-      <v-progress-linear
-        v-model="progress"
-        color="light-blue"
-        height="25"
-        reactive
-        class="my-2"
-      >
-        <strong>{{ progress }} %</strong>
-      </v-progress-linear>
-    </div> -->
-
-    <!-- <v-alert v-if="message" border="left" color="blue-grey" dark class="my-2">
-      {{ message }}
-    </v-alert> -->
-
-    <!-- <div v-if="previewImage">
-      <div>
-        <img class="preview my-3" :src="previewImage" alt="" />
-      </div>
-    </div> -->
 
     <v-tabs grow class="elevation-2 py-4">
       <v-tab>
@@ -93,167 +68,61 @@ export default {
       FILE_BLOB: null,
 
       USER: this.$store.state.auth.user,
+      USER_PIC:
+        this.$store.state.auth.user.user.profile[0].image || '/img/dummy.jpg',
 
-      currentImage: undefined,
-      previewImage: undefined,
-
-      progress: 0,
-      message: '',
-
-      imageInfos: [],
-
-      selectedFile: null,
+      // currentImage: undefined,
+      // previewImage: undefined,
+      // progress: 0,
+      // message: '',
+      // imageInfos: [],
+      // selectedFile: null,
     }
   },
 
   methods: {
-    // async uploadPhoto() {
-    uploadPhoto() {
+    async uploadPhoto(event) {
       if (this.FILE) {
         this.labelText = 'Please wait...'
 
-        // Convert photo to base64 format (i.e data url)
-        // const formData = new FormData()
-        // formData.append('file', this.FILE)
-        // formData.append('userId', this.USER.id)
-        this.FILE_BLOB = URL.createObjectURL(this.FILE)
-
-        // try {
-        //   const response = await this.$axios.post('/update-profile-picture', {
-        //     formData: this.FILE_BLOB,
-        //   })
-        //   console.log(response)
-        // } catch (error) {
-        //   console.error(error)
-        // }
-      }
-    },
-
-    selectImage(image) {
-      this.currentImage = image
-      this.previewImage = URL.createObjectURL(this.currentImage) // same as using "target.files[0]"
-      this.progress = 0
-      this.message = ''
-      this.updateProfilePicture()
-    },
-
-    // onFileChanged(event) {
-    //   this.selectedFile = event.target.files[0]
-    // },
-
-    async updateProfilePicture() {
-      if (this.currentImage) {
-        // const reader = new FileReader()
-
-        // reader.onload = (e) => {
-        //   this.uploadData({
-        //     index,
-        //     value: e.target.result,
-        //     name: file.name,
-        //     size: file.size / 1000,
-        //     extension: fileNameSplit[fileNameSplit.length - 1],
-        //     type: this.docType,
-        //     view,
-        //   });
-        // };
-        // console.log(reader.readAsDataURL(this.currentImage))
-        // const profileImage = reader.readAsDataURL(this.currentImage)
-
-        // FIXME: Seems not working well on local machine (firefox)
-        // TODO: Uncomment sections below to use JSON to replace formData for more browsers support
-        console.log(
-          'Current Image: ',
-          this.currentImage,
-          'Preview Image: ',
-          this.previewImage
-        )
-
-        // const config = {
-        //   headers: {
-        //     // 'Content-Type': 'multipart/form-data',
-        //     'Content-Type': this.currentImage.type,
-        //   },
-        // }
-
+        // Convert photo to base64 format (i.e data url) for preview
+        // the image is from the user object from the login endpoint
+        // once the user details api is provided that will be used
         const formData = new FormData()
-        formData.append('image', this.currentImage, this.currentImage.name)
+        formData.append('file', this.FILE)
+        formData.append('userId', this.USER.id)
+        this.USER_PIC = URL.createObjectURL(this.FILE)
 
-        console.log(this.currentImage.name)
-        console.log(
-          'Is currentImage of type Blob: ',
-          this.currentImage instanceof Blob
-        )
-        console.log(
-          'Is previewImage of type Blob: ',
-          this.previewImage instanceof Blob
-        )
-
-        const URL = '/update-profile-picture'
-
+        const endpoint = '/update-profile-picture'
         await this.$axios
-          // .$patch(URL, this.currentImage)
-          // .$patch(URL, this.previewImage)
-          .$patch(URL, { profile: { image: this.currentImage } })
-          // .$patch(URL, { profile: [{ image: this.currentImage }] })
-          // .$patch(URL, { formData: this.currentImage })
-          // .$patch(URL, { image: this.previewImage })
-          // .$patch(URL, { formData: this.previewImage })
-          .then(() => {
-            this.$store.dispatch(
-              'notification/failureSnackbar',
-              'Profile updated'
+          .$patch(endpoint, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          })
+          .then((response) => {
+            this.$store.commit('notification/SHOW', {
+              icon: 'mdi-check',
+              text: 'Picture changed Successfully',
+            })
+
+            this.labelText = 'Click to change'
+            this.$store.commit(
+              'auth/CHANGE_USER_PIC',
+              response.data.profile[0].image
             )
           })
           .catch((error) => {
-            this.$store.dispatch('notification/failureSnackbar', error)
+            this.USER_PIC = this.USER.user.profile[0].image
+            this.$store.commit('notification/SHOW', {
+              color: 'accent',
+              icon: 'mdi-alert-outline',
+              text: error.response
+                ? error.response.data.message
+                : "Sorry, that didn't work. Please try again",
+            })
           })
           .finally(() => {
             this.$nuxt.$loading.finish()
           })
-
-        // try {
-        //   this.labelText = 'Please wait, uploading...'
-        //   console.log('Trying...')
-
-        //   const response = await this.$axios.$patch(
-        //     '/update-profile-picture',
-        //     { formData: this.previewImage }
-        //     // { image: this.previewImage }
-        //     // this.previewImage
-        //     // this.currentImage
-        //     // formData
-        //     // profileImage
-        //     // { image: profileImage }
-
-        //     // URL.revokeObjectURL(objectURL)
-        //     // {
-        //     //   onUploadProgress: (progressEvent) => {
-        //     //     console.log(progressEvent.loaded / progressEvent.total)
-        //     //     return progressEvent.loaded / progressEvent
-        //     //   },
-        //     // }
-        //   )
-
-        //   console.log(response)
-        //   console.log('Success')
-        //   this.labelText = 'Click to change'
-        // } catch (e) {
-        //   // alert('Hello')
-        //   console.log(e)
-        //   console.log('Failure')
-        //   console.log(e.code, e.message)
-        //   console.log('request', e.request)
-        //   this.labelText = 'Click to change'
-
-        //   if (e.code || e.message) {
-        //     this.$store.dispatch('notification/failureSnackbar', e)
-        //   } else {
-        //     this.$store.dispatch(
-        //       'notification/warningSnackbar',
-        //       'Something seems not working appropriately.'
-        //     )
-        //   }
-        // }
       }
     },
   },
