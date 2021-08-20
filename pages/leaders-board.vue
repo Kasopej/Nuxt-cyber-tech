@@ -18,7 +18,9 @@
         <template #default>
           <thead class="font-weight-medium secondary accent--text">
             <td class="pa-4">Rank</td>
+            <td class="pa-4">Badge</td>
             <td class="px-6 py-4">Researcher</td>
+            <td class="px-6 py-4">Country</td>
             <td class="pa-4">Points</td>
           </thead>
           <tbody v-if="leaderBoard">
@@ -26,12 +28,6 @@
               <td>{{ index + 1 }}</td>
               <!-- <span>{{ leader }}</span> -->
               <td>
-                <v-avatar v-if="leader.image" size="35" class="mr-4">
-                  <img :src="leader.image" :alt="leader.username" />
-                </v-avatar>
-                <v-avatar v-else size="35" class="mr-4">
-                  <v-icon color="accent">mdi-account-circle</v-icon></v-avatar
-                >{{ leader.username }}
                 <v-avatar size="30">
                   <img
                     v-if="index === 0"
@@ -48,8 +44,18 @@
                     src="/img/bronze-medal.png"
                     alt="Second Runner-up"
                   />
+                  <div v-if="![0, 1, 2].includes(index)">--</div>
                 </v-avatar>
               </td>
+              <td>
+                <v-avatar v-if="leader.image" size="35" class="mr-4">
+                  <img :src="leader.image" :alt="leader.username" />
+                </v-avatar>
+                <v-avatar v-else size="35" class="mr-4">
+                  <v-icon color="accent">mdi-account-circle</v-icon></v-avatar
+                >{{ leader.username }}
+              </td>
+              <td></td>
               <td>{{ leader.points }}</td>
             </tr>
           </tbody>

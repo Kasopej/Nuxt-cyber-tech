@@ -84,8 +84,13 @@ export default {
         await this.$axios
           .post(URL, PAYLOAD)
           .then((response) => {
-            this.$store.commit('auth/LOG_USER_IN', response.data)
-            this.$router.replace('/')
+            if (response.data.twoFactorAuth) {
+              this.$store.commit('auth/KEEP_TFA', response.data)
+              this.$router.replace('/account/verify-twofa')
+            } else if (!response.data.twoFactorAuth) {
+              this.$store.commit('auth/LOG_USER_IN', response.data)
+              this.$router.replace('/')
+            }
           })
           .catch((error) => {
             this.$store.dispatch('notification/failureSnackbar', error)
