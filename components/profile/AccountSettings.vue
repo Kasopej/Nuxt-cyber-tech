@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
-            v-model="FORM.profile.firstname"
+            v-model="FORM.profile.firstName"
             block
             outlined
             label="First Name"
@@ -13,7 +13,7 @@
         </v-col>
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
-            v-model="FORM.profile.lastname"
+            v-model="FORM.profile.lastName"
             block
             outlined
             label="Last Name"
@@ -222,19 +222,13 @@ export default {
         await this.$axios
           .$patch(URL, this.FORM)
           .then(() => {
-            this.$store.commit('notification/SHOW', {
-              icon: 'mdi-check',
-              text: 'Profile Updated Successfully',
-            })
+            this.$store.dispatch(
+              'notification/failureSnackbar',
+              'Profile updated'
+            )
           })
           .catch((error) => {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              icon: 'mdi-alert-outline',
-              text: error.response
-                ? error.response.data.message
-                : "Sorry, that didn't work. Please try again",
-            })
+            this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {
             this.$nuxt.$loading.finish()

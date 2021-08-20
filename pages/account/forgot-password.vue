@@ -172,12 +172,7 @@ export default {
             this.step = 2
           })
           .catch((error) => {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              text: error.response
-                ? error.response.data.message
-                : "Sorry, that didn't work. Please try again",
-            })
+            this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {
             this.$nuxt.$loading.finish()
@@ -198,13 +193,7 @@ export default {
             this.$router.replace('/')
           })
           .catch((error) => {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              icon: 'mdi-alert-outline',
-              text: error.response
-                ? error.response.data.message
-                : "Sorry, that didn't work. Please try again",
-            })
+            this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {
             this.$nuxt.$loading.finish()

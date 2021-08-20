@@ -6,10 +6,10 @@
       <h3 class="mt-3">Download Attachment</h3>
       <div v-if="submissionAttachment.length > 0">
         <a
-          class="d-flex flex-column"
           v-for="(attachment, index) in submissionAttachment"
-          :href="attachment"
           :key="`attach-${index}`"
+          class="d-flex flex-column"
+          :href="attachment"
           target="_blank"
           >Download Attachment</a
         >
@@ -32,14 +32,14 @@ export default {
       type: [Array, Object],
     },
   },
-  mounted() {
-    console.log(this.submissionAttachment)
-  },
   computed: {
     description() {
       const converter = new showdown.Converter()
       return converter.makeHtml(this.submission.description)
     },
+  },
+  mounted() {
+    console.log(this.submissionAttachment)
   },
 }
 </script>

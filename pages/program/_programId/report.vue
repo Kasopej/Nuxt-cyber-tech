@@ -1,5 +1,6 @@
 <template>
   <main v-if="program">
+    <!-- {{ program }} -->
     <form action=""></form>
     <v-breadcrumbs
       large
@@ -11,6 +12,9 @@
     <article class="pb-8">
       <program-item-list-card :program="program" show-visibility />
     </article>
+
+    <!-- <div v-if="program">{{ program }}</div> -->
+    <!-- {{ program.companyId }} -->
 
     <v-form ref="form1" v-model="validate">
       <v-row>
@@ -112,8 +116,9 @@
                   placeholder="Search for scope"
                   class="input-search form-group form-control"
                   type="text"
+                  :rules="[...rules.required]"
                 />
-                <div class="no-data" v-if="filteredScope.length === 0">
+                <div v-if="filteredScope.length === 0" class="no-data">
                   No data Available
                 </div>
                 <div class="options">
@@ -186,7 +191,7 @@
             />
           </section>
 
-          <section>
+          <!-- <section>
             <header class="py-4">
               <div class="headline pb-4">CVE Identifier</div>
               <div class="grey--text text--darken-2">
@@ -201,7 +206,41 @@
               label="CVE Id"
               :rules="[...rules.required]"
             />
-          </section>
+          </section> -->
+
+          <v-row>
+            <v-col cols="12">
+              <div class="headline pb-4">CVSS Identifier</div>
+              <v-card-text class="pt-0">
+                <v-slider
+                  v-model="FORM.cveid"
+                  :rules="[...rules.cvss]"
+                  hint="Must be above 0"
+                  persistent-hint
+                  thumb-label
+                  max="5.0"
+                  min="0.0"
+                  step="0.1"
+                  ticks
+                >
+                  <template #append>
+                    <v-text-field
+                      v-model="FORM.cveid"
+                      class="mt-0 pt-0"
+                      hide-details
+                      single-line
+                      type="number"
+                      max="5.0"
+                      min="0.0"
+                      step="0.1"
+                      style="width: 60px"
+                      :rules="[...rules.cvss]"
+                    ></v-text-field>
+                  </template>
+                </v-slider>
+              </v-card-text>
+            </v-col>
+          </v-row>
 
           <section>
             <header class="py-4">
@@ -248,6 +287,7 @@
                 else
                 outlined
                 hide-details
+                :rules="[...rules.required]"
               />
 
               <div class="pt-2">
@@ -262,33 +302,29 @@
             <header class="py-4">
               <div class="headline py-4">Attachments</div>
               <div class="grey--text text--darken-2">
-                You can attach multiple files (up to 20). Please keep individual
-                upload size under 400MB.
+                You can attach up to 5 files. Total upload size is under 400MB.
               </div>
             </header>
 
             <v-file-input
+              ref="attachments"
               v-model="FORM.attachments"
+              :rules="[
+                ...rules.attachments.empty,
+                ...rules.attachments.count,
+                ...rules.attachments.totalSize,
+                ...rules.attachments.type,
+              ]"
+              placeholder="Upload your documents"
               chips
               block
               outlined
               multiple
-              @change="handleAttachment"
-              ref="attachments"
+              counter
+              :show-size="1000"
               label="Attachments"
             />
-            <!--            <div class="">-->
-            <!--              <v-btn-->
-            <!--                small-->
-            <!--                color="error"-->
-            <!--                @click="-->
-            <!--                  () => {-->
-            <!--                    fileArray = []-->
-            <!--                  }-->
-            <!--                "-->
-            <!--                >Clear Attachments</v-btn-->
-            <!--              >-->
-            <!--            </div>-->
+            <!-- @change="handleAttachment" -->
           </section>
         </v-col>
 
@@ -307,17 +343,21 @@
         </v-checkbox>
       </section>
 
-      <v-row class="py-6">
-        <v-col>
-          <v-btn text large color="accent" @click="$router.go(-1)"
-            >Cancel</v-btn
-          > </v-col
-        ><v-col>
-          <v-btn block large color="primary" @click="submitReport()"
-            >Submit Report</v-btn
-          >
-        </v-col>
-      </v-row>
+      <div class="py-6">
+        <v-btn
+          text
+          large
+          color="accent"
+          class="px-2 py-1"
+          @click="$router.go(-1)"
+        >
+          Cancel
+        </v-btn>
+
+        <v-btn large color="primary" class="px-2 py-1" @click="submitReport()">
+          Submit Report
+        </v-btn>
+      </div>
     </v-form>
 
     <v-dialog v-model="dialog" persistent max-width="500">
@@ -333,6 +373,17 @@
 <script>
 import showdown from 'showdown'
 
+// const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i
+// const allowedTypes = [
+//   'image/jpeg',
+//   'image/png',
+//   'application/pdf',
+//   'application/zip',
+//   'application/rar',
+// ]
+
+// const selectedTypes = []
+
 export default {
   layout: 'dashboard',
   middleware: 'auth',
@@ -346,8 +397,16 @@ export default {
       validate: true,
       descriptionPreview: null,
       fileArray: [],
+      // allowedTypes: [
+      //   'image/jpeg',
+      //   'image/png',
+      //   'application/pdf',
+      //   'application/zip',
+      //   'application/rar',
+      // ],
+      // selectedTypes: [],
 
-      program: this.$store.state.program.data,
+      program: null,
       scopes: [] || null,
 
       FORM: {
@@ -388,6 +447,36 @@ export default {
       ],
 
       rules: {
+        attachments: {
+          type: [
+            (value) =>
+              !value ||
+              !this.attachmentTypeCheck(value) ||
+              'Only accepts are pdf, jpg, jpeg, png, zip or rar files.',
+          ],
+
+          totalSize: [
+            (value) =>
+              !value ||
+              this.attachmentSizeCheck(value) ||
+              'Attachments should be less than or equals 400 MB.',
+          ],
+
+          empty: [
+            (value) =>
+              !value || value.length > 0 || 'An attachment is required.',
+          ],
+
+          count: [
+            (value) =>
+              !value ||
+              value.length <= 5 ||
+              'Attachments cannot be more than 5 files.',
+          ],
+        },
+
+        cvss: [(v) => v > 0 || 'Must be above 0'],
+
         required: [(value) => !!value || 'This Field Is Required'],
         name: [
           (v) => !!v || 'Name is required',
@@ -421,25 +510,23 @@ export default {
         {
           text: 'Report Vulnerability',
           disabled: true,
-          to: '/prrogram/add/',
+          to: '/program/add/',
         },
       ],
     }
   },
   async fetch() {
-    // const program = await fetch(
-    //   `/company/get-program/${this.$route.params.programId}`
-    // ).then((res) => res)
-    // console.log(this.$route.params)
-    // console.log(program)
+    const URL = `/get-programs?limit=${this.$store.state.program.pageLimit}`
 
-    const URL = `/get-programs?limit=15`
-    // Make upload request to the API
     await this.$axios
-      .$get(URL, this.FORM)
+      .$get(URL)
       .then((res) => {
         const mainProgram = res.data.docs.filter((program) => {
-          return program._id === this.$route.params.programId
+          // return program._id === this.$route.params.programId
+          return (
+            program.title.toLowerCase().replace(/ /g, '-') ===
+            this.$route.params.programId
+          )
         })
         this.program = mainProgram[0]
         if (this.program.scope.length === 0) {
@@ -448,18 +535,8 @@ export default {
         this.getScopeOptions(this.program.scope)
       })
       .catch((error) => {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: error.response
-            ? error.response.data.message
-            : 'Something occured. Please try again',
-        })
+        this.$store.dispatch('notification/failureSnackbar', error)
       })
-  },
-
-  mounted() {
-    // const clearAttach = document.getElementsByClassName('v-input__icon--clear')
   },
   computed: {
     filteredScope() {
@@ -474,6 +551,7 @@ export default {
       })
     },
   },
+
   methods: {
     clearPreview() {
       this.descriptionPreview = null
@@ -490,7 +568,7 @@ export default {
       for (let i = 0; i < scopeList.length; i++) {
         for (const [key, value] of Object.entries(scopeList[i])) {
           const optionFiller = {
-            label: `${key}`,
+            label: key,
             options: value,
           }
           filler.push(optionFiller)
@@ -507,26 +585,28 @@ export default {
       if (this.$refs.form1.validate()) {
         this.$nuxt.$loading.start()
 
-        const programId = this.$route.params.programId
+        // const programId = this.$route.params.programId
+        const programId = this.program._id
         const PAYLOAD = {
           ...this.FORM,
           programId,
-          reportedto: this.program.companyId._id,
+          reportedto: this.program.companyId.company[0].name,
           visibility: this.FORM.visibility ? 'Public' : 'Private',
         }
 
         const formData = new FormData()
-        formData.append('title', `${this.FORM.title}`)
-        formData.append('description', `${this.FORM.description}`)
-        formData.append('reportedto', `${this.program.companyId._id}`)
-        formData.append('scope', `${this.selectedScope.options}`)
-        formData.append('cveid', `${this.FORM.cveid}`)
-        formData.append('bugtype', `${this.FORM.bugtype}`)
-        formData.append('notification', `${this.FORM.notification}`)
+        formData.append('title', this.FORM.title)
+        formData.append('bugtype', this.FORM.bugtype)
+        formData.append('scope', this.selectedScope.options)
+        formData.append('reportedto', this.program.companyId.company[0].name)
+        formData.append('cveid', this.FORM.cveid)
         formData.append(
           'visibility',
           this.FORM.visibility ? 'Public' : 'Private'
         )
+        formData.append('description', this.FORM.description)
+        formData.append('severity', this.FORM.technicalSeverity)
+        // formData.append('notification', `${this.FORM.notification}`)
         // formData.append('files', `${this.fileArray}`)
         //
         for (const file of this.fileArray) {
@@ -537,60 +617,64 @@ export default {
         PAYLOAD.scope = PAYLOAD.scope ? PAYLOAD.scope : 'None'
 
         const URL = `/create-submission/${programId}`
-        // Make upload request to the API
+
         await this.$axios
           .$post(URL, formData)
           .then((res) => {
             this.dialog = true
           })
           .catch((error) => {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              icon: 'mdi-alert-outline',
-              text: error.response
-                ? error.response.data.message
-                : 'Something occured. Please try again',
-            })
+            if (error.code || error.message) {
+              this.$store.dispatch('notification/failureSnackbar', error)
+            } else {
+              this.$store.dispatch(
+                'notification/warningSnackbar',
+                'Something seems not working appropriately.'
+              )
+            }
           })
           .finally(() => {
             this.$nuxt.$loading.finish()
           })
+      } else {
+        this.$store.dispatch(
+          'notification/warningSnackbar',
+          'Kindly complete the form to proceed.'
+        )
       }
     },
-    handleAttachment(input) {
-      if (input.length <= 5) {
-        const attachment = input
-        const allowedFileType = ['pdf', 'png', 'jpg', 'zip', 'rar']
-        for (let index = 0; index < attachment.length; index++) {
-          const fileChecker = attachment[index].name.substring(
-            attachment[index].name.lastIndexOf('.') + 1,
-            attachment[index].name.length
-          )
-          if (
-            allowedFileType.includes(fileChecker) &&
-            attachment[index].size <= 52428800
-          ) {
-            this.fileArray.push(attachment[index])
-          } else {
-            this.$store.commit('notification/SHOW', {
-              color: 'accent',
-              icon: 'mdi-alert-outline',
-              text:
-                'One or more invalid files or file size. Accepted files are pdf, jpg, jpeg, png, zip or rar',
-            })
-          }
-        }
-      } else {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: 'only a Maximum of 5 files can be uploaded',
-        })
-      }
+
+    attachmentTypeCheck(file) {
+      const allowedTypes = [
+        'image/jpeg',
+        'image/png',
+        'application/pdf',
+        'application/zip',
+        'application/rar',
+      ]
+
+      const truthyState = []
+
+      file.forEach((item, index) => {
+        truthyState.push(allowedTypes.includes(item.type))
+      })
+
+      return truthyState.includes(false)
+    },
+
+    attachmentSizeCheck(file) {
+      const sizes = []
+
+      file.forEach((item, index) => {
+        sizes.push(item.size)
+      })
+
+      return sizes.reduce((total, size) => total + size, 0) <= 40000000
     },
   },
 }
 </script>
+
 <style scoped lang="scss">
 .autocomplete {
   min-width: 350px !important;

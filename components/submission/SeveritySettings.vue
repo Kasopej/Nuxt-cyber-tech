@@ -1,11 +1,14 @@
 <template>
   <v-col cols="12" md="4" class="px-4">
     <v-card class="px-4 py-8">
+      <v-text-field block outlined label="CVE Id" />
+
       <div class="d-flex justify-center">
         <div class="accent text-center white--text rounded px-8 py-2 mx-1">
           <div>CVSS Score</div>
           <div class="font-weight-bold" v-text="ccvsScore.toFixed(1)" />
         </div>
+
         <div class="accent text-center white--text rounded px-8 py-2 mx-1">
           <div>Severity</div>
           <div class="font-weight-bold" v-text="severity" />
@@ -308,10 +311,10 @@ export default {
 
   methods: {
     saveChanges() {
-      this.$store.commit('notification/SHOW', {
-        color: 'accent',
-        text: 'Feature not availabble at the moment',
-      })
+      this.$store.dispatch(
+        'notification/warningSnackbar',
+        'Feature not available at the moment'
+      )
     },
   },
 }

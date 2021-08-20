@@ -23,7 +23,7 @@
         </v-tab-item>
         <v-tab-item>
           <submission-description-tab
-            :submissionAttachment="submissionAttachment"
+            :submission-attachment="submissionAttachment"
             :submission="submission"
           />
         </v-tab-item>
@@ -58,9 +58,6 @@ export default {
       ],
     }
   },
-  mounted() {
-    console.log(this.submission)
-  },
   async fetch() {
     const URL = `/get-submission/${this.$route.params.submissionId}`
     const attachmentURL = `/get-submission-attachments/${this.$route.params.submissionId}`
@@ -68,32 +65,18 @@ export default {
     await this.$axios
       .$get(URL)
       .then((res) => {
-        console.log(Object.keys(res.data[0].reportedto))
         this.submission = res.data[0]
       })
       .catch((error) => {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: error.response
-            ? error.response.data.message
-            : 'Something occured. Please try again',
-        })
+        this.$store.dispatch('notification/failureSnackbar', error)
       })
     await this.$axios
       .$get(attachmentURL)
       .then((res) => {
-        console.log(res)
         this.submissionAttachment = res.data
       })
       .catch((error) => {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: error.response
-            ? error.response.data.message
-            : 'Something occured. Please try again',
-        })
+        this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
 }

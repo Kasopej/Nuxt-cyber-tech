@@ -6,6 +6,7 @@ export const state = () => ({
   text: null,
   icon: null,
   timeout: 5000,
+  showNotification: false,
 })
 
 export const mutations = {
@@ -27,5 +28,36 @@ export const mutations = {
     state.color = null
     state.status = false
     state.timeout = 5000
+  },
+
+  UPDATE_NOTIFICATION_STATE(state) {
+    state.showNotification = !state.showNotification
+  },
+}
+
+export const actions = {
+  failureSnackbar({ commit }, responseState, message) {
+    commit('SHOW', {
+      color: 'error',
+      icon: 'mdi-alert-outline',
+      text: message || "Sorry, that didn't work. Please try again.",
+    })
+
+    console.log(responseState)
+  },
+
+  warningSnackbar({ commit }, message) {
+    commit('SHOW', {
+      color: 'warning',
+      icon: 'mdi-alert-outline',
+      text: message,
+    })
+  },
+
+  successSnackbar({ commit }, appendText) {
+    commit('SHOW', {
+      icon: 'mdi-check',
+      text: `${appendText} successfully`,
+    })
   },
 }

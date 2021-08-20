@@ -14,7 +14,12 @@
         <span>Favorite</span>
       </v-btn>
 
-      <v-btn color="primary" :to="`/program/${program._id}/report/`">
+      <v-btn
+        color="primary"
+        :to="`/program/${program.title
+          .toLowerCase()
+          .replace(/ /g, '-')}/report/`"
+      >
         Submit Report
       </v-btn>
     </section>
@@ -36,7 +41,10 @@
       </v-tab>
 
       <v-tab-item class="px-4 py-8">
-        <submission-program-details :description="program.description" />
+        <submission-program-details
+          :scope="program.scope"
+          :description="program.description"
+        />
       </v-tab-item>
 
       <v-tab-item class="pa-4">
@@ -90,26 +98,26 @@ export default {
   },
   async fetch() {
     // if you are the next developer working on this , replace the api call below to fetch the program details alone from the end point
-    const URL = `/get-programs?limit=15`
+    const URL = `/get-programs?limit=${this.$store.state.program.pageLimit}`
     // Make upload request to the API
+
     await this.$axios
       .$get(URL)
       .then((res) => {
         const mainProgram = res.data.docs.filter((program) => {
-          return program._id === this.$route.params.programId
+          // program._id === this.$route.params.programId
+          return (
+            program.title.toLowerCase().replace(/ /g, '-') ===
+            this.$route.params.programId
+          )
         })
         this.program = mainProgram[0]
       })
       .catch((error) => {
-        this.$store.commit('notification/SHOW', {
-          color: 'accent',
-          icon: 'mdi-alert-outline',
-          text: error.response
-            ? error.response.data.message
-            : 'Something occured. Please try again',
-        })
+        this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
+
   computed: {
     description() {
       const converter = new showdown.Converter()
