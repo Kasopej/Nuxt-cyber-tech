@@ -303,6 +303,7 @@
               <div class="headline py-4">Attachments</div>
               <div class="grey--text text--darken-2">
                 You can attach up to 5 files. Total upload size is under 400MB.
+                Files should all be selected at once.
               </div>
             </header>
 
@@ -606,12 +607,10 @@ export default {
         )
         formData.append('description', this.FORM.description)
         formData.append('severity', this.FORM.technicalSeverity)
-        // formData.append('notification', `${this.FORM.notification}`)
-        // formData.append('files', `${this.fileArray}`)
-        //
-        for (const file of this.fileArray) {
+
+        this.FORM.attachments.forEach((file) => {
           formData.append('files', file)
-        }
+        })
 
         // patch for scope field until backend make it OPTIONAL
         PAYLOAD.scope = PAYLOAD.scope ? PAYLOAD.scope : 'None'
