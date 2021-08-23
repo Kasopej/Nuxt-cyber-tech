@@ -106,7 +106,7 @@ export default {
   },
 
   publicRuntimeConfig: {
-    axiosTimeout: 3000,
+    axiosTimeout: 60000,
     baseURL: process.env.BASE_URL,
   },
 
