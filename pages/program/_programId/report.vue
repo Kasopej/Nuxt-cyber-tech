@@ -302,8 +302,22 @@
             <header class="py-4">
               <div class="headline py-4">Attachments</div>
               <div class="grey--text text--darken-2">
-                You can attach up to 5 files. Total upload size is under 400MB.
-                Files should all be selected at once.
+                <ul>
+                  <li>
+                    <small
+                      >You can attach up to 5 files. Total upload size is under
+                      400MB.</small
+                    >
+                  </li>
+                  <li>
+                    <small
+                      >Files tp upload should all be selected at once.</small
+                    >
+                  </li>
+                  <li>
+                    <small>This can take long depending on the file size</small>
+                  </li>
+                </ul>
               </div>
             </header>
 
@@ -355,8 +369,22 @@
           Cancel
         </v-btn>
 
-        <v-btn large color="primary" class="px-2 py-1" @click="submitReport()">
+        <v-btn
+          large
+          color="primary"
+          class="px-3 py-2"
+          :disabled="formSubmitted"
+          @click="submitReport()"
+        >
           Submit Report
+          <v-progress-circular
+            v-if="formSubmitted"
+            class="ml-3"
+            :size="23"
+            :width="2"
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
         </v-btn>
       </div>
     </v-form>
@@ -392,6 +420,7 @@ export default {
   data() {
     return {
       isVisible: false,
+      formSubmitted: false,
       query: '',
       selectedScope: null,
       dialog: false,
@@ -585,6 +614,7 @@ export default {
     async submitReport() {
       if (this.$refs.form1.validate()) {
         this.$nuxt.$loading.start()
+        this.formSubmitted = true
 
         // const programId = this.$route.params.programId
         const programId = this.program._id
@@ -618,11 +648,13 @@ export default {
         const URL = `/create-submission/${programId}`
 
         await this.$axios
-          .$post(URL, formData)
+          .$post(URL, formData, { timeout: 3600000 })
           .then((res) => {
             this.dialog = true
+            this.formSubmitted = false
           })
           .catch((error) => {
+            this.formSubmitted = false
             if (error.code || error.message) {
               this.$store.dispatch('notification/failureSnackbar', error)
             } else {
