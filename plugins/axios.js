@@ -1,6 +1,7 @@
 export default function ({ $axios, $config, store, redirect }) {
   $axios.defaults.timeout = $config.axiosTimeout
   $axios.defaults.baseURL = $config.baseURL
+
   $axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
 
   // Adds header: `Authorization: Bearer XXXX` to requests
