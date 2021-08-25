@@ -38,7 +38,24 @@
         @click:append="showPassword = !showPassword"
       ></v-text-field>
 
-      <v-btn block color="primary" @click="login"> Sign in </v-btn>
+      <v-btn
+        large
+        block
+        color="primary"
+        class="px-3 py-2"
+        :disabled="formSubmitted"
+        @click="login"
+      >
+        Sign in
+        <v-progress-circular
+          v-if="formSubmitted"
+          class="ml-5"
+          :size="23"
+          :width="2"
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </v-btn>
     </v-form>
 
     <div class="d-flex align-center justify-space-between py-4">
@@ -55,6 +72,7 @@ export default {
 
   data() {
     return {
+      formSubmitted: false,
       FORM: {
         email: null,
         password: null,
@@ -77,6 +95,7 @@ export default {
       e.preventDefault()
       if (this.$refs.loginForm.validate()) {
         this.$nuxt.$loading.start()
+        this.formSubmitted = true
 
         const URL = `/login`
         const PAYLOAD = this.FORM
@@ -84,6 +103,8 @@ export default {
         await this.$axios
           .post(URL, PAYLOAD)
           .then((response) => {
+            this.formSubmitted = false
+
             if (response.data.twoFactorAuth) {
               this.$store.commit('auth/KEEP_TFA', response.data)
               this.$router.replace('/account/verify-twofa')
@@ -93,6 +114,7 @@ export default {
             }
           })
           .catch((error) => {
+            this.formSubmitted = false
             this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {

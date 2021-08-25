@@ -45,9 +45,24 @@
         @click:append="showConfirmPassword = !showConfirmPassword"
       ></v-text-field>
 
-      <v-btn block color="primary mt-4" @click="updatePassword">
-        Update Password</v-btn
+      <v-btn
+        large
+        block
+        color="primary"
+        class="px-3 py-2 mt-4"
+        :disabled="formSubmitted"
+        @click="updatePassword"
       >
+        Update Password
+        <v-progress-circular
+          v-if="formSubmitted"
+          class="ml-5"
+          :size="23"
+          :width="2"
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </v-btn>
     </v-form>
 
     <div class="d-flex align-center justify-space-between py-4">
@@ -64,6 +79,7 @@ export default {
   middleware: 'guest',
   data() {
     return {
+      formSubmitted: false,
       FORM: {
         password: null,
         confirmPassword: null,
@@ -92,6 +108,7 @@ export default {
       e.preventDefault()
       if (this.$refs.passwordreset.validate()) {
         this.$nuxt.$loading.start()
+        this.formSubmitted = true
 
         const URL = `/complete-reset-password`
         const PAYLOAD = {
@@ -103,9 +120,11 @@ export default {
         await this.$axios
           .post(URL, PAYLOAD)
           .then((response) => {
+            this.formSubmitted = false
             this.$router.replace('/')
           })
           .catch((error) => {
+            this.formSubmitted = false
             this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {

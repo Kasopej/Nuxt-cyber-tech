@@ -92,7 +92,24 @@
         @click:append="showConfirmPassword = !showConfirmPassword"
       ></v-text-field>
 
-      <v-btn block color="primary" @click="signUp"> Sign Up </v-btn>
+      <v-btn
+        large
+        block
+        color="primary"
+        class="px-3 py-2"
+        :disabled="formSubmitted"
+        @click="signUp"
+      >
+        Sign Up
+        <v-progress-circular
+          v-if="formSubmitted"
+          class="ml-5"
+          :size="23"
+          :width="2"
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+      </v-btn>
     </section>
 
     <div class="py-4">
@@ -121,6 +138,7 @@ export default {
 
   data() {
     return {
+      formSubmitted: false,
       FORM: {
         email: null,
         password: null,
@@ -173,6 +191,7 @@ export default {
       e.preventDefault()
       if (this.$refs.signUpForm.validate() && this.FORM.acceptTerms) {
         this.$nuxt.$loading.start()
+        this.formSubmitted = true
 
         const URL = `/register`
         const PAYLOAD = this.FORM
@@ -180,10 +199,12 @@ export default {
         await this.$axios
           .post(URL, PAYLOAD)
           .then((response) => {
+            this.formSubmitted = false
             this.$router.push('/account/confirm-email')
           })
           .catch((error) => {
             this.$store.dispatch('notification/failureSnackbar', error)
+            this.formSubmitted = false
           })
           .finally(() => {
             this.$nuxt.$loading.finish()

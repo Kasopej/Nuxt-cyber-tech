@@ -27,8 +27,24 @@
               required
             ></v-text-field>
 
-            <v-btn block color="primary" type="submit" @click="sendEmail">
+            <v-btn
+              large
+              block
+              color="primary"
+              class="px-3 py-2"
+              :disabled="formSubmitted"
+              type="submit"
+              @click="sendEmail"
+            >
               Reset password
+              <v-progress-circular
+                v-if="formSubmitted"
+                class="ml-5"
+                :size="23"
+                :width="2"
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
             </v-btn>
           </div>
 
@@ -91,8 +107,23 @@
               @click:append="showConfirmPassword = !showConfirmPassword"
             ></v-text-field>
 
-            <v-btn block color="primary" @click="resetPassword">
+            <v-btn
+              large
+              block
+              color="primary"
+              class="px-3 py-2"
+              :disabled="formSubmitted"
+              @click="resetPassword"
+            >
               Reset password
+              <v-progress-circular
+                v-if="formSubmitted"
+                class="ml-5"
+                :size="23"
+                :width="2"
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
             </v-btn>
           </div>
 
@@ -122,7 +153,7 @@ export default {
   data() {
     return {
       step: 1,
-
+      formSubmitted: false,
       FORM: {
         password: null,
         email: null,
@@ -161,6 +192,7 @@ export default {
       e.preventDefault()
       if (this.$refs.form1.validate()) {
         this.$nuxt.$loading.start()
+        this.formSubmitted = true
 
         const URL = `/reset-password`
         const PAYLOAD = {
@@ -169,9 +201,11 @@ export default {
         await this.$axios
           .post(URL, PAYLOAD)
           .then((response) => {
+            this.formSubmitted = false
             this.step = 2
           })
           .catch((error) => {
+            this.formSubmitted = false
             this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {
@@ -183,6 +217,7 @@ export default {
     async resetPassword() {
       if (this.$refs.form2.validate()) {
         this.$nuxt.$loading.start()
+        this.formSubmitted = true
 
         const URL = `/reset-password`
         const PAYLOAD = this.FORM
@@ -190,9 +225,11 @@ export default {
         await this.$axios
           .post(URL, PAYLOAD)
           .then((response) => {
+            this.formSubmitted = false
             this.$router.replace('/')
           })
           .catch((error) => {
+            this.formSubmitted = false
             this.$store.dispatch('notification/failureSnackbar', error)
           })
           .finally(() => {
