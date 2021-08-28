@@ -9,7 +9,7 @@
     </v-navigation-drawer>
 
     <v-card class="xbar-wrapper elevation-2">
-      <v-container class="d-flex justify-space-between align-center">
+      <v-container class="d-flex justify-space-between align-center px-md-15">
         <div class="d-flex align-center justify-space-between flex-grow-x">
           <a class="d-inline d-sm-none mr-2">
             <v-app-bar-nav-icon
@@ -103,7 +103,7 @@
       </v-container>
     </v-card>
 
-    <v-container class="v-top">
+    <v-container class="v-top px-md-15">
       <Nuxt />
     </v-container>
   </v-app>
