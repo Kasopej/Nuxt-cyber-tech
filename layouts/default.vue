@@ -201,7 +201,7 @@ export default {
 }
 
 .max-box {
-  max-width: 900px;
+  max-width: 768px;
   margin-left: auto;
   margin-right: auto;
 }
