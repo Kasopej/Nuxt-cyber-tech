@@ -103,7 +103,7 @@
       </v-container>
     </v-card>
 
-    <v-container class="v-top px-md-15">
+    <v-container class="v-top max-box">
       <Nuxt />
     </v-container>
   </v-app>
@@ -198,5 +198,11 @@ export default {
 
 .flex-grow-x {
   flex-grow: 0.095;
+}
+
+.max-box {
+  max-width: 1050px;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
