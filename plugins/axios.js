@@ -1,7 +1,7 @@
 export default function ({ $axios, $config, store, redirect }) {
   $axios.defaults.timeout = $config.axiosTimeout
-  $axios.defaults.baseURL = $config.baseURL
-  // $axios.defaults.baseURL = 'https://teklabspaceapi.herokuapp.com/hunter'
+//   $axios.defaults.baseURL = $config.baseURL
+  $axios.defaults.baseURL = 'https://teklabspace-live.herokuapp.com/api/company/#/'
 
   $axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
 
