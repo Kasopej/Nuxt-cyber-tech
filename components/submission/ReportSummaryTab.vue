@@ -57,9 +57,9 @@
           </v-col>
           <v-col class="pl-2 py-1 py-sm-2 py-md-3">
             <nuxt-link
-              :to="`/user/${submission.hunterId}/`"
+              :to="`/user/${submission.hunterId._id}/`"
               class="primary--text"
-              >{{ submission.hunterName || submission.hunterId }}</nuxt-link
+              >{{ submission.hunterId.profile[0].username }}</nuxt-link
             >
           </v-col>
         </v-row>
