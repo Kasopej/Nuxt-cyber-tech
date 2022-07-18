@@ -65,7 +65,7 @@ export default {
     await this.$axios
       .$get(URL)
       .then((res) => {
-        this.submission = res.data[0]
+        this.submission = res.data
       })
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
