@@ -37,7 +37,7 @@ export default {
         temp2FAKey: null,
       },
       rules: {
-        required: (value) => !!value || 'Required.',
+        required: [(value) => !!value || 'Required.'],
       },
     }
   },

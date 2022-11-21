@@ -20,7 +20,7 @@
         v-model="FORM.email"
         dense
         outlined
-        :rules="[...rules.required]"
+        :rules="[rules.required]"
         label="E-mail"
         required
       ></v-text-field>
@@ -32,7 +32,7 @@
         outlined
         password
         label="Password"
-        :rules="[...rules.required]"
+        :rules="[rules.required]"
         :type="showPassword ? 'text' : 'password'"
         :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
         @click:append="showPassword = !showPassword"
