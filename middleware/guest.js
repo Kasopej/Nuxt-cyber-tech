@@ -11,5 +11,6 @@ export default ({ store, redirect }) => {
 
   if (authenticated) {
     redirect('/')
+    //  user authenticated, go to Home
   }
 }
