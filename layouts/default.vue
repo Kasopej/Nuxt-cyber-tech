@@ -210,4 +210,10 @@ export default {
 .fit-content {
   width: fit-content;
 }
+.no-cursor:hover {
+  cursor: initial;
+}
+.cursor:hover {
+  cursor: pointer;
+}
 </style>
