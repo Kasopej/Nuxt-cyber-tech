@@ -206,3 +206,14 @@ export default {
   margin-right: auto;
 }
 </style>
+<style lang="scss">
+.fit-content {
+  width: fit-content;
+}
+.no-cursor:hover {
+  cursor: initial;
+}
+.cursor:hover {
+  cursor: pointer;
+}
+</style>

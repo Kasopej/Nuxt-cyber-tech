@@ -83,7 +83,7 @@
         password
         label="Confirm Password"
         :rules="[
-          ...(value) =>
+          (value) =>
             value === FORM.password ||
             'The password confirmation does not match.',
         ]"

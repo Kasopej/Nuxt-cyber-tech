@@ -36,7 +36,7 @@
         password
         label="Confirm Password"
         :rules="[
-          ...(value) =>
+          (value) =>
             value === FORM.password ||
             'The password confirmation does not match.',
         ]"
@@ -93,7 +93,8 @@ export default {
         required: [(value) => !!value || 'This field is required'],
         password: [
           (value) => {
-            const pattern = /^(?=.*[a-z]){3,}(?=.*[A-Z]){2,}(?=.*[0-9]){2,}(?=.*[!@#$%^&*()--__=~`|'"{}+.]){1,}.{8,}$/
+            const pattern =
+              /^(?=.*[a-z]){3,}(?=.*[A-Z]){2,}(?=.*[0-9]){2,}(?=.*[!@#$%^&*()--__=~`|'"{}+.]){1,}.{8,}$/
             return (
               pattern.test(value) ||
               'Min. 8 characters with at least one capital letter, a number and a special character.'

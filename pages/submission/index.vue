@@ -33,7 +33,10 @@
           cols="12"
           md="6"
         >
-          <submission-item-list-card :submission="submission" />
+          <submission-item-list-card
+            v-if="submission.programId !== null"
+            :submission="submission"
+          />
         </v-col>
       </v-row>
     </section>
