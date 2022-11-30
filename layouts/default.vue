@@ -206,3 +206,8 @@ export default {
   margin-right: auto;
 }
 </style>
+<style lang="scss">
+.fit-content {
+  width: fit-content;
+}
+</style>
