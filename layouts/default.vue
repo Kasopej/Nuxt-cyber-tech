@@ -216,8 +216,8 @@ export default {
 </style>
 <style lang="scss">
 .fit-content {
-  width: fit-content;
-  max-width: fit-content;
+  width: fit-content !important;
+  max-width: fit-content !important;
 }
 .fluid {
   max-width: 100% !important;

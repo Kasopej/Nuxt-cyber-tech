@@ -67,14 +67,15 @@
           </div>
         </v-col>
       </header>
-      <div class="d-flex">
+      <div class="d-flex px-2">
         <p class="text-primary inline-block">20 programs found</p>
+
         <v-input
-          class="ml-auto fit-content"
+          class="ml-auto fit-content cursor"
           prepend-icon="mdi-sort"
           hint="sort programs"
         >
-          <select class="mt-1">
+          <select class="mt-1 border-solid border-b border-black">
             <option value="moi">Newest</option>
           </select>
         </v-input>
