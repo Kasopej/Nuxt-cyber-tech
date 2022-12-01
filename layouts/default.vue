@@ -217,14 +217,24 @@ export default {
 <style lang="scss">
 .fit-content {
   width: fit-content;
+  max-width: fit-content;
 }
 .fluid {
   max-width: 100% !important;
+}
+.border {
+  border: solid 1px;
+}
+.border-black {
+  border-color: black;
 }
 .no-cursor:hover {
   cursor: initial;
 }
 .cursor:hover {
   cursor: pointer;
+}
+.search-bar-icon {
+  position: absolute !important;
 }
 </style>

@@ -44,31 +44,49 @@
   </main> -->
   <v-row>
     <v-col cols="3">
-      <aside>
-        <div class="filter-controls d-flex">
+      <v-card height="80vh">
+        <v-card-title class="d-flex">
           <v-icon> mdi-filter </v-icon>
-          <v-icon class="ml-auto"> mdi-close </v-icon>
-        </div>
-      </aside>
+          <span class="text-primary text-base cursor ml-auto">clear all</span>
+        </v-card-title>
+      </v-card>
     </v-col>
     <v-col cols="9" class="px-4">
-      <header class="d-flex">
-        <v-col>
-          <v-icon>mdi-search</v-icon>
-          <input
-            type="search"
-            class="rounded"
-            placeholder="Search programs"
-            style="width: 70%"
-          />
-        </v-col>
-        <v-col class="ml-auto">
-          <v-icon>mdi-sort</v-icon>
-          <select id="">
-            <option value="moi">Newest</option>
-          </select>
+      <header class="d-flex mb-6">
+        <v-col cols="12">
+          <div class="mx-auto text-center">
+            <input
+              type="search"
+              class="py-4 px-6 search-bar border-solid border rounded-full"
+              style="width: 70%"
+              placeholder="Search programs"
+            />
+            <v-icon class="relative right-12" x-large>mdi-magnify</v-icon>
+          </div>
         </v-col>
       </header>
+      <div class="d-flex">
+        <p class="text-primary inline-block">20 programs found</p>
+        <v-input
+          class="ml-auto fit-content"
+          prepend-icon="mdi-sort"
+          hint="sort programs"
+        >
+          <select class="mt-1">
+            <option value="moi">Newest</option>
+          </select>
+        </v-input>
+      </div>
+      <v-card class="d-flex">
+        <v-col
+          v-for="program in programs"
+          :key="program._id"
+          cols="4"
+          @click="openDetails(program)"
+        >
+          <program-item-list-card :program="program" hoverable />
+        </v-col>
+      </v-card>
     </v-col>
   </v-row>
 </template>
@@ -135,3 +153,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.sort-programs {
+  display: inline-block !important;
+}
+</style>
