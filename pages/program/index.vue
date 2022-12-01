@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <!-- <main>
     <section v-if="$fetchState.pending">
       <v-skeleton-loader v-for="i in 3" :key="i" type="article" />
     </section>
@@ -41,7 +41,36 @@
     </div>
 
     <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
-  </main>
+  </main> -->
+  <v-row>
+    <v-col cols="3">
+      <aside>
+        <div class="filter-controls d-flex">
+          <v-icon> mdi-filter </v-icon>
+          <v-icon class="ml-auto"> mdi-close </v-icon>
+        </div>
+      </aside>
+    </v-col>
+    <v-col cols="9" class="px-4">
+      <header class="d-flex">
+        <v-col>
+          <v-icon>mdi-search</v-icon>
+          <input
+            type="search"
+            class="rounded"
+            placeholder="Search programs"
+            style="width: 70%"
+          />
+        </v-col>
+        <v-col class="ml-auto">
+          <v-icon>mdi-sort</v-icon>
+          <select id="">
+            <option value="moi">Newest</option>
+          </select>
+        </v-col>
+      </header>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -68,7 +97,9 @@ export default {
         this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
-
+  created() {
+    this.$store.commit('program/changeFluidState', true)
+  },
   methods: {
     async loadMorePrograms() {
       this.loadingMore = true

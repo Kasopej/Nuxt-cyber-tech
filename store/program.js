@@ -2,6 +2,7 @@ export const strict = false
 
 export const state = () => ({
   data: {},
+  fluid: false,
   payload: {},
   pageLimit: 16,
 })
@@ -13,5 +14,8 @@ export const mutations = {
 
   SAVE_DATA(state, payload) {
     state.data = payload
+  },
+  changeFluidState(state, bool) {
+    state.fluid = bool
   },
 }
