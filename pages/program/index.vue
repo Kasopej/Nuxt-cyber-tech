@@ -57,11 +57,13 @@
           <div class="mx-auto text-center">
             <input
               type="search"
-              class="py-4 px-6 search-bar border-solid border rounded-full"
+              class="py-4 px-6 bg-primary text-white search-bar border-solid border rounded-lg border-primary"
               style="width: 70%"
               placeholder="Search programs"
             />
-            <v-icon class="relative right-12" x-large>mdi-magnify</v-icon>
+            <v-icon class="relative right-12" color="white" x-large
+              >mdi-magnify</v-icon
+            >
           </div>
         </v-col>
       </header>

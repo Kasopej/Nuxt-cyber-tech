@@ -222,9 +222,6 @@ export default {
 .fluid {
   max-width: 100% !important;
 }
-.border {
-  border: solid 1px;
-}
 .border-black {
   border-color: black;
 }
@@ -236,5 +233,13 @@ export default {
 }
 .search-bar-icon {
   position: absolute !important;
+}
+.search-bar::placeholder {
+  color: white;
+}
+.search-bar:focus {
+  box-shadow: none !important;
+  outline-offset: -1px;
+  outline: solid 1px white;
 }
 </style>

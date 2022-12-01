@@ -11,6 +11,11 @@ module.exports = {
     extend: {
       colors: {
         primary: '#c504da',
+        accent: '#6921b6',
+      },
+      boxShadow: {
+        'inner-full':
+          'inset 2px 2px 2px 0.3px rgb(0 0 0 / 0.05), inset -2px -2px 2px 0.3px rgb(0 0 0 / 0.05)',
       },
     },
   },
