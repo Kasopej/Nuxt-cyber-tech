@@ -1,10 +1,12 @@
 <template>
-  <v-hover v-slot="{ hover }">
+  <!-- <v-hover v-slot="{ hover }">
     <v-card
-      v-if="program.companyId"
       class="d-flex align-center mt-6 mx-1 overflow-x-hidden"
       :class="hover && hoverable ? 'secondary' : ''"
     >
+    <v-card-title primary-title>
+      {{program.companyId.company[0].name}}
+    </v-card-title>
       <v-img
         :src="program.thumbnail || '/img/dummy.jpg'"
         :max-width="$vuetify.breakpoint.mobile ? '110px' : '150px'"
@@ -12,11 +14,10 @@
       />
 
       <section
-        class="flex-grow-1 w-full d-flex flex-column justify-space-between px-1 py-0 pa-md-2"
+        class="w-full d-flex flex-column justify-space-between px-1 py-0 pa-md-2"
       >
         <div class="d-sm-flex justify-space-between text-capitalize">
           <header
-            v-if="program"
             class="body-1 font-weight-medium accent--text text-medium"
             v-text="program.companyId.company[0].name"
           />
@@ -68,7 +69,51 @@
         </div>
       </section>
     </v-card>
-  </v-hover>
+  </v-hover> -->
+  <v-card @mouseenter.once="reveal = true">
+    <v-card-title primary-title class="d-flex">
+      <v-img
+        :src="program.thumbnail || '/img/dummy.jpg'"
+        width="30"
+        :max-width="'30px'"
+        @click="openDetails(program)"
+      />
+      <span class="ml-auto">{{ program.title }}</span>
+    </v-card-title>
+    <v-card-text @click="openDetails(program)">
+      <section class="d-flex">
+        <v-icon>mdi-eye-off</v-icon>
+        <v-icon class="ml-auto">mdi-heart</v-icon>
+      </section>
+      <v-img
+        :src="program.thumbnail || '/img/dummy.jpg'"
+        :max-width="$vuetify.breakpoint.mobile ? '100%' : '100%'"
+        class="rounded mt-3"
+      />
+      <h4 class="text-h6">
+        {{ program.title }}
+      </h4>
+      <v-chip small> {{ program.type }} </v-chip>
+      <v-alert class="fit-content mt-2 text-white" color="info" dense>
+        ${{ program.reward }} per vulnerability
+      </v-alert>
+      <small class="text-accent">Managed by Teklab Team</small>
+    </v-card-text>
+    <v-expand-transition>
+      <v-card
+        v-if="reveal"
+        class="transition-fast-in-fast-out v-card--reveal"
+        style="height: 100%"
+        @mouseleave="reveal = false"
+      >
+        <v-card-text class="pb-0">
+          <p>
+            {{ briefDescription }}
+          </p>
+        </v-card-text>
+      </v-card>
+    </v-expand-transition>
+  </v-card>
 </template>
 
 <script>
@@ -78,10 +123,33 @@ export default {
     program: { type: Object, default: () => {} },
     showVisibility: { type: Boolean, default: false },
   },
+  data() {
+    return {
+      reveal: false,
+    }
+  },
+  computed: {
+    briefDescription() {
+      return this.program.description.slice(0, 148) + '...'
+    },
+  },
 
   methods: {
     iconSize() {
       return this.$vuetify.breakpoint.mobile ? 12 : 16
+    },
+    openDetails(program) {
+      this.$store.commit('program/SAVE_DATA', program)
+      // this.$router.push(`/program/00${program._id}/`)
+      const NAMED_URL = program.title.toLowerCase().replace(/ /g, '-')
+
+      this.$router.push({
+        // path: `/program/${program._id}`,
+        path: `/program/${NAMED_URL}`,
+        params: {
+          id: program,
+        },
+      })
     },
   },
 }
