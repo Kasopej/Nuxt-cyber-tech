@@ -222,7 +222,11 @@ export default {
 .fluid {
   max-width: 100% !important;
 }
-.no-flex-stretch {
+.v-card--reveal {
+  bottom: 0;
+  opacity: 1 !important;
+  position: absolute;
+  width: 100%;
 }
 .border-black {
   border-color: black;

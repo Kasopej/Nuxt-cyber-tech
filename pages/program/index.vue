@@ -43,7 +43,7 @@
     <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
   </main> -->
   <v-row>
-    <v-col cols="3" class="d-flex">
+    <v-col cols="2" class="d-flex">
       <v-card class="no-flex-stretch program-filter-menu" color="primary">
         <v-card-title class="d-flex">
           <v-icon color="white"> mdi-filter </v-icon>
@@ -110,7 +110,7 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="9" class="px-4">
+    <v-col cols="10" class="px-4">
       <header class="d-flex mb-6">
         <v-col cols="12">
           <div class="mx-auto text-center">
@@ -120,14 +120,16 @@
               style="width: 70%"
               placeholder="Search programs"
             />
-            <v-icon class="relative right-12" color="white" x-large
+            <v-icon class="relative right-12 cursor" color="white" x-large
               >mdi-magnify</v-icon
             >
           </div>
         </v-col>
       </header>
       <div class="d-flex px-2">
-        <p class="text-primary inline-block">20 programs found</p>
+        <p class="text-primary inline-block">
+          {{ programs.length }} programs found
+        </p>
 
         <v-input
           class="ml-auto fit-content cursor"
@@ -140,12 +142,7 @@
         </v-input>
       </div>
       <v-card class="d-flex">
-        <v-col
-          v-for="program in programs"
-          :key="program._id"
-          cols="4"
-          @click="openDetails(program)"
-        >
+        <v-col v-for="program in programs" :key="program._id" cols="4">
           <program-item-list-card :program="program" hoverable />
         </v-col>
       </v-card>
@@ -158,9 +155,7 @@ export default {
   data() {
     return {
       pagination: { page: 1, length: 0 },
-
       programs: [],
-
       loadingMore: false,
     }
   },
@@ -174,6 +169,29 @@ export default {
         this.pagination.length = res.data.totalPages
       })
       .catch((error) => {
+        this.programs = [
+          {
+            title: 'Tesla Black Team',
+            type: 'Compliance',
+            reward: '500',
+            description:
+              'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis repellat sapiente odio in itaque tempora ad, ipsum nisi enim id qui accusantium repudiandae nostrum? Modi facere reprehenderit optio soluta. Atque.',
+          },
+          {
+            title: 'Tesla Black Team',
+            type: 'Compliance',
+            reward: '500',
+            description:
+              'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis repellat sapiente odio in itaque tempora ad, ipsum nisi enim id qui accusantium repudiandae nostrum? Modi facere reprehenderit optio soluta. Atque.',
+          },
+          {
+            title: 'Tesla Black Team',
+            type: 'Compliance',
+            reward: '500',
+            description:
+              'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis repellat sapiente odio in itaque tempora ad, ipsum nisi enim id qui accusantium repudiandae nostrum? Modi facere reprehenderit optio soluta. Atque.',
+          },
+        ]
         this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
@@ -197,20 +215,6 @@ export default {
         this.loadingMore = false
         this.$store.dispatch('notification/failureSnackbar', e)
       }
-    },
-
-    openDetails(program) {
-      this.$store.commit('program/SAVE_DATA', program)
-      // this.$router.push(`/program/00${program._id}/`)
-      const NAMED_URL = program.title.toLowerCase().replace(/ /g, '-')
-
-      this.$router.push({
-        // path: `/program/${program._id}`,
-        path: `/program/${NAMED_URL}`,
-        params: {
-          id: program,
-        },
-      })
     },
   },
 }

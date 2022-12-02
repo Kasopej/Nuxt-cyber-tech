@@ -77,10 +77,8 @@ export default {
   data() {
     return {
       page: 0,
-
       program: null,
       submissions: [],
-
       breadcrumbsItems: [
         {
           text: 'Dashboard',
@@ -96,22 +94,15 @@ export default {
       ],
     }
   },
-  async fetch() {
-    // if you are the next developer working on this , replace the api call below to fetch the program details alone from the end point
-    const URL = `/get-programs?limit=${this.$store.state.program.pageLimit}`
+  async fetcher() {
+    // rename to disable fetch for now as API is down
+    const URL = `/get-programs/${this.$route.params.programId}`
     // Make upload request to the API
 
     await this.$axios
       .$get(URL)
       .then((res) => {
-        const mainProgram = res.data.docs.filter((program) => {
-          // program._id === this.$route.params.programId
-          return (
-            program.title.toLowerCase().replace(/ /g, '-') ===
-            this.$route.params.programId
-          )
-        })
-        this.program = mainProgram[0]
+        this.program = res.data.docs
       })
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)

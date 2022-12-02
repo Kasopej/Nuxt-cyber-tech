@@ -70,16 +70,17 @@
       </section>
     </v-card>
   </v-hover> -->
-  <v-card>
+  <v-card @mouseenter.once="reveal = true">
     <v-card-title primary-title class="d-flex">
       <v-img
         :src="program.thumbnail || '/img/dummy.jpg'"
         width="30"
         :max-width="'30px'"
+        @click="openDetails(program)"
       />
       <span class="ml-auto">{{ program.title }}</span>
     </v-card-title>
-    <v-card-text>
+    <v-card-text @click="openDetails(program)">
       <section class="d-flex">
         <v-icon>mdi-eye-off</v-icon>
         <v-icon class="ml-auto">mdi-heart</v-icon>
@@ -94,9 +95,24 @@
       </h4>
       <v-chip small> {{ program.type }} </v-chip>
       <v-alert class="fit-content mt-2 text-white" color="info" dense>
-        ${{ 0 }} per vulnerability
+        ${{ program.reward }} per vulnerability
       </v-alert>
+      <small class="text-accent">Managed by Teklab Team</small>
     </v-card-text>
+    <v-expand-transition>
+      <v-card
+        v-if="reveal"
+        class="transition-fast-in-fast-out v-card--reveal"
+        style="height: 100%"
+        @mouseleave="reveal = false"
+      >
+        <v-card-text class="pb-0">
+          <p>
+            {{ briefDescription }}
+          </p>
+        </v-card-text>
+      </v-card>
+    </v-expand-transition>
   </v-card>
 </template>
 
@@ -107,10 +123,33 @@ export default {
     program: { type: Object, default: () => {} },
     showVisibility: { type: Boolean, default: false },
   },
+  data() {
+    return {
+      reveal: false,
+    }
+  },
+  computed: {
+    briefDescription() {
+      return this.program.description.slice(0, 148) + '...'
+    },
+  },
 
   methods: {
     iconSize() {
       return this.$vuetify.breakpoint.mobile ? 12 : 16
+    },
+    openDetails(program) {
+      this.$store.commit('program/SAVE_DATA', program)
+      // this.$router.push(`/program/00${program._id}/`)
+      const NAMED_URL = program.title.toLowerCase().replace(/ /g, '-')
+
+      this.$router.push({
+        // path: `/program/${program._id}`,
+        path: `/program/${NAMED_URL}`,
+        params: {
+          id: program,
+        },
+      })
     },
   },
 }
