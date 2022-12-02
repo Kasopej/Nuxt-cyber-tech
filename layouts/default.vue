@@ -222,6 +222,8 @@ export default {
 .fluid {
   max-width: 100% !important;
 }
+.no-flex-stretch {
+}
 .border-black {
   border-color: black;
 }

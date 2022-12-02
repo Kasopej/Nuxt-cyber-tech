@@ -43,12 +43,71 @@
     <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
   </main> -->
   <v-row>
-    <v-col cols="3">
-      <v-card height="80vh">
+    <v-col cols="3" class="d-flex">
+      <v-card class="no-flex-stretch program-filter-menu" color="primary">
         <v-card-title class="d-flex">
-          <v-icon> mdi-filter </v-icon>
-          <span class="text-primary text-base cursor ml-auto">clear all</span>
+          <v-icon color="white"> mdi-filter </v-icon>
+          <span class="text-white text-base cursor ml-auto">clear all</span>
         </v-card-title>
+        <v-card-text class="mt-4 program-filter-menu-body">
+          <p
+            class="fit-content text-lg mb-0 text-white border-solid border-b border-white"
+          >
+            Visibilty
+          </p>
+          <v-checkbox
+            id="public-visibility-check"
+            color="white"
+            class="my-1 visibility-check"
+            dense
+          >
+            <template #default>
+              <input type="checkbox" name="" />
+            </template>
+            <template #label>
+              <label for="public-visibility-check" class="text-white"
+                >Public</label
+              >
+            </template>
+          </v-checkbox>
+          <v-checkbox
+            id="public-visibility-check"
+            color="white"
+            class="my-1 visibility-check"
+            dense
+          >
+            <template #default>
+              <input type="checkbox" name="" />
+            </template>
+            <template #label>
+              <label for="private-visibility-check" class="text-white"
+                >Private</label
+              >
+            </template>
+          </v-checkbox>
+          <!--  -->
+          <p
+            class="fit-content text-lg mb-0 text-white border-solid border-b border-white"
+          >
+            Type
+          </p>
+          <v-checkbox color="white" class="my-1 type-check" dense>
+            <template #default>
+              <input type="checkbox" name="" />
+            </template>
+            <template #label>
+              <label class="text-white">Compliance</label>
+            </template>
+          </v-checkbox>
+          <v-checkbox color="white" class="my-1 type-check" dense>
+            <template #default>
+              <input type="checkbox" name="" />
+            </template>
+            <template #label>
+              <label class="text-white">Vulnerability</label>
+            </template>
+          </v-checkbox>
+        </v-card-text>
       </v-card>
     </v-col>
     <v-col cols="9" class="px-4">
@@ -157,8 +216,21 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .sort-programs {
   display: inline-block !important;
+}
+.program-filter-menu {
+  min-height: 80vh;
+  flex-basis: 100%;
+  max-width: 100%;
+  .program-filter-menu-body {
+    .mdi-checkbox-blank-outline {
+      color: white;
+    }
+    .v-messages {
+      min-height: fit-content;
+    }
+  }
 }
 </style>
