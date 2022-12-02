@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <!-- <main>
     <section v-if="$fetchState.pending">
       <v-skeleton-loader v-for="i in 3" :key="i" type="article" />
     </section>
@@ -41,7 +41,113 @@
     </div>
 
     <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
-  </main>
+  </main> -->
+  <v-row>
+    <v-col cols="2" class="d-flex">
+      <v-card class="no-flex-stretch program-filter-menu" color="primary">
+        <v-card-title class="d-flex">
+          <v-icon color="white"> mdi-filter </v-icon>
+          <span class="text-white text-base cursor ml-auto">clear all</span>
+        </v-card-title>
+        <v-card-text class="mt-4 program-filter-menu-body">
+          <p
+            class="fit-content text-lg mb-0 text-white border-solid border-b border-white"
+          >
+            Visibilty
+          </p>
+          <v-checkbox
+            id="public-visibility-check"
+            color="white"
+            class="my-1 visibility-check"
+            dense
+          >
+            <template #default>
+              <input type="checkbox" name="" />
+            </template>
+            <template #label>
+              <label for="public-visibility-check" class="text-white"
+                >Public</label
+              >
+            </template>
+          </v-checkbox>
+          <v-checkbox
+            id="public-visibility-check"
+            color="white"
+            class="my-1 visibility-check"
+            dense
+          >
+            <template #default>
+              <input type="checkbox" name="" />
+            </template>
+            <template #label>
+              <label for="private-visibility-check" class="text-white"
+                >Private</label
+              >
+            </template>
+          </v-checkbox>
+          <!--  -->
+          <p
+            class="fit-content text-lg mb-0 text-white border-solid border-b border-white"
+          >
+            Type
+          </p>
+          <v-checkbox color="white" class="my-1 type-check" dense>
+            <template #default>
+              <input type="checkbox" name="" />
+            </template>
+            <template #label>
+              <label class="text-white">Compliance</label>
+            </template>
+          </v-checkbox>
+          <v-checkbox color="white" class="my-1 type-check" dense>
+            <template #default>
+              <input type="checkbox" name="" />
+            </template>
+            <template #label>
+              <label class="text-white">Vulnerability</label>
+            </template>
+          </v-checkbox>
+        </v-card-text>
+      </v-card>
+    </v-col>
+    <v-col cols="10" class="px-4">
+      <header class="d-flex mb-6">
+        <v-col cols="12">
+          <div class="mx-auto text-center">
+            <input
+              type="search"
+              class="py-4 px-6 bg-primary text-white search-bar border-solid border rounded-lg border-primary"
+              style="width: 70%"
+              placeholder="Search programs"
+            />
+            <v-icon class="relative right-12 cursor" color="white" x-large
+              >mdi-magnify</v-icon
+            >
+          </div>
+        </v-col>
+      </header>
+      <div class="d-flex px-2">
+        <p class="text-primary inline-block">
+          {{ programs.length }} programs found
+        </p>
+
+        <v-input
+          class="ml-auto fit-content cursor"
+          prepend-icon="mdi-sort"
+          hint="sort programs"
+        >
+          <select class="mt-1 border-solid border-b border-black">
+            <option value="moi">Newest</option>
+          </select>
+        </v-input>
+      </div>
+      <v-card class="d-flex">
+        <v-col v-for="program in programs" :key="program._id" cols="4">
+          <program-item-list-card :program="program" hoverable />
+        </v-col>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -49,9 +155,7 @@ export default {
   data() {
     return {
       pagination: { page: 1, length: 0 },
-
       programs: [],
-
       loadingMore: false,
     }
   },
@@ -65,10 +169,35 @@ export default {
         this.pagination.length = res.data.totalPages
       })
       .catch((error) => {
+        this.programs = [
+          {
+            title: 'Tesla Black Team',
+            type: 'Compliance',
+            reward: '500',
+            description:
+              'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis repellat sapiente odio in itaque tempora ad, ipsum nisi enim id qui accusantium repudiandae nostrum? Modi facere reprehenderit optio soluta. Atque.',
+          },
+          {
+            title: 'Tesla Black Team',
+            type: 'Compliance',
+            reward: '500',
+            description:
+              'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis repellat sapiente odio in itaque tempora ad, ipsum nisi enim id qui accusantium repudiandae nostrum? Modi facere reprehenderit optio soluta. Atque.',
+          },
+          {
+            title: 'Tesla Black Team',
+            type: 'Compliance',
+            reward: '500',
+            description:
+              'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis repellat sapiente odio in itaque tempora ad, ipsum nisi enim id qui accusantium repudiandae nostrum? Modi facere reprehenderit optio soluta. Atque.',
+          },
+        ]
         this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
-
+  created() {
+    this.$store.commit('program/changeFluidState', true)
+  },
   methods: {
     async loadMorePrograms() {
       this.loadingMore = true
@@ -87,20 +216,25 @@ export default {
         this.$store.dispatch('notification/failureSnackbar', e)
       }
     },
-
-    openDetails(program) {
-      this.$store.commit('program/SAVE_DATA', program)
-      // this.$router.push(`/program/00${program._id}/`)
-      const NAMED_URL = program.title.toLowerCase().replace(/ /g, '-')
-
-      this.$router.push({
-        // path: `/program/${program._id}`,
-        path: `/program/${NAMED_URL}`,
-        params: {
-          id: program,
-        },
-      })
-    },
   },
 }
 </script>
+
+<style lang="scss">
+.sort-programs {
+  display: inline-block !important;
+}
+.program-filter-menu {
+  min-height: 80vh;
+  flex-basis: 100%;
+  max-width: 100%;
+  .program-filter-menu-body {
+    .mdi-checkbox-blank-outline {
+      color: white;
+    }
+    .v-messages {
+      min-height: fit-content;
+    }
+  }
+}
+</style>

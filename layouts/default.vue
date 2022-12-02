@@ -103,13 +103,14 @@
       </v-container>
     </v-card>
 
-    <v-container class="v-top max-box">
+    <v-container class="v-top max-box" :fluid="fluid" :class="fluidClass">
       <Nuxt />
     </v-container>
   </v-app>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   middleware: 'auth',
 
@@ -141,7 +142,14 @@ export default {
       ],
     }
   },
-
+  computed: {
+    ...mapState('program', ['fluid']),
+    fluidClass() {
+      return {
+        fluid: this.fluid,
+      }
+    },
+  },
   created() {
     this.$vuetify.theme.dark = this.$store.state.settings.darkMode
   },
@@ -208,12 +216,36 @@ export default {
 </style>
 <style lang="scss">
 .fit-content {
-  width: fit-content;
+  width: fit-content !important;
+  max-width: fit-content !important;
+}
+.fluid {
+  max-width: 100% !important;
+}
+.v-card--reveal {
+  bottom: 0;
+  opacity: 1 !important;
+  position: absolute;
+  width: 100%;
+}
+.border-black {
+  border-color: black;
 }
 .no-cursor:hover {
   cursor: initial;
 }
 .cursor:hover {
   cursor: pointer;
+}
+.search-bar-icon {
+  position: absolute !important;
+}
+.search-bar::placeholder {
+  color: white;
+}
+.search-bar:focus {
+  box-shadow: none !important;
+  outline-offset: -1px;
+  outline: solid 1px white;
 }
 </style>

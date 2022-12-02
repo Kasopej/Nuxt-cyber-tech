@@ -51,6 +51,7 @@ export default {
     '@nuxtjs/eslint-module',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    '@nuxt/postcss8',
   ],
 
   eslint: {
@@ -115,6 +116,12 @@ export default {
     // https://stackoverflow.com/questions/67350359/nuxt-js-fresh-install-of-nuxt-2-14-6-contains-babel-loose-option-warnings
     babel: {
       plugins: [['@babel/plugin-proposal-private-methods', { loose: true }]],
+    },
+    postcss: {
+      plugins: {
+        tailwindcss: {},
+        autoprefixer: {},
+      },
     },
   },
 
