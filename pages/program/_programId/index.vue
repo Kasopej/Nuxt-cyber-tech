@@ -94,7 +94,7 @@ export default {
       ],
     }
   },
-  async fetcher() {
+  async fetch() {
     // rename to disable fetch for now as API is down
     const URL = `/get-programs/${this.$route.params.programId}`
     // Make upload request to the API

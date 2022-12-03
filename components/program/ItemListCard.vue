@@ -76,26 +76,28 @@
         :src="program.thumbnail || '/img/dummy.jpg'"
         width="30"
         :max-width="'30px'"
-        @click="openDetails(program)"
       />
       <span class="ml-auto">{{ program.title }}</span>
     </v-card-title>
-    <v-card-text @click="openDetails(program)">
+    <v-card-text>
       <section class="d-flex">
         <v-icon>mdi-eye-off</v-icon>
-        <v-icon class="ml-auto">mdi-heart</v-icon>
+        <v-icon class="ml-auto" @click="toggleFavorite">{{
+          favoriteIcon
+        }}</v-icon>
       </section>
       <v-img
         :src="program.thumbnail || '/img/dummy.jpg'"
         :max-width="$vuetify.breakpoint.mobile ? '100%' : '100%'"
         class="rounded mt-3"
+        @click="openDetails(program)"
       />
       <h4 class="text-h6">
         {{ program.title }}
       </h4>
       <v-chip small> {{ program.type }} </v-chip>
       <v-alert class="fit-content mt-2 text-white" color="info" dense>
-        ${{ program.reward }} per vulnerability
+        {{ displayReward(program.reward) }}
       </v-alert>
       <small class="text-accent">Managed by Teklab Team</small>
     </v-card-text>
@@ -117,6 +119,11 @@
 </template>
 
 <script>
+import debounce from '~/utils/debounce'
+const toggleFavoriteDebounced = debounce(toggleFavorite, 400)
+function toggleFavorite() {
+  this.programFavorited = !this.programFavorited
+}
 export default {
   props: {
     hoverable: { type: Boolean, default: false },
@@ -126,11 +133,15 @@ export default {
   data() {
     return {
       reveal: false,
+      programFavorited: false,
     }
   },
   computed: {
     briefDescription() {
       return this.program.description.slice(0, 148) + '...'
+    },
+    favoriteIcon() {
+      return this.programFavorited ? 'mdi-heart' : 'mdi-heart-outline'
     },
   },
 
@@ -141,7 +152,7 @@ export default {
     openDetails(program) {
       this.$store.commit('program/SAVE_DATA', program)
       // this.$router.push(`/program/00${program._id}/`)
-      const NAMED_URL = program.title.toLowerCase().replace(/ /g, '-')
+      const NAMED_URL = program._id
 
       this.$router.push({
         // path: `/program/${program._id}`,
@@ -151,6 +162,11 @@ export default {
         },
       })
     },
+    displayReward(rawReward) {
+      if (isNaN(+rawReward)) return rawReward
+      return `$${rawReward} per vulnerability`
+    },
+    toggleFavorite: toggleFavoriteDebounced,
   },
 }
 </script>
