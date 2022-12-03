@@ -152,7 +152,7 @@ export default {
     openDetails(program) {
       this.$store.commit('program/SAVE_DATA', program)
       // this.$router.push(`/program/00${program._id}/`)
-      const NAMED_URL = program.title.toLowerCase().replace(/ /g, '-')
+      const NAMED_URL = program._id
 
       this.$router.push({
         // path: `/program/${program._id}`,
