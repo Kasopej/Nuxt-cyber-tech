@@ -95,7 +95,7 @@
       </h4>
       <v-chip small> {{ program.type }} </v-chip>
       <v-alert class="fit-content mt-2 text-white" color="info" dense>
-        ${{ program.reward }} per vulnerability
+        {{ displayReward(program.reward) }}
       </v-alert>
       <small class="text-accent">Managed by Teklab Team</small>
     </v-card-text>
@@ -150,6 +150,10 @@ export default {
           id: program,
         },
       })
+    },
+    displayReward(rawReward) {
+      if (isNaN(+rawReward)) return rawReward
+      return `$${rawReward} per vulnerability`
     },
   },
 }
