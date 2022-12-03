@@ -50,9 +50,7 @@
           <span class="text-white text-base cursor ml-auto">clear all</span>
         </v-card-title>
         <v-card-text class="mt-4 program-filter-menu-body">
-          <p
-            class="fit-content text-lg mb-0 text-white border-solid border-b border-white"
-          >
+          <p class="fit-content text-base mb-0 text-white font-bold">
             Visibilty
           </p>
           <v-checkbox
@@ -86,11 +84,7 @@
             </template>
           </v-checkbox>
           <!--  -->
-          <p
-            class="fit-content text-lg mb-0 text-white border-solid border-b border-white"
-          >
-            Type
-          </p>
+          <p class="fit-content text-base mb-0 text-white font-bold">Type</p>
           <v-checkbox color="white" class="my-1 type-check" dense>
             <template #default>
               <input type="checkbox" name="" />
@@ -127,19 +121,18 @@
         </v-col>
       </header>
       <div class="d-flex px-2">
-        <p class="text-primary inline-block">
-          {{ programs.length }} programs found
-        </p>
-
-        <v-input
-          class="ml-auto fit-content cursor"
-          prepend-icon="mdi-sort"
-          hint="sort programs"
+        <p class="inline-block">{{ programs.length }} programs found</p>
+        <v-select
+          id="v-select-sorting"
+          :items="['newest', 'oldest']"
+          :value="'newest'"
+          class="fit-content ml-auto"
+          dense
         >
-          <select class="mt-1 border-solid border-b border-black">
-            <option value="moi">Newest</option>
-          </select>
-        </v-input>
+          <template #prepend>
+            <v-icon @click="clickSelect">mdi-sort</v-icon>
+          </template>
+        </v-select>
       </div>
       <v-card class="d-flex">
         <v-col v-for="program in programs" :key="program._id" cols="4">
@@ -215,6 +208,9 @@ export default {
         this.loadingMore = false
         this.$store.dispatch('notification/failureSnackbar', e)
       }
+    },
+    clickSelect() {
+      document.getElementById('v-select-sorting').click()
     },
   },
 }
