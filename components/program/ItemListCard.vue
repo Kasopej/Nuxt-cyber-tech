@@ -89,7 +89,7 @@
       <v-img
         :src="program.thumbnail || '/img/dummy.jpg'"
         :max-width="$vuetify.breakpoint.mobile ? '100%' : '100%'"
-        class="rounded mt-3"
+        class="rounded mt-3 cursor-pointer"
         @click="openDetails(program)"
       />
       <h4 class="text-h6">
