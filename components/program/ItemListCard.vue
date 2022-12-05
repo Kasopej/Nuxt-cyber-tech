@@ -80,16 +80,18 @@
       <span class="ml-auto">{{ program.title }}</span>
     </v-card-title>
     <v-card-text>
-      <section class="d-flex">
-        <v-icon>mdi-eye-off</v-icon>
-        <v-icon class="ml-auto" @click="toggleFavorite">{{
+      <section class="d-flex mb-2">
+        <v-icon color="primary" class="mr-1">mdi-eye-off</v-icon>
+        <v-icon color="primary" class="mr-1">mdi-account-group</v-icon>
+        <v-icon color="primary" class="ml-auto" @click="toggleFavorite">{{
           favoriteIcon
         }}</v-icon>
       </section>
+      <small class="text-accent">{{ program.status }}</small>
       <v-img
         :src="program.thumbnail || '/img/dummy.jpg'"
         :max-width="$vuetify.breakpoint.mobile ? '100%' : '100%'"
-        class="rounded mt-3 cursor-pointer"
+        class="rounded mt-1 cursor-pointer"
         @click="openDetails(program)"
       />
       <h4 class="text-h6">

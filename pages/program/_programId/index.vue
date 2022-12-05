@@ -4,10 +4,6 @@
       <v-breadcrumbs divider="»" :items="breadcrumbsItems" class="pa-0 py-4" />
     </nav>
 
-    <article>
-      <program-item-list-card :program="program" show-visibility />
-    </article>
-
     <section class="d-md-flex justify-space-between items-center py-8">
       <v-btn color="primary" outlined small>
         <v-icon class="mr-4" small>mdi-star</v-icon>
