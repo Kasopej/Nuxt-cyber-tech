@@ -121,12 +121,9 @@
 </template>
 
 <script>
-import debounce from '~/utils/debounce'
-const toggleFavoriteDebounced = debounce(toggleFavorite, 400)
-function toggleFavorite() {
-  this.programFavorited = !this.programFavorited
-}
+import ProgramItemBase from './ProgramItemBase'
 export default {
+  extends: ProgramItemBase,
   props: {
     hoverable: { type: Boolean, default: false },
     program: { type: Object, default: () => {} },
@@ -141,9 +138,6 @@ export default {
   computed: {
     briefDescription() {
       return this.program.description.slice(0, 148) + '...'
-    },
-    favoriteIcon() {
-      return this.programFavorited ? 'mdi-heart' : 'mdi-heart-outline'
     },
   },
 
@@ -168,7 +162,6 @@ export default {
       if (isNaN(+rawReward)) return rawReward
       return `$${rawReward} per vulnerability`
     },
-    toggleFavorite: toggleFavoriteDebounced,
   },
 }
 </script>
