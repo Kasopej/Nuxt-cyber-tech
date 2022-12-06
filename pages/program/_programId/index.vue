@@ -93,15 +93,13 @@ export default {
   },
   async fetch() {
     // rename to disable fetch for now as API is down
-    const URL = `/get-programs/${this.$route.params.programId}`
+    const URL = `/get-program/${this.$route.params.programId}`
     // Make upload request to the API
 
     await this.$axios
       .$get(URL)
       .then((res) => {
-        this.program = res.data.docs.find(
-          (program) => (program._id = this.$route.params.programId)
-        )
+        this.program = res.data
       })
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
