@@ -1,61 +1,19 @@
 <template>
-  <!-- <main>
-    <section v-if="$fetchState.pending">
-      <v-skeleton-loader v-for="i in 3" :key="i" type="article" />
-    </section>
-
-    <section v-else-if="$fetchState.error">
-      <partials-empty-data caption="An error occured" />
-    </section>
-
-    <section v-else-if="programs.length">
-      <v-row no-gutters>
-        <v-col
-          v-for="program in programs"
-          :key="program._id"
-          cols="12"
-          md="6"
-          @click="openDetails(program)"
-        >
-          <program-item-list-card :program="program" hoverable />
-        </v-col>
-      </v-row>
-    </section>
-
-    <section v-else>
-      <partials-empty-data text="No Programs Found" />
-    </section>
-
-    <div class="text-center mt-8">
-      <v-btn
-        v-if="pagination.page < pagination.length"
-        color="primary"
-        elevation="2"
-        :loading="loadingMore"
-        small
-        rounded
-        @click="loadMorePrograms"
-      >
-        Add More
-      </v-btn>
-    </div>
-
-    <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
-  </main> -->
   <v-row>
     <v-col cols="2" class="d-flex">
-      <v-card class="no-flex-stretch program-filter-menu" color="primary">
+      <v-card
+        class="no-flex-stretch program-filter-menu border border-solid border-primary"
+        color="white"
+      >
         <v-card-title class="d-flex">
-          <v-icon color="white"> mdi-filter </v-icon>
-          <span class="text-white text-base cursor ml-auto">clear all</span>
+          <v-icon color="primary"> mdi-filter </v-icon>
+          <span class="text-primary text-base cursor ml-auto">clear all</span>
         </v-card-title>
         <v-card-text class="mt-4 program-filter-menu-body">
-          <p class="fit-content text-base mb-0 text-white font-bold">
-            Visibilty
-          </p>
+          <p class="fit-content text-sm mb-0 text-black">Visibilty</p>
           <v-checkbox
             id="public-visibility-check"
-            color="white"
+            color="black"
             class="my-1 visibility-check"
             dense
           >
@@ -63,14 +21,14 @@
               <input type="checkbox" name="" />
             </template>
             <template #label>
-              <label for="public-visibility-check" class="text-white"
+              <label for="public-visibility-check" class="text-black text-sm"
                 >Public</label
               >
             </template>
           </v-checkbox>
           <v-checkbox
             id="public-visibility-check"
-            color="white"
+            color="black"
             class="my-1 visibility-check"
             dense
           >
@@ -78,27 +36,27 @@
               <input type="checkbox" name="" />
             </template>
             <template #label>
-              <label for="private-visibility-check" class="text-white"
+              <label for="private-visibility-check" class="text-black text-sm"
                 >Private</label
               >
             </template>
           </v-checkbox>
           <!--  -->
-          <p class="fit-content text-base mb-0 text-white font-bold">Type</p>
-          <v-checkbox color="white" class="my-1 type-check" dense>
+          <p class="fit-content text-sm mb-0 text-black">Type</p>
+          <v-checkbox color="black" class="my-1 type-check" dense>
             <template #default>
               <input type="checkbox" name="" />
             </template>
             <template #label>
-              <label class="text-white">Compliance</label>
+              <label class="text-black text-sm">Compliance</label>
             </template>
           </v-checkbox>
-          <v-checkbox color="white" class="my-1 type-check" dense>
+          <v-checkbox color="black" class="my-1 type-check" dense>
             <template #default>
               <input type="checkbox" name="" />
             </template>
             <template #label>
-              <label class="text-white">Vulnerability</label>
+              <label class="text-black text-sm">Vulnerability</label>
             </template>
           </v-checkbox>
         </v-card-text>
@@ -134,11 +92,34 @@
           </template>
         </v-select>
       </div>
-      <v-card class="d-flex">
+      <v-card v-if="$fetchState.pending" class="row">
+        <v-col v-for="i in 3" :key="i" cols="4">
+          <v-skeleton-loader
+            type="table-heading, list-item-two-line, image, table-tfoot"
+            elevation="3"
+          ></v-skeleton-loader>
+        </v-col>
+      </v-card>
+      <v-card v-else class="row">
         <v-col v-for="program in programs" :key="program._id" cols="4">
           <program-item-list-card :program="program" hoverable />
         </v-col>
       </v-card>
+      <div class="text-center mt-8">
+        <v-btn
+          v-if="pagination.page < pagination.length"
+          color="primary"
+          elevation="2"
+          :loading="loadingMore"
+          small
+          rounded
+          @click="loadMorePrograms"
+        >
+          Add More
+        </v-btn>
+      </div>
+
+      <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
     </v-col>
   </v-row>
 </template>
@@ -156,35 +137,12 @@ export default {
   async fetch() {
     const URL = `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
     await this.$axios
-      .$get(URL, this.FORM)
+      .$get(URL)
       .then((res) => {
         this.programs = res.data.docs
         this.pagination.length = res.data.totalPages
       })
       .catch((error) => {
-        this.programs = [
-          {
-            title: 'Tesla Black Team',
-            type: 'Compliance',
-            reward: '500',
-            description:
-              'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis repellat sapiente odio in itaque tempora ad, ipsum nisi enim id qui accusantium repudiandae nostrum? Modi facere reprehenderit optio soluta. Atque.',
-          },
-          {
-            title: 'Tesla Black Team',
-            type: 'Compliance',
-            reward: '500',
-            description:
-              'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis repellat sapiente odio in itaque tempora ad, ipsum nisi enim id qui accusantium repudiandae nostrum? Modi facere reprehenderit optio soluta. Atque.',
-          },
-          {
-            title: 'Tesla Black Team',
-            type: 'Compliance',
-            reward: '500',
-            description:
-              'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Debitis repellat sapiente odio in itaque tempora ad, ipsum nisi enim id qui accusantium repudiandae nostrum? Modi facere reprehenderit optio soluta. Atque.',
-          },
-        ]
         this.$store.dispatch('notification/failureSnackbar', error)
       })
   },
@@ -199,7 +157,7 @@ export default {
       const URL = `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
 
       try {
-        const response = await this.$axios.$get(URL, this.FORM)
+        const response = await this.$axios.$get(URL)
 
         this.loadingMore = false
         this.programs.push(...response.data.docs)
@@ -224,9 +182,11 @@ export default {
   min-height: 80vh;
   flex-basis: 100%;
   max-width: 100%;
+  &.v-card {
+  }
   .program-filter-menu-body {
     .mdi-checkbox-blank-outline {
-      color: white;
+      color: black;
     }
     .v-messages {
       min-height: fit-content;

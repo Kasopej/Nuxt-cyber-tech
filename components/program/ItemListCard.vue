@@ -80,16 +80,18 @@
       <span class="ml-auto">{{ program.title }}</span>
     </v-card-title>
     <v-card-text>
-      <section class="d-flex">
-        <v-icon>mdi-eye-off</v-icon>
-        <v-icon class="ml-auto" @click="toggleFavorite">{{
+      <section class="d-flex mb-2">
+        <v-icon color="primary" class="mr-1">mdi-eye-off</v-icon>
+        <v-icon color="primary" class="mr-1">mdi-account-group</v-icon>
+        <v-icon color="primary" class="ml-auto" @click="toggleFavorite">{{
           favoriteIcon
         }}</v-icon>
       </section>
+      <small class="text-accent">{{ program.status }}</small>
       <v-img
         :src="program.thumbnail || '/img/dummy.jpg'"
         :max-width="$vuetify.breakpoint.mobile ? '100%' : '100%'"
-        class="rounded mt-3"
+        class="rounded mt-1 cursor-pointer"
         @click="openDetails(program)"
       />
       <h4 class="text-h6">
@@ -119,12 +121,9 @@
 </template>
 
 <script>
-import debounce from '~/utils/debounce'
-const toggleFavoriteDebounced = debounce(toggleFavorite, 400)
-function toggleFavorite() {
-  this.programFavorited = !this.programFavorited
-}
+import ProgramItemBase from './ProgramItemBase'
 export default {
+  extends: ProgramItemBase,
   props: {
     hoverable: { type: Boolean, default: false },
     program: { type: Object, default: () => {} },
@@ -133,15 +132,11 @@ export default {
   data() {
     return {
       reveal: false,
-      programFavorited: false,
     }
   },
   computed: {
     briefDescription() {
       return this.program.description.slice(0, 148) + '...'
-    },
-    favoriteIcon() {
-      return this.programFavorited ? 'mdi-heart' : 'mdi-heart-outline'
     },
   },
 
@@ -166,7 +161,6 @@ export default {
       if (isNaN(+rawReward)) return rawReward
       return `$${rawReward} per vulnerability`
     },
-    toggleFavorite: toggleFavoriteDebounced,
   },
 }
 </script>
