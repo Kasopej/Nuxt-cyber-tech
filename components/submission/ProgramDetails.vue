@@ -1,20 +1,30 @@
 <template>
   <main>
-    <h2 class="mb-2 font-weight-bold">Scopes</h2>
-
-    <v-expansion-panels v-model="panel" multiple>
-      <v-expansion-panel v-for="item in scopeItems" :key="item.title">
-        <v-expansion-panel-header class="header primary--text text-body-2">
-          {{ item.title }}
+    <v-expansion-panels v-model="panel" mandatory>
+      <v-expansion-panel>
+        <v-expansion-panel-header class="header text-body-1 mb-1">
+          Scope
         </v-expansion-panel-header>
         <v-expansion-panel-content class="content grey--text text-caption">
-          {{ item.info.join(', ') }}
+          <section v-for="(scope, index) in scopeItems" :key="index">
+            <h4 class="text-primary">{{ scope.title }}</h4>
+            <p>{{ scope.info.join(', ') }}</p>
+          </section>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+
+      <!-- Main Details -->
+      <v-expansion-panel>
+        <v-expansion-panel-header class="header text-body-1 mb-1">
+          Policy
+        </v-expansion-panel-header>
+        <v-expansion-panel-content class="content text-caption">
+          <section class="mt-4" v-html="DESCRIPTION" />
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
 
     <!-- A bad way to customize is by modifyinh Vuetify "_typography.sass" file as it will affect the whole project -->
-    <section class="mt-4" v-html="DESCRIPTION" />
   </main>
 </template>
 
@@ -23,11 +33,10 @@ import showdown from 'showdown'
 
 export default {
   props: {
-    scope: {
-      type: [Array, Object],
+    program: {
+      type: Object,
       required: true,
     },
-    description: { type: String, default: null },
   },
 
   data() {
@@ -39,23 +48,23 @@ export default {
   computed: {
     DESCRIPTION() {
       const converter = new showdown.Converter()
-      return converter.makeHtml(this.description)
+      return converter.makeHtml(this.program.description)
     },
 
     webApp() {
-      return this.scope.map((key) => key.webApplication)
+      return this.program.scope.map((key) => key.webApplication)
     },
 
     webApi() {
-      return this.scope.map((key) => key.api)
+      return this.program.scope.map((key) => key.api)
     },
 
     androidApp() {
-      return this.scope.map((key) => key.androidApp)
+      return this.program.scope.map((key) => key.androidApp)
     },
 
     storeId() {
-      return this.scope.map((key) => key.playstoreId)
+      return this.program.scope.map((key) => key.playstoreId)
     },
 
     scopeItems() {
@@ -84,7 +93,9 @@ export default {
   },
 
   created() {
-    this.panel = [...Array(this.scopeItems.length).keys()].map((k, i) => i)
+    // get array of indexes (keys) to define panels that should be open
+    this.panel = 0
+    // this.panel = [...Array(this.scopeItems.length)]
   },
 }
 </script>

@@ -5,6 +5,11 @@ function toggleFavorite() {
 }
 
 export default {
+  data() {
+    return {
+      programFavorited: false,
+    }
+  },
   computed: {
     favoriteIcon() {
       return this.programFavorited ? 'mdi-heart' : 'mdi-heart-outline'

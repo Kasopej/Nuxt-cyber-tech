@@ -4,10 +4,10 @@
       <v-breadcrumbs divider="»" :items="breadcrumbsItems" class="pa-0 py-4" />
     </nav>
 
-    <section class="d-md-flex justify-space-between items-center py-8">
-      <v-btn color="primary" outlined small>
-        <v-icon class="mr-4" small>mdi-star</v-icon>
-        <span>Favorite</span>
+    <section class="d-flex justify-space-between items-center py-8">
+      <v-btn color="primary" outlined small @click="toggleFavorite">
+        <v-icon color="primary" class="mr-4" small>{{ favoriteIcon }}</v-icon>
+        <span>{{ favoriteText }}</span>
       </v-btn>
 
       <v-btn
@@ -19,6 +19,8 @@
         Submit Report
       </v-btn>
     </section>
+
+    <h1 class="mb-3 p-2 text-h4 w-fit">{{ program.title }}</h1>
 
     <v-tabs grow>
       <v-tab>
@@ -37,10 +39,7 @@
       </v-tab>
 
       <v-tab-item class="px-4 py-8">
-        <submission-program-details
-          :scope="program.scope"
-          :description="program.description"
-        />
+        <submission-program-details :program="program" />
       </v-tab-item>
 
       <v-tab-item class="pa-4">
@@ -68,8 +67,10 @@
 
 <script>
 import showdown from 'showdown'
+import ProgramItemBase from '~/components/program/ProgramItemBase'
 
 export default {
+  extends: ProgramItemBase,
   data() {
     return {
       page: 0,
@@ -111,6 +112,9 @@ export default {
     description() {
       const converter = new showdown.Converter()
       return converter.makeHtml(this.program.description)
+    },
+    favoriteText() {
+      return this.programFavorited ? 'Favourite' : 'Add to favourites'
     },
   },
 }

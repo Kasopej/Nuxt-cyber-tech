@@ -132,7 +132,6 @@ export default {
   data() {
     return {
       reveal: false,
-      programFavorited: false,
     }
   },
   computed: {
