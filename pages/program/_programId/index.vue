@@ -39,7 +39,7 @@
       </v-tab>
 
       <v-tab-item class="px-4 py-8">
-        <submission-program-details :program="program" />
+        <program-details :program="program" />
       </v-tab-item>
 
       <v-tab-item class="pa-4">
