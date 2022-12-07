@@ -68,6 +68,17 @@
 <script>
 import showdown from 'showdown'
 import ProgramItemBase from '~/components/program/ProgramItemBase'
+const submissions = [
+  {
+    title: 'Bug Injection DDOS',
+    programId: {
+      title: 'hello',
+    },
+    bugtype: 'buggyyyy!',
+    actionstate: 'pending',
+    date: new Date().toISOString(),
+  },
+]
 
 export default {
   extends: ProgramItemBase,
@@ -75,7 +86,7 @@ export default {
     return {
       page: 0,
       program: null,
-      submissions: [],
+      submissions,
       breadcrumbsItems: [
         {
           text: 'Dashboard',

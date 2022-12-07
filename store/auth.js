@@ -48,3 +48,9 @@ export const mutations = {
     state.loggedIn = false
   },
 }
+
+export const getters = {
+  profileImg(state) {
+    return state.user.user.profile[0].img
+  },
+}

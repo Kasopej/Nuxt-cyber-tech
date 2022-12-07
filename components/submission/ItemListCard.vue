@@ -1,8 +1,5 @@
 <template>
-  <!-- <div> -->
-  <!-- <div class="card">Hello</div> -->
-  <!-- </div> -->
-  <v-hover v-slot="{ hover }">
+  <!-- <v-hover v-slot="{ hover }">
     <v-card
       class="d-flex align-center mt-6 mx-1 overflow-x-hidden"
       :class="hover ? 'secondary' : ''"
@@ -68,14 +65,45 @@
         </div>
       </section>
     </v-card>
-  </v-hover>
+  </v-hover> -->
+  <v-col cols="12" sm="6">
+    <v-card
+      class="submission-card cursor-pointer"
+      @click="openDetails(submission)"
+    >
+      <v-card-title primary-title>
+        <v-avatar color="primary">
+          <v-img v-if="profileImg" :src="profileImg"></v-img>
+          <span v-else>KJ</span>
+        </v-avatar>
+        <span class="ml-2 inline-block primary--text">{{
+          submission.title
+        }}</span>
+      </v-card-title>
+      <v-card-text class="submission-card-text">
+        <div class="flex">
+          <span>Severity: High</span>
+          <span class="ml-auto">Status: {{ submission.actionstate }}</span>
+        </div>
+        <span>Last Modified: {{ submission.date }}</span>
+      </v-card-text>
+    </v-card>
+  </v-col>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: {
     hoverable: { type: Boolean, default: false },
     submission: { type: Object, default: () => {} },
+  },
+  data() {
+    return {}
+  },
+
+  computed: {
+    ...mapGetters('auth', ['profileImg']),
   },
 
   methods: {
