@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="2" class="d-flex">
+    <v-col v-if="!mobileView" cols="2" class="d-flex">
       <v-card
         class="no-flex-stretch program-filter-menu border border-solid border-primary"
         color="white"
@@ -62,7 +62,71 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col cols="10" class="px-4">
+    <div v-if="mobileView">
+      <v-overlay :value="overlay">
+        <v-card
+          class="no-flex-stretch program-filter-menu border border-solid border-primary"
+          color="white"
+        >
+          <v-card-title class="d-flex">
+            <v-icon color="primary"> mdi-filter </v-icon>
+            <span class="text-primary text-base cursor ml-auto">clear all</span>
+          </v-card-title>
+          <v-card-text class="mt-4 program-filter-menu-body">
+            <p class="fit-content text-sm mb-0 text-black">Visibilty</p>
+            <v-checkbox
+              id="public-visibility-check"
+              color="black"
+              class="my-1 visibility-check"
+              dense
+            >
+              <template #default>
+                <input type="checkbox" name="" />
+              </template>
+              <template #label>
+                <label for="public-visibility-check" class="text-black text-sm"
+                  >Public</label
+                >
+              </template>
+            </v-checkbox>
+            <v-checkbox
+              id="public-visibility-check"
+              color="black"
+              class="my-1 visibility-check"
+              dense
+            >
+              <template #default>
+                <input type="checkbox" name="" />
+              </template>
+              <template #label>
+                <label for="private-visibility-check" class="text-black text-sm"
+                  >Private</label
+                >
+              </template>
+            </v-checkbox>
+            <!--  -->
+            <p class="fit-content text-sm mb-0 text-black">Type</p>
+            <v-checkbox color="black" class="my-1 type-check" dense>
+              <template #default>
+                <input type="checkbox" name="" />
+              </template>
+              <template #label>
+                <label class="text-black text-sm">Compliance</label>
+              </template>
+            </v-checkbox>
+            <v-checkbox color="black" class="my-1 type-check" dense>
+              <template #default>
+                <input type="checkbox" name="" />
+              </template>
+              <template #label>
+                <label class="text-black text-sm">Vulnerability</label>
+              </template>
+            </v-checkbox>
+          </v-card-text>
+        </v-card>
+      </v-overlay>
+    </div>
+    <v-col :cols="mobileView ? 12 : 10" class="px-4">
       <header class="d-flex mb-6">
         <v-col cols="12">
           <div class="mx-auto text-center">
@@ -75,6 +139,7 @@
             <v-icon class="relative right-12 cursor" color="white" x-large
               >mdi-magnify</v-icon
             >
+            <v-btn color="success" @click="overlay = !overlay">text</v-btn>
           </div>
         </v-col>
       </header>
@@ -93,7 +158,7 @@
         </v-select>
       </div>
       <v-card v-if="$fetchState.pending" class="row">
-        <v-col v-for="i in 3" :key="i" cols="4">
+        <v-col v-for="i in 3" :key="i" cols="12" md="4">
           <v-skeleton-loader
             type="table-heading, list-item-two-line, image, table-tfoot"
             elevation="3"
@@ -101,7 +166,7 @@
         </v-col>
       </v-card>
       <v-card v-else class="row">
-        <v-col v-for="program in programs" :key="program._id" cols="4">
+        <v-col v-for="program in programs" :key="program._id" cols="12" md="4">
           <program-item-list-card :program="program" hoverable />
         </v-col>
       </v-card>
@@ -131,6 +196,7 @@ export default {
       pagination: { page: 1, length: 0 },
       programs: [],
       loadingMore: false,
+      overlay: false,
     }
   },
 
