@@ -4,7 +4,7 @@
     v-model="valid"
     class="pa-8 col-12"
     lazy-validation
-    @submit.prevent="login()"
+    @submit.prevent="login"
   >
     <div class="text-center pb-4">
       Don’t have an account?
@@ -41,10 +41,10 @@
       <v-btn
         large
         block
+        type="submit"
         color="primary"
         class="px-3 py-2"
         :disabled="formSubmitted"
-        @click="login"
       >
         Sign in
         <v-progress-circular

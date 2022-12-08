@@ -4,7 +4,7 @@
       Authenticate with Token
     </header>
 
-    <v-form ref="tokenForm" class="mb-5">
+    <v-form ref="tokenForm" class="mb-5" @submit.prevent="verify">
       <v-text-field
         v-model="form.token"
         dense
@@ -14,7 +14,7 @@
         required
       ></v-text-field>
 
-      <v-btn block color="primary" @click="verify()"> Authenticate </v-btn>
+      <v-btn block color="primary" type="submit"> Authenticate </v-btn>
     </v-form>
     <small class="text--grey" style="line-height: 1">
       If you have lost your mobile device and want to reset your 2FA to retrieve
