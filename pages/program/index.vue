@@ -64,66 +64,83 @@
     </v-col>
     <div v-if="mobileView">
       <v-overlay :value="overlay">
-        <v-card
-          class="no-flex-stretch program-filter-menu border border-solid border-primary"
-          color="white"
-        >
-          <v-card-title class="d-flex">
-            <v-icon color="primary"> mdi-filter </v-icon>
-            <span class="text-primary text-base cursor ml-auto">clear all</span>
-          </v-card-title>
-          <v-card-text class="mt-4 program-filter-menu-body">
-            <p class="fit-content text-sm mb-0 text-black">Visibilty</p>
-            <v-checkbox
-              id="public-visibility-check"
-              color="black"
-              class="my-1 visibility-check"
-              dense
+        <v-row>
+          <v-col cols="12" class="d-flex">
+            <v-card
+              class="no-flex-stretch program-filter-menu border border-solid border-primary"
+              color="white"
             >
-              <template #default>
-                <input type="checkbox" name="" />
-              </template>
-              <template #label>
-                <label for="public-visibility-check" class="text-black text-sm"
-                  >Public</label
+              <v-icon
+                class="px-2 pt-2"
+                color="primary"
+                @click="overlay = !overlay"
+                >mdi-arrow-left</v-icon
+              >
+              <v-card-title class="d-flex">
+                <v-icon color="primary"> mdi-filter </v-icon>
+                <span class="text-primary text-base cursor ml-auto"
+                  >clear all</span
                 >
-              </template>
-            </v-checkbox>
-            <v-checkbox
-              id="public-visibility-check"
-              color="black"
-              class="my-1 visibility-check"
-              dense
-            >
-              <template #default>
-                <input type="checkbox" name="" />
-              </template>
-              <template #label>
-                <label for="private-visibility-check" class="text-black text-sm"
-                  >Private</label
+              </v-card-title>
+              <v-card-text class="mt-4 program-filter-menu-body">
+                <p class="fit-content text-sm mb-0 text-black">Visibilty</p>
+                <v-checkbox
+                  id="public-visibility-check"
+                  color="black"
+                  class="my-1 visibility-check"
+                  dense
                 >
-              </template>
-            </v-checkbox>
-            <!--  -->
-            <p class="fit-content text-sm mb-0 text-black">Type</p>
-            <v-checkbox color="black" class="my-1 type-check" dense>
-              <template #default>
-                <input type="checkbox" name="" />
-              </template>
-              <template #label>
-                <label class="text-black text-sm">Compliance</label>
-              </template>
-            </v-checkbox>
-            <v-checkbox color="black" class="my-1 type-check" dense>
-              <template #default>
-                <input type="checkbox" name="" />
-              </template>
-              <template #label>
-                <label class="text-black text-sm">Vulnerability</label>
-              </template>
-            </v-checkbox>
-          </v-card-text>
-        </v-card>
+                  <template #default>
+                    <input type="checkbox" name="" />
+                  </template>
+                  <template #label>
+                    <label
+                      for="public-visibility-check"
+                      class="text-black text-sm"
+                      >Public</label
+                    >
+                  </template>
+                </v-checkbox>
+                <v-checkbox
+                  id="public-visibility-check"
+                  color="black"
+                  class="my-1 visibility-check"
+                  dense
+                >
+                  <template #default>
+                    <input type="checkbox" name="" />
+                  </template>
+                  <template #label>
+                    <label
+                      for="private-visibility-check"
+                      class="text-black text-sm"
+                      >Private</label
+                    >
+                  </template>
+                </v-checkbox>
+                <!--  -->
+                <p class="fit-content text-sm mb-0 text-black">Type</p>
+                <v-checkbox color="black" class="my-1 type-check" dense>
+                  <template #default>
+                    <input type="checkbox" name="" />
+                  </template>
+                  <template #label>
+                    <label class="text-black text-sm">Compliance</label>
+                  </template>
+                </v-checkbox>
+                <v-checkbox color="black" class="my-1 type-check" dense>
+                  <template #default>
+                    <input type="checkbox" name="" />
+                  </template>
+                  <template #label>
+                    <label class="text-black text-sm">Vulnerability</label>
+                  </template>
+                </v-checkbox>
+                <v-btn color="accent" @click="overlay = !overlay">Close</v-btn>
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
       </v-overlay>
     </div>
     <v-col :cols="mobileView ? 12 : 10" class="px-4">
@@ -139,17 +156,21 @@
             <v-icon class="relative right-12 cursor" color="white" x-large
               >mdi-magnify</v-icon
             >
-            <v-btn color="success" @click="overlay = !overlay">text</v-btn>
           </div>
         </v-col>
       </header>
       <div class="d-flex px-2">
-        <p class="inline-block">{{ programs.length }} programs found</p>
+        <p class="inline-block col-6">
+          {{ programs.length }} programs found
+          <v-icon v-if="mobileView" @click="overlay = !overlay"
+            >mdi-filter</v-icon
+          >
+        </p>
         <v-select
           id="v-select-sorting"
           :items="['newest', 'oldest']"
           :value="'newest'"
-          class="fit-content ml-auto"
+          class="fit-content ml-auto mt-2 col-6"
           dense
         >
           <template #prepend>
@@ -165,7 +186,7 @@
           ></v-skeleton-loader>
         </v-col>
       </v-card>
-      <v-card v-else class="row">
+      <v-card v-else class="row justify-center mx-auto">
         <v-col v-for="program in programs" :key="program._id" cols="12" md="4">
           <program-item-list-card :program="program" hoverable />
         </v-col>
@@ -246,7 +267,7 @@ export default {
 }
 .program-filter-menu {
   min-height: 80vh;
-  flex-basis: 100%;
+  flex: 1 1 100%;
   max-width: 100%;
   &.v-card {
   }
@@ -258,5 +279,8 @@ export default {
       min-height: fit-content;
     }
   }
+}
+.v-overlay__content {
+  width: 80%;
 }
 </style>
