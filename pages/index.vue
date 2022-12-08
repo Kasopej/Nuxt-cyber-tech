@@ -34,17 +34,17 @@
         Your Programs and Submissions</v-card-title
       >
       <v-card-text class="d-flex">
-        <v-col cols="4" class="d-flex align-start">
+        <v-col cols="6" md="4" class="d-flex align-start">
           <v-icon color="accent" left>mdi-shield-lock</v-icon>
           <div class="cursor" @click="() => $router.push('/program')">
-            <h3 class="fit-content">Private Programs</h3>
-            <span class="fit-content mx-auto text-h3">{{ 10 }}</span>
+            <h3 class="w-max">Private Programs</h3>
+            <span class="max-content mx-auto text-h3">{{ 10 }}</span>
           </div>
         </v-col>
-        <v-col cols="4" class="d-flex align-start">
+        <v-col cols="6" md="4" class="d-flex align-start">
           <v-icon color="accent" left>mdi-shield-link-variant</v-icon>
           <div class="cursor" @click="() => $router.push('/submission')">
-            <h3 class="fit-content">Submissions</h3>
+            <h3 class="w-max">Submissions</h3>
             <span class="fit-content mx-auto text-h3">{{ 10 }}</span>
           </div>
         </v-col>
@@ -56,17 +56,17 @@
         Your Ranking</v-card-title
       >
       <v-card-text class="d-flex">
-        <v-col cols="4" class="d-flex align-start">
+        <v-col cols="6" md="4" class="d-flex align-start">
           <v-icon color="accent" left>mdi-star-box</v-icon>
           <div class="cursor">
-            <h3 class="fit-content">Points Earned</h3>
+            <h3 class="w-max">Points Earned</h3>
             <span class="fit-content mx-auto text-h3">{{ 10 }}</span>
           </div>
         </v-col>
-        <v-col cols="4" class="d-flex align-start">
+        <v-col cols="6" md="4" class="d-flex align-start">
           <v-icon color="accent" left>mdi-seal</v-icon>
           <div class="cursor">
-            <h3 class="fit-content">Badges</h3>
+            <h3 class="w-max">Badges</h3>
             <span class="fit-content mx-auto text-h3">{{ 10 }}</span>
           </div>
         </v-col>
@@ -79,7 +79,7 @@
       >
       <v-card-text class="d-flex">
         <v-col cols="4" class="d-flex align-start">
-          <div class="ml-7 cursor">
+          <div class="ml-8 cursor">
             <h3 class="fit-content text-h3">$1,000</h3>
           </div>
         </v-col>

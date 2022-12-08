@@ -55,7 +55,7 @@
         </section>
 
         <section v-else-if="submissionsLoading" class="flex">
-          <v-col v-for="n in 2" :key="n" cols="6">
+          <v-col v-for="n in 2" :key="n" cols="12" sm="6">
             <v-skeleton-loader
               type="card-heading, text"
               elevation="3"
