@@ -70,7 +70,7 @@
       </section>
     </v-card>
   </v-hover> -->
-  <v-card @mouseenter.once="reveal = true">
+  <v-card>
     <v-card-title primary-title class="d-flex">
       <v-img
         :src="program.thumbnail || '/img/dummy.jpg'"
@@ -94,14 +94,16 @@
         class="rounded mt-1 cursor-pointer"
         @click="openDetails(program)"
       />
-      <h4 class="text-h6">
-        {{ program.title }}
-      </h4>
-      <v-chip small> {{ program.type }} </v-chip>
-      <v-alert class="fit-content mt-2 text-white" color="info" dense>
-        {{ displayReward(program.reward) }}
-      </v-alert>
-      <small class="text-accent">Managed by Teklab Team</small>
+      <section @mouseenter="reveal = true">
+        <h4 class="text-h6">
+          {{ program.title }}
+        </h4>
+        <v-chip small> {{ program.type }} </v-chip>
+        <v-alert class="fit-content mt-2 text-white" color="info" dense>
+          {{ displayReward(program.reward) }}
+        </v-alert>
+        <small class="text-accent">Managed by Teklab Team</small>
+      </section>
     </v-card-text>
     <v-expand-transition>
       <v-card
@@ -111,9 +113,10 @@
         @mouseleave="reveal = false"
       >
         <v-card-text class="pb-0">
-          <p>
+          <p class="p-3">
             {{ briefDescription }}
           </p>
+          <v-btn color="primary" @click="reveal = false">Close</v-btn>
         </v-card-text>
       </v-card>
     </v-expand-transition>
