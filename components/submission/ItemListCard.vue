@@ -1,8 +1,5 @@
 <template>
-  <!-- <div> -->
-  <!-- <div class="card">Hello</div> -->
-  <!-- </div> -->
-  <v-hover v-slot="{ hover }">
+  <!-- <v-hover v-slot="{ hover }">
     <v-card
       class="d-flex align-center mt-6 mx-1 overflow-x-hidden"
       :class="hover ? 'secondary' : ''"
@@ -68,14 +65,66 @@
         </div>
       </section>
     </v-card>
-  </v-hover>
+  </v-hover> -->
+  <v-col cols="12" sm="6">
+    <v-hover>
+      <template #default="{ hover }">
+        <v-card
+          class="submission-card cursor-pointer"
+          :class="hover ? 'grey lighten-5' : ''"
+          @click="openDetails(submission)"
+        >
+          <v-card-title primary-title>
+            <span class="inline-block primary--text">{{
+              submission.title
+            }}</span>
+          </v-card-title>
+          <v-card-text class="submission-card-text">
+            <div class="flex">
+              <span>Status: {{ submission.actionstate }}</span>
+              <div class="ml-auto flex severity-indicator-wrapper items-center">
+                <v-progress-linear
+                  class="mr-1"
+                  :color="submissionSeverityColor"
+                  background-color="grey lighten-2"
+                  rounded
+                  :value="submisionCVVPercentage"
+                  height="8"
+                ></v-progress-linear>
+                Critical
+              </div>
+            </div>
+            <span>Last Modified: {{ submissionDateFormatted }}</span>
+          </v-card-text>
+        </v-card>
+      </template>
+    </v-hover>
+  </v-col>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import dayjs from 'dayjs'
 export default {
   props: {
     hoverable: { type: Boolean, default: false },
     submission: { type: Object, default: () => {} },
+  },
+  data() {
+    return {}
+  },
+
+  computed: {
+    ...mapGetters('auth', ['profileImg']),
+    submissionDateFormatted() {
+      return dayjs(this.submission.date).format('DD MMM YYYY - HH:mm')
+    },
+    submisionCVVPercentage() {
+      return 10
+    },
+    submissionSeverityColor() {
+      return `red darken-2`
+    },
   },
 
   methods: {
@@ -94,7 +143,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 @media screen and (max-width: 425px) {
   .text-medium {
     font-size: 10px !important;
@@ -103,5 +152,9 @@ export default {
   .text-small {
     font-size: 10px !important;
   }
+}
+.severity-indicator-wrapper {
+  flex: 1 1 20%;
+  max-width: 20%;
 }
 </style>

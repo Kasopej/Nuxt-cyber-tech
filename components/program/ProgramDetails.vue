@@ -1,6 +1,6 @@
 <template>
   <main>
-    <v-expansion-panels v-model="panel" mandatory>
+    <v-expansion-panels v-model="panel" mandatory hover>
       <v-expansion-panel>
         <v-expansion-panel-header class="header text-body-1 mb-1">
           Scope
