@@ -144,13 +144,13 @@
       </v-overlay>
     </div>
     <v-col :cols="mobileView ? 12 : 10" class="px-4">
-      <header class="d-flex mb-6">
+      <header class="d-flex mb-0 mb-md-6">
         <v-col cols="12">
           <div class="mx-auto text-center">
             <input
               type="search"
               class="py-4 px-6 bg-primary text-white search-bar border-solid border rounded-lg border-primary"
-              style="width: 70%"
+              style="width: 70%; margin: 0 15%"
               placeholder="Search programs"
             />
             <v-icon class="relative right-12 cursor" color="white" x-large
