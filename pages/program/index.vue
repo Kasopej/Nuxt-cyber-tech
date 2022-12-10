@@ -5,7 +5,7 @@
       <v-overlay :value="overlay">
         <v-row>
           <v-col cols="12" class="d-flex">
-            <v-card
+            <!-- <v-card
               class="no-flex-stretch program-filter-menu border border-solid border-primary"
               color="white"
             >
@@ -57,7 +57,6 @@
                     >
                   </template>
                 </v-checkbox>
-                <!--  -->
                 <p class="fit-content text-sm mb-0 text-black">Type</p>
                 <v-checkbox color="black" class="my-1 type-check" dense>
                   <template #default>
@@ -77,7 +76,11 @@
                 </v-checkbox>
                 <v-btn color="accent" @click="overlay = !overlay">Close</v-btn>
               </v-card-text>
-            </v-card>
+            </v-card> -->
+            <PartialsFilterMenuBar
+              v-model="filterOptions"
+              @toggle-overlay="overlay = !overlay"
+            ></PartialsFilterMenuBar>
           </v-col>
         </v-row>
       </v-overlay>
