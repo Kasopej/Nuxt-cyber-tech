@@ -442,6 +442,7 @@ export default {
       FORM: {
         visibility: true,
         notification: true,
+        attachments: [],
         // reference: Math.random().toString(36).slice(2),
         description:
           '## Summary:\n[add summary of the vulnerability]\n\n## Steps To Reproduce:\n[add details for how we can reproduce the issue]\n\n  1. [add step]\n  2. [add step]\n  3. [add step]\n\n## Supporting Material/References:\n\n[list any additional material (e.g. screenshots, logs, etc.)]\n\n## Remediation:\n\n[add details for possible remidiation]\n\n  * [attachment / reference]',
