@@ -1,67 +1,6 @@
 <template>
   <v-row>
-    <v-col v-if="!mobileView" cols="2" class="d-flex">
-      <v-card
-        class="no-flex-stretch program-filter-menu border border-solid border-primary"
-        color="white"
-      >
-        <v-card-title class="d-flex">
-          <v-icon color="primary"> mdi-filter </v-icon>
-          <span class="text-primary text-base cursor ml-auto">clear all</span>
-        </v-card-title>
-        <v-card-text class="mt-4 program-filter-menu-body">
-          <p class="fit-content text-sm mb-0 text-black">Visibilty</p>
-          <v-checkbox
-            id="public-visibility-check"
-            color="black"
-            class="my-1 visibility-check"
-            dense
-          >
-            <template #default>
-              <input type="checkbox" name="" />
-            </template>
-            <template #label>
-              <label for="public-visibility-check" class="text-black text-sm"
-                >Public</label
-              >
-            </template>
-          </v-checkbox>
-          <v-checkbox
-            id="public-visibility-check"
-            color="black"
-            class="my-1 visibility-check"
-            dense
-          >
-            <template #default>
-              <input type="checkbox" name="" />
-            </template>
-            <template #label>
-              <label for="private-visibility-check" class="text-black text-sm"
-                >Private</label
-              >
-            </template>
-          </v-checkbox>
-          <!--  -->
-          <p class="fit-content text-sm mb-0 text-black">Type</p>
-          <v-checkbox color="black" class="my-1 type-check" dense>
-            <template #default>
-              <input type="checkbox" name="" />
-            </template>
-            <template #label>
-              <label class="text-black text-sm">Compliance</label>
-            </template>
-          </v-checkbox>
-          <v-checkbox color="black" class="my-1 type-check" dense>
-            <template #default>
-              <input type="checkbox" name="" />
-            </template>
-            <template #label>
-              <label class="text-black text-sm">Vulnerability</label>
-            </template>
-          </v-checkbox>
-        </v-card-text>
-      </v-card>
-    </v-col>
+    <!-- Filter menu bar - smaller screens version -->
     <div v-if="mobileView">
       <v-overlay :value="overlay">
         <v-row>
@@ -143,6 +82,10 @@
         </v-row>
       </v-overlay>
     </div>
+    <!-- Filter menu bar - larger screens version -->
+    <v-col v-else cols="2" class="d-flex">
+      <PartialsFilterMenuBar v-model="filterOptions"></PartialsFilterMenuBar>
+    </v-col>
     <v-col :cols="mobileView ? 12 : 10" class="px-4">
       <header class="d-flex mb-0 mb-md-6">
         <v-col cols="12">
@@ -218,11 +161,23 @@ export default {
       programs: [],
       loadingMore: false,
       overlay: false,
+      filtersSet: false,
+      filterOptions: {
+        visibility: {
+          public: false,
+          private: false,
+        },
+        type: {
+          compliance: false,
+        },
+      },
     }
   },
 
   async fetch() {
-    const URL = `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
+    const URL =
+      `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}` +
+      this.filterURLEncoded
     await this.$axios
       .$get(URL)
       .then((res) => {
@@ -232,6 +187,23 @@ export default {
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
       })
+  },
+  computed: {
+    filterURLEncoded() {
+      if (!this.filtersSet) return ''
+      return `&type=${
+        this.filterOptions.type.compliance ? 'compliance' : ''
+      }&visibility=${this.filterOptions.visibility.private ? 'private,' : ''}${
+        this.filterOptions.visibility.public ? 'public' : ''
+      }`
+    },
+  },
+  watch: {
+    filterOptions(val) {
+      this.filtersSet = true
+      console.log({ val })
+      this.$fetch()
+    },
   },
   created() {
     this.$store.commit('program/changeFluidState', true)
