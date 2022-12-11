@@ -45,7 +45,7 @@
       <v-tab-item class="pa-4">
         <section
           v-if="submissions.length && !submissionsLoading"
-          class="d-flex"
+          class="d-flex flex-wrap"
         >
           <submission-item-list-card
             v-for="submission in submissions"

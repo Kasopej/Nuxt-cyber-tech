@@ -25,7 +25,7 @@
       <partials-empty-data caption="An error occured" />
     </section>
 
-    <section v-else-if="submissions.length" class="d-flex">
+    <section v-else-if="submissions.length" class="d-flex flex-wrap">
       <submission-item-list-card
         v-for="submission in submissions"
         :key="submission._id"
