@@ -43,10 +43,15 @@
       </v-tab-item>
 
       <v-tab-item class="pa-4">
-        <section v-if="submissions.length && !submissionsLoading">
-          <article v-for="submission in submissions" :key="submission._id">
-            <submission-item-list-card :submission="submission" />
-          </article>
+        <section
+          v-if="submissions.length && !submissionsLoading"
+          class="d-flex"
+        >
+          <submission-item-list-card
+            v-for="submission in submissions"
+            :key="submission._id"
+            :submission="submission"
+          />
         </section>
 
         <section v-else-if="submissionsLoading" class="flex">

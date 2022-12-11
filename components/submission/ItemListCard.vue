@@ -1,71 +1,4 @@
 <template>
-  <!-- <v-hover v-slot="{ hover }">
-    <v-card
-      class="d-flex align-center mt-6 mx-1 overflow-x-hidden"
-      :class="hover ? 'secondary' : ''"
-      @click="openDetails(submission)"
-    >
-      <v-img
-        :src="submission.thumbnail || '/img/dummy.jpg'"
-        :max-width="$vuetify.breakpoint.mobile ? '108px' : '150px'"
-        class="rounded-0"
-      />
-
-      <section
-        class="flex-grow-1 w-full d-flex flex-column justify-space-between pa-1 pa-md-2"
-      >
-        <div class="d-sm-flex justify-space-between text-capitalize text-small">
-          <header
-            class="body-2 font-weight-medium accent--text text-medium"
-            v-text="submission.programId.title"
-          />
-
-          <aside class="text-no-wrap">
-            <span
-              class="primary--text text-caption text--darken-2 font-weight-bold py-md-2 px-sm-4 text-small"
-              v-text="submission.actionstate"
-            />
-
-            <v-icon color="accent" :size="iconSize()">{{
-              submission.visibility == 'Public' ? 'mdi-eye' : 'mdi-eye-off'
-            }}</v-icon>
-          </aside>
-        </div>
-
-        <div
-          class="d-none d-sm-inline grey--text body-2 text--darken-2 text-no-wrap"
-        >
-          <v-icon :size="iconSize()" class="primary--text mr-2"
-            >mdi-factory</v-icon
-          >
-          <span
-            class="d-inline-block text-truncate text-wrap text-capitalize text-small"
-            v-text="desiredLength(submission.title)"
-          ></span>
-        </div>
-
-        <div class="text-no-wrap grey--text body-2 text--darken-2 text-small">
-          <v-icon :size="iconSize()" class="primary--text mr-2">mdi-tag</v-icon>
-          <span v-text="submission.bugtype" />
-        </div>
-
-        <div class="text-no-wrap grey--text body-2 text--darken-2 text-small">
-          <v-icon :size="iconSize()" class="primary--text mr-2"
-            >mdi-gift-outline</v-icon
-          >
-          <strong>$0</strong>
-          <span>Per Vulnerability</span>
-        </div>
-
-        <div class="text-no-wrap grey--text body-2 text--darken-2 text-small">
-          <v-icon :size="iconSize()" class="primary--text mr-2"
-            >mdi-clock-outline</v-icon
-          >
-          <span v-text="new Date(submission.date).toLocaleDateString()" />
-        </div>
-      </section>
-    </v-card>
-  </v-hover> -->
   <v-col cols="12" sm="6">
     <v-hover>
       <template #default="{ hover }">
@@ -89,10 +22,10 @@
               <div class="ml-auto flex severity-indicator-wrapper items-center">
                 <v-progress-linear
                   class="mr-1"
-                  :color="submissionSeverityColor"
+                  :color="submissionSeverityDisplayVals.color"
                   background-color="grey lighten-2"
                   rounded
-                  :value="submisionCVVPercentage"
+                  :value="submissionSeverityDisplayVals.percentage"
                   height="8"
                 ></v-progress-linear>
                 Critical
@@ -125,10 +58,10 @@ export default {
       return dayjs(this.submission.date).format('DD MMM YYYY - HH:mm')
     },
     submisionCVVPercentage() {
-      return 10
+      return this.submission.severity.toLowerCase()
     },
-    submissionSeverityColor() {
-      return `red darken-2`
+    submissionSeverityDisplayVals() {
+      return this.extractDisplayValsFromSeverity(this.submission.severity)
     },
   },
 
@@ -144,11 +77,39 @@ export default {
     iconSize() {
       return this.$vuetify.breakpoint.mobile ? 12 : 16
     },
+    extractDisplayValsFromSeverity(severity) {
+      let color = 'darken-2 '
+      let percentage
+      switch (severity.toLowerCase()) {
+        case 'low':
+          color += 'green'
+          percentage = 25
+          break
+        case 'medium':
+          color += 'yellow'
+          percentage = 50
+          break
+        case 'high':
+          color += 'orange'
+          percentage = 75
+          break
+        case 'critical':
+          color += 'red'
+          percentage = 100
+          break
+      }
+      return { color, percentage }
+    },
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.severity-indicator-wrapper {
+  flex: 1 1 30%;
+  max-width: 30%;
+}
+
 @media screen and (max-width: 425px) {
   .text-medium {
     font-size: 10px !important;
@@ -157,9 +118,16 @@ export default {
   .text-small {
     font-size: 10px !important;
   }
+  .severity-indicator-wrapper {
+    flex: 1 1 40%;
+    max-width: 40%;
+  }
 }
-.severity-indicator-wrapper {
-  flex: 1 1 20%;
-  max-width: 20%;
+
+@media screen and (min-width: 600px) and (max-width: 750px) {
+  .severity-indicator-wrapper {
+    flex: 1 1 40%;
+    max-width: 40%;
+  }
 }
 </style>
