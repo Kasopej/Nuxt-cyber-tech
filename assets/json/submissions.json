@@ -1,0 +1,98 @@
+[
+    {
+        "_id": "610cd4bf4a3b760022d3f986",
+        "actionstate": "pending",
+        "points": 0,
+        "attachments": [
+            "610cd4bf4a3b360022d3f9860.png"
+        ],
+        "reference": "tekafbf1490f7c387b1612a",
+        "hunterId": "60ed8ee3c820e30022c1172e",
+        "programId": "60f5802825f4680022c0f905",
+        "title": "Summary ",
+        "bugtype": "LDAP Injection",
+        "scope": "api.application.com",
+        "reportedto": "Teklabspace",
+        "cveid": "3.1",
+        "visibility": "Public",
+        "description": "## Summary:\n[add summary of the vulnerability]\n\n## Steps To Reproduce:\n[add details for how we can reproduce the issue]\n\n  1. [add step]\n  2. [add step]\n  3. [add step]\n\n## Supporting Material/References:\n\n[list any additional material (e.g. screenshots, logs, etc.)]\n\n## Remediation:\n\n[add details for possible remidiation]\n\n  * [attachment / reference]",
+        "severity": "Critical",
+        "reportedat": "2021-08-06T06:20:47.922+0000",
+        "date": "2021-08-06T06:20:47.922+0000",
+        "createdAt": "2021-08-06T06:20:47.925+0000",
+        "updatedAt": "2021-08-06T06:20:50.432+0000",
+        "__v": 0
+    },
+    {
+        "_id": "610cd4bf4a3b360022d4f986",
+        "actionstate": "pending",
+        "points": 0,
+        "attachments": [
+            "610cd4bf4a3b360022d3f9860.png"
+        ],
+        "reference": "tekafbf1490f7c387b1612a",
+        "hunterId": "60ed8ee3c820e30022c1172e",
+        "programId": "60f5802825f4680022c0f905",
+        "title": "Summary ",
+        "bugtype": "LDAP Injection",
+        "scope": "api.application.com",
+        "reportedto": "Teklabspace",
+        "cveid": "3.1",
+        "visibility": "Public",
+        "description": "## Summary:\n[add summary of the vulnerability]\n\n## Steps To Reproduce:\n[add details for how we can reproduce the issue]\n\n  1. [add step]\n  2. [add step]\n  3. [add step]\n\n## Supporting Material/References:\n\n[list any additional material (e.g. screenshots, logs, etc.)]\n\n## Remediation:\n\n[add details for possible remidiation]\n\n  * [attachment / reference]",
+        "severity": "Critical",
+        "reportedat": "2021-08-06T06:20:47.922+0000",
+        "date": "2021-08-06T06:20:47.922+0000",
+        "createdAt": "2021-08-06T06:20:47.925+0000",
+        "updatedAt": "2021-08-06T06:20:50.432+0000",
+        "__v": 0
+    },
+    {
+        "_id": "610cd4bf4a3b360022d3f186",
+        "actionstate": "pending",
+        "points": 0,
+        "attachments": [
+            "610cd4bf4a3b360022d3f9860.png"
+        ],
+        "reference": "tekafbf1490f7c387b1612a",
+        "hunterId": "60ed8ee3c820e30022c1172e",
+        "programId": "60f5802825f4680022c0f905",
+        "title": "Summary ",
+        "bugtype": "LDAP Injection",
+        "scope": "api.application.com",
+        "reportedto": "Teklabspace",
+        "cveid": "3.1",
+        "visibility": "Public",
+        "description": "## Summary:\n[add summary of the vulnerability]\n\n## Steps To Reproduce:\n[add details for how we can reproduce the issue]\n\n  1. [add step]\n  2. [add step]\n  3. [add step]\n\n## Supporting Material/References:\n\n[list any additional material (e.g. screenshots, logs, etc.)]\n\n## Remediation:\n\n[add details for possible remidiation]\n\n  * [attachment / reference]",
+        "severity": "Critical",
+        "reportedat": "2021-08-06T06:20:47.922+0000",
+        "date": "2021-08-06T06:20:47.922+0000",
+        "createdAt": "2021-08-06T06:20:47.925+0000",
+        "updatedAt": "2021-08-06T06:20:50.432+0000",
+        "__v": 0
+    },
+    {
+        "_id": "610cd4bf4a3b160022d3f986",
+        "actionstate": "pending",
+        "points": 0,
+        "attachments": [
+            "610cd4bf4a3b360022d3f9860.png"
+        ],
+        "reference": "tekafbf1490f7c387b1612a",
+        "hunterId": "60ed8ee3c820e30022c1172e",
+        "programId": "60f5802825f4680022c0f905",
+        "title": "Summary ",
+        "bugtype": "LDAP Injection",
+        "scope": "api.application.com",
+        "reportedto": "Teklabspace",
+        "cveid": "3.1",
+        "visibility": "Public",
+        "description": "## Summary:\n[add summary of the vulnerability]\n\n## Steps To Reproduce:\n[add details for how we can reproduce the issue]\n\n  1. [add step]\n  2. [add step]\n  3. [add step]\n\n## Supporting Material/References:\n\n[list any additional material (e.g. screenshots, logs, etc.)]\n\n## Remediation:\n\n[add details for possible remidiation]\n\n  * [attachment / reference]",
+        "severity": "Critical",
+        "reportedat": "2021-08-06T06:20:47.922+0000",
+        "date": "2021-08-06T06:20:47.922+0000",
+        "createdAt": "2021-08-06T06:20:47.925+0000",
+        "updatedAt": "2021-08-06T06:20:50.432+0000",
+        "__v": 0
+    }
+]
