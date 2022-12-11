@@ -76,8 +76,8 @@
         >
           <v-card-title primary-title class="flex">
             <!-- Should get program thumbnail from submission's program as this component should not know about programs, only submissions -->
-            <v-avatar :src="program.thumbnail || '/img/dummy.jpg'">
-              <img src="src" alt="alt" />
+            <v-avatar size="35" class="mr-2">
+              <img :src="program.thumbnail || '/img/dummy.jpg'" alt="alt" />
             </v-avatar>
             <span class="inline-block primary--text">{{
               submission.title
