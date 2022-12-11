@@ -15,12 +15,7 @@
         <span>{{ favoriteText }}</span>
       </v-btn>
 
-      <v-btn
-        color="primary"
-        :to="`/program/${program.title
-          .toLowerCase()
-          .replace(/ /g, '-')}/report/`"
-      >
+      <v-btn color="primary" :to="`${$route.path}/report/`">
         Submit Report
       </v-btn>
     </section>

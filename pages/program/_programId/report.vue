@@ -9,10 +9,6 @@
       class="pa-0 py-4"
     />
 
-    <article class="pb-8">
-      <program-item-list-card :program="program" show-visibility />
-    </article>
-
     <!-- <div v-if="program">{{ program }}</div> -->
     <!-- {{ program.companyId }} -->
 
@@ -200,7 +196,7 @@
               </div>
             </header>
             <v-text-field
-              v-model="FORM.cveid"
+              v-model="FORM.cvssid"
               block
               outlined
               label="CVE Id"
@@ -213,7 +209,7 @@
               <div class="headline pb-4">CVSS Identifier</div>
               <v-card-text class="pt-0">
                 <v-slider
-                  v-model="FORM.cveid"
+                  v-model="FORM.cvssid"
                   :rules="[...rules.cvss]"
                   hint="Must be above 0"
                   persistent-hint
@@ -225,7 +221,7 @@
                 >
                   <template #append>
                     <v-text-field
-                      v-model="FORM.cveid"
+                      v-model="FORM.cvssid"
                       class="mt-0 pt-0"
                       hide-details
                       single-line
@@ -311,11 +307,13 @@
                   </li>
                   <li>
                     <small
-                      >Files tp upload should all be selected at once.</small
+                      >Files to upload should all be selected at once.</small
                     >
                   </li>
                   <li>
-                    <small>This can take long depending on the file size</small>
+                    <small
+                      >This can take a while depending on the file size</small
+                    >
                   </li>
                 </ul>
               </div>
@@ -339,11 +337,10 @@
               :show-size="1000"
               label="Attachments"
             />
-            <!-- @change="handleAttachment" -->
           </section>
         </v-col>
 
-        <submission-severity-settings hide-actions />
+        <submission-severity-settings v-model="FORM.cveid" />
       </v-row>
 
       <section class="py-2">
@@ -374,7 +371,7 @@
           color="primary"
           class="px-3 py-2"
           :disabled="formSubmitted"
-          @click="submitReport()"
+          @click="submitReport"
         >
           Submit Report
           <v-progress-circular
@@ -427,19 +424,12 @@ export default {
       validate: true,
       descriptionPreview: null,
       fileArray: [],
-      // allowedTypes: [
-      //   'image/jpeg',
-      //   'image/png',
-      //   'application/pdf',
-      //   'application/zip',
-      //   'application/rar',
-      // ],
-      // selectedTypes: [],
-
       program: null,
       scopes: [] || null,
 
       FORM: {
+        cveid: 1670762794442,
+        cvssid: '1.0',
         visibility: true,
         notification: true,
         attachments: [],
@@ -500,9 +490,7 @@ export default {
 
           count: [
             (value) =>
-              !value ||
-              value.length <= 5 ||
-              'Attachments cannot be more than 5 files.',
+              value.length <= 5 || 'Attachments cannot be more than 5 files.',
           ],
         },
 
@@ -547,19 +535,12 @@ export default {
     }
   },
   async fetch() {
-    const URL = `/get-programs?limit=${this.$store.state.program.pageLimit}`
+    const URL = `/get-program/${this.$route.params.programId}`
 
     await this.$axios
       .$get(URL)
       .then((res) => {
-        const mainProgram = res.data.docs.filter((program) => {
-          // return program._id === this.$route.params.programId
-          return (
-            program.title.toLowerCase().replace(/ /g, '-') ===
-            this.$route.params.programId
-          )
-        })
-        this.program = mainProgram[0]
+        this.program = res.data
         if (this.program.scope.length === 0) {
           this.scopes = ['No data']
         }
@@ -577,7 +558,7 @@ export default {
       }
       return this.scopes.filter((item) => {
         return Object.values(item).some((word) =>
-          String(word).toLowerCase().includes(searchTerm)
+          word.toLowerCase().includes(searchTerm)
         )
       })
     },
@@ -613,59 +594,51 @@ export default {
     },
 
     async submitReport() {
+      // this.FORM.cvssid = this.FORM.cvssid ? this.FORM.cvssid : '1'
       if (this.$refs.form1.validate()) {
         this.$nuxt.$loading.start()
         this.formSubmitted = true
 
         // const programId = this.$route.params.programId
         const programId = this.program._id
-        const PAYLOAD = {
-          ...this.FORM,
-          programId,
-          reportedto: this.program.companyId.company[0].name,
-          visibility: this.FORM.visibility ? 'Public' : 'Private',
-        }
-
+        const reportedTo = 'Tesla'
         const formData = new FormData()
         formData.append('title', this.FORM.title)
         formData.append('bugtype', this.FORM.bugtype)
         formData.append('scope', this.selectedScope.options)
-        formData.append('reportedto', this.program.companyId.company[0].name)
+        formData.append('reportedto', reportedTo)
         formData.append('cveid', this.FORM.cveid)
         formData.append(
           'visibility',
           this.FORM.visibility ? 'Public' : 'Private'
         )
         formData.append('description', this.FORM.description)
-        formData.append('severity', this.FORM.technicalSeverity)
+        // formData.append('severity', this.FORM.technicalSeverity)
 
         this.FORM.attachments.forEach((file) => {
           formData.append('files', file)
         })
 
-        // patch for scope field until backend make it OPTIONAL
-        PAYLOAD.scope = PAYLOAD.scope ? PAYLOAD.scope : 'None'
-
         const URL = `/create-submission/${programId}`
+        console.log('files', formData.getAll('files'))
 
         await this.$axios
           .$post(URL, formData, { timeout: 3600000 })
-          .then((res) => {
+          .then(() => {
             this.dialog = true
-            this.formSubmitted = false
           })
           .catch((error) => {
-            this.formSubmitted = false
             if (error.code || error.message) {
               this.$store.dispatch('notification/failureSnackbar', error)
             } else {
               this.$store.dispatch(
                 'notification/warningSnackbar',
-                'Something seems not working appropriately.'
+                'Something seems not to be working appropriately.'
               )
             }
           })
           .finally(() => {
+            this.formSubmitted = false
             this.$nuxt.$loading.finish()
           })
       } else {
@@ -685,13 +658,7 @@ export default {
         'application/rar',
       ]
 
-      const truthyState = []
-
-      file.forEach((item, index) => {
-        truthyState.push(allowedTypes.includes(item.type))
-      })
-
-      return truthyState.includes(false)
+      return file.some((item) => !allowedTypes.includes(item.type))
     },
 
     attachmentSizeCheck(file) {

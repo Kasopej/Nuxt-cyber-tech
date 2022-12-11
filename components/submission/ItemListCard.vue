@@ -74,7 +74,11 @@
           :class="hover ? 'grey lighten-5' : ''"
           @click="openDetails(submission)"
         >
-          <v-card-title primary-title>
+          <v-card-title primary-title class="flex">
+            <!-- Should get program thumbnail from submission's program as this component should not know about programs, only submissions -->
+            <v-avatar :src="program.thumbnail || '/img/dummy.jpg'">
+              <img src="src" alt="alt" />
+            </v-avatar>
             <span class="inline-block primary--text">{{
               submission.title
             }}</span>
@@ -103,7 +107,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import dayjs from 'dayjs'
 export default {
   props: {
@@ -116,6 +120,7 @@ export default {
 
   computed: {
     ...mapGetters('auth', ['profileImg']),
+    ...mapState('program', { program: 'data' }),
     submissionDateFormatted() {
       return dayjs(this.submission.date).format('DD MMM YYYY - HH:mm')
     },
