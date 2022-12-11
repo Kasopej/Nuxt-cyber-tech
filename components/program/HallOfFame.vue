@@ -10,14 +10,19 @@
           <td class="pa-4">Points</td>
         </thead>
         <tbody>
-          <tr v-for="leader in hallOfFame" :key="leader">
-            <td>{{ leader }}</td>
-            <td>
-              <v-avatar
-                ><v-icon color="accent">mdi-account-circle</v-icon></v-avatar
-              >Olajide_{{ leader }}_Hammed
-            </td>
-            <td>{{ leader }}0 Points</td>
+          <template v-if="hallOfFame.length"
+            ><tr v-for="leader in hallOfFame" :key="leader">
+              <td>{{ leader }}</td>
+              <td>
+                <v-avatar
+                  ><v-icon color="accent">mdi-account-circle</v-icon></v-avatar
+                >Olajide_{{ leader }}_Hammed
+              </td>
+              <td>{{ leader }}0 Points</td>
+            </tr></template
+          >
+          <tr v-else class="text-center">
+            <td class="text-center" colspan="3">No data</td>
           </tr>
         </tbody>
       </template>
