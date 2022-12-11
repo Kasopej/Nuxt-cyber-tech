@@ -340,7 +340,14 @@
           </section>
         </v-col>
 
-        <submission-severity-settings v-model="FORM.cveid" />
+        <submission-severity-settings
+          v-model="FORM.cveid"
+          hide-actions
+          :severity="FORM.severity"
+          :cve-score="FORM.cveScore"
+          @cve-score-compute="FORM.cveScore = $event"
+          @severity-compute="FORM.severity = $event"
+        />
       </v-row>
 
       <section class="py-2">
@@ -430,6 +437,8 @@ export default {
       FORM: {
         cveid: 1670762794442,
         cvssid: '1.0',
+        cveScore: 0,
+        severity: '',
         visibility: true,
         notification: true,
         attachments: [],
@@ -604,10 +613,17 @@ export default {
         const reportedTo = 'Tesla'
         const formData = new FormData()
         formData.append('title', this.FORM.title)
+        formData.append('name', this.FORM.title)
+        formData.append('score', this.FORM.cveScore)
+        formData.append('severity', this.FORM.severity)
         formData.append('bugtype', this.FORM.bugtype)
         formData.append('scope', this.selectedScope.options)
         formData.append('reportedto', reportedTo)
-        formData.append('cveid', this.FORM.cveid)
+        // formData.append('cveid', this.FORM.cveid)
+        // formData.append(
+        //   'reference',
+        //   'tek' + String(Math.ceil(Math.random() * 100000))
+        // )
         formData.append(
           'visibility',
           this.FORM.visibility ? 'Public' : 'Private'
@@ -620,7 +636,6 @@ export default {
         })
 
         const URL = `/create-submission/${programId}`
-        console.log('files', formData.getAll('files'))
 
         await this.$axios
           .$post(URL, formData, { timeout: 3600000 })

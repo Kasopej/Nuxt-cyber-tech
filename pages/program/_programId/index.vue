@@ -78,17 +78,18 @@
 <script>
 import showdown from 'showdown'
 import ProgramItemBase from '~/components/program/ProgramItemBase'
-const submissions = [
-  {
-    title: 'Bug Injection DDOS',
-    programId: {
-      title: 'hello',
-    },
-    bugtype: 'buggyyyy!',
-    actionstate: 'pending',
-    date: new Date().toDateString(),
-  },
-]
+import submissions from '~/assets/json/submissions.json'
+// const submissions = [
+//   {
+//     title: 'Bug Injection DDOS',
+//     programId: {
+//       title: 'hello',
+//     },
+//     bugtype: 'buggyyyy!',
+//     actionstate: 'pending',
+//     date: new Date().toDateString(),
+//   },
+// ]
 
 export default {
   extends: ProgramItemBase,
@@ -149,10 +150,11 @@ export default {
   methods: {
     getSubmissions() {
       this.submissionsLoading = true
-      this.$axios
-        .$get(
-          `get-submissions?program=${this.$route.params.programId}&page=${this.page}`
-        )
+      // this.$axios
+      //   .$get(
+      //     `get-submissions?program=${this.$route.params.programId}&page=${this.page}`
+      //   )
+      this.fakeAPI(() => ({ data: submissions }))
         .then((res) => {
           this.submissions = res.data
         })

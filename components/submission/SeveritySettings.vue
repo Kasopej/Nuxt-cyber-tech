@@ -164,13 +164,12 @@ export default {
     hideButtons: { type: Boolean, default: false },
     hideActions: { type: Boolean, default: false },
     cveid: { type: Number },
+    cveScore: { type: Number },
+    severity: { type: String },
   },
 
   data() {
     return {
-      cveScore: 0.0,
-      severity: 'LOW',
-
       FORM: {
         attackVector: null,
         atackComplexity: null,
@@ -186,6 +185,22 @@ export default {
   },
   computed: {
     ...mapState('program', { program: 'data' }),
+    cveScoreComputed: {
+      set(val) {
+        this.$emit('cve-score-compute', val)
+      },
+      get() {
+        return this.cveScore
+      },
+    },
+    severityComputed: {
+      set(val) {
+        this.$emit('severity-compute', val)
+      },
+      get() {
+        return this.severity
+      },
+    },
   },
 
   watch: {
@@ -308,12 +323,14 @@ export default {
         }
 
         // Severity
-        if (cveScore <= 2) this.severity = 'LOW'
-        else if (cveScore >= 2.1 && cveScore <= 4) this.severity = 'MEDIUM'
-        else if (cveScore >= 4.1 && cveScore <= 6) this.severity = 'HIGH'
-        else this.severity = 'CRITICAL'
+        if (cveScore <= 2) this.severityComputed = 'LOW'
+        else if (cveScore >= 2.1 && cveScore <= 4)
+          this.severityComputed = 'MEDIUM'
+        else if (cveScore >= 4.1 && cveScore <= 6)
+          this.severityComputed = 'HIGH'
+        else this.severityComputed = 'CRITICAL'
 
-        this.cveScore = cveScore
+        this.cveScoreComputed = cveScore
       },
       deep: true,
     },
