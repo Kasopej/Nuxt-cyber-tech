@@ -96,7 +96,7 @@
 
         <v-col cols="12" sm="6" class="py-1">
           <v-file-input
-            v-model="FORM.payment.idCard"
+            v-model="newIdCard"
             label="Valid ID card (Government Issued)"
             hint="Upload size under 5MB. (Image format only)"
             accept="image/*"
@@ -106,6 +106,12 @@
             outlined
             block
           />
+          <small
+            v-if="idCard"
+            class="text-center inline-block w-full text-green-700"
+          >
+            <a :href="idCard" target="_blank">View upoladed ID</a>
+          </small>
         </v-col>
       </v-row>
 
@@ -119,19 +125,18 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import countriesJSON from '~/assets/json/countries.json'
 import currenciesJSON from '~/assets/json/currencies.json'
-import countryCodesJSON from '~/assets/json/countryCodes.json'
 
 export default {
   data() {
     return {
       countries: countriesJSON,
-      countryCodes: countryCodesJSON,
       currencies: currenciesJSON,
-
+      idCard: null,
+      newIdCard: null,
       FORM: { payment: { bank: {}, paymentType: 'bank' } },
-      USER: this.$store.state.auth.user.user,
 
       rules: {
         required: [(value) => !!value || 'This Field Is Required'],
@@ -160,8 +165,39 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState('auth', { USER: 'user' }),
+  },
+  watch: {
+    async newIdCard(file) {
+      const URL = `/payment-idcard`
+      const formData = new FormData()
+      formData.append('file', file)
+      // Make upload request to the API
+      await this.$axios
+        .$put(URL, formData)
+        .then((res) => {
+          this.$store.dispatch(
+            'notification/successSnackbar',
+            'Payment ID updated'
+          )
+        })
+        .catch((error) => {
+          this.$store.dispatch('notification/failureSnackbar', error)
+        })
+        .finally(() => {
+          this.$nuxt.$loading.finish()
+        })
+    },
+  },
+
   created() {
-    this.FORM.payment = { ...this.FORM.payment, ...this.USER.payment[0] }
+    this.FORM.payment = {
+      ...this.FORM.payment,
+      ...JSON.parse(JSON.stringify(this.USER.user.payment[0])),
+    }
+    delete this.FORM.payment.validId
+    this.idCard = this.USER.user.payment[0].validId
   },
 
   methods: {
@@ -184,10 +220,11 @@ export default {
         // Make upload request to the API
         await this.$axios
           .$patch(URL, PAYLOAD)
-          .then(() => {
+          .then((res) => {
+            this.$store.commit('auth/UPDATE_USER_PAYMENT', res.data.payment[0])
             this.$store.dispatch(
               'notification/successSnackbar',
-              'Profile updated'
+              'Payment updated'
             )
           })
           .catch((error) => {

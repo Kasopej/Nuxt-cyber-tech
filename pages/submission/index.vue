@@ -25,20 +25,12 @@
       <partials-empty-data caption="An error occured" />
     </section>
 
-    <section v-else-if="submissions.length">
-      <v-row no-gutters>
-        <v-col
-          v-for="submission in submissions"
-          :key="submission._id"
-          cols="12"
-          md="6"
-        >
-          <submission-item-list-card
-            v-if="submission.programId !== null"
-            :submission="submission"
-          />
-        </v-col>
-      </v-row>
+    <section v-else-if="submissions.length" class="d-flex flex-wrap">
+      <submission-item-list-card
+        v-for="submission in submissions"
+        :key="submission._id"
+        :submission="submission"
+      />
     </section>
 
     <section v-else>

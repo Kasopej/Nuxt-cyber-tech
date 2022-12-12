@@ -15,12 +15,7 @@
         <span>{{ favoriteText }}</span>
       </v-btn>
 
-      <v-btn
-        color="primary"
-        :to="`/program/${program.title
-          .toLowerCase()
-          .replace(/ /g, '-')}/report/`"
-      >
+      <v-btn color="primary" :to="`${$route.path}/report/`">
         Submit Report
       </v-btn>
     </section>
@@ -48,10 +43,15 @@
       </v-tab-item>
 
       <v-tab-item class="pa-4">
-        <section v-if="submissions.length && !submissionsLoading">
-          <article v-for="submission in submissions" :key="submission._id">
-            <submission-item-list-card :submission="submission" />
-          </article>
+        <section
+          v-if="submissions.length && !submissionsLoading"
+          class="d-flex flex-wrap"
+        >
+          <submission-item-list-card
+            v-for="submission in submissions"
+            :key="submission._id"
+            :submission="submission"
+          />
         </section>
 
         <section v-else-if="submissionsLoading" class="flex">
@@ -83,17 +83,6 @@
 <script>
 import showdown from 'showdown'
 import ProgramItemBase from '~/components/program/ProgramItemBase'
-const submissions = [
-  {
-    title: 'Bug Injection DDOS',
-    programId: {
-      title: 'hello',
-    },
-    bugtype: 'buggyyyy!',
-    actionstate: 'pending',
-    date: new Date().toDateString(),
-  },
-]
 
 export default {
   extends: ProgramItemBase,
@@ -101,7 +90,7 @@ export default {
     return {
       page: 1,
       program: null,
-      submissions,
+      submissions: [],
       submissionsLoading: false,
       currentTab: 0,
       breadcrumbsItems: [
@@ -120,7 +109,6 @@ export default {
     }
   },
   async fetch() {
-    // rename to disable fetch for now as API is down
     const URL = `/get-program/${this.$route.params.programId}`
     // Make upload request to the API
 
@@ -156,10 +144,10 @@ export default {
       this.submissionsLoading = true
       this.$axios
         .$get(
-          `get-submissions?program=${this.$route.params.programId}&page=${this.page}`
+          `/getSubmissionsByProgramIdHunter/${this.$route.params.programId}?page=${this.page}`
         )
         .then((res) => {
-          this.submissions = res.data
+          this.submissions = res.data.docs
         })
         .catch((err) => {
           console.log({ err })

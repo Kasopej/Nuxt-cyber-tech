@@ -81,8 +81,10 @@
     </v-card-title>
     <v-card-text>
       <section class="d-flex mb-2">
-        <v-icon color="primary" class="mr-1">mdi-eye-off</v-icon>
-        <v-icon color="primary" class="mr-1">mdi-account-group</v-icon>
+        <v-icon color="primary" class="mr-1">{{ visibilityIcon }}</v-icon>
+        <v-icon color="primary" class="mr-1">{{
+          allowCollaborationsIcon
+        }}</v-icon>
         <v-icon color="primary" class="ml-auto" @click="toggleFavorite">{{
           favoriteIcon
         }}</v-icon>
@@ -140,6 +142,14 @@ export default {
   computed: {
     briefDescription() {
       return this.program.description.slice(0, 148) + '...'
+    },
+    visibilityIcon() {
+      return this.program.private ? 'mdi-eye-off' : 'mdi-eye'
+    },
+    allowCollaborationsIcon() {
+      return this.program.allowCollaborations
+        ? 'mdi-account-group'
+        : 'mdi-account'
     },
   },
 
