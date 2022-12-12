@@ -1,12 +1,12 @@
 <template>
   <v-col cols="12" md="4" class="px-4">
     <v-card class="px-4 py-8">
-      <v-text-field block outlined label="CVE Id" />
+      <v-text-field block readonly outlined label="CVE Id" :value="cveid" />
 
       <div class="d-flex justify-center">
         <div class="accent text-center white--text rounded px-8 py-2 mx-1">
-          <div>CVSS Score</div>
-          <div class="font-weight-bold" v-text="ccvsScore.toFixed(1)" />
+          <div>CVE Score</div>
+          <div class="font-weight-bold" v-text="cveScore.toFixed(1)" />
         </div>
 
         <div class="accent text-center white--text rounded px-8 py-2 mx-1">
@@ -142,7 +142,7 @@
 
       <v-row v-if="!hideActions" class="flex-sm-row-reverse">
         <v-col cols="12" sm="6">
-          <v-btn color="primary" @click="saveChanges()">Save Changes</v-btn>
+          <v-btn color="primary" @click="saveChanges">Save Changes</v-btn>
         </v-col>
         <v-col cols="12" sm="6">
           <v-btn text color="accent">Reset</v-btn>
@@ -153,17 +153,23 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
+  model: {
+    event: 'cveid-compute',
+    prop: 'cveid',
+  },
   props: {
     hideButtons: { type: Boolean, default: false },
     hideActions: { type: Boolean, default: false },
+    cveid: { type: Number },
+    cveScore: { type: Number },
+    severity: { type: String },
   },
 
   data() {
     return {
-      ccvsScore: 0.0,
-      severity: 'LOW',
-
       FORM: {
         attackVector: null,
         atackComplexity: null,
@@ -177,25 +183,44 @@ export default {
       ],
     }
   },
+  computed: {
+    ...mapState('program', { program: 'data' }),
+    cveScoreComputed: {
+      set(val) {
+        this.$emit('cve-score-compute', val)
+      },
+      get() {
+        return this.cveScore
+      },
+    },
+    severityComputed: {
+      set(val) {
+        this.$emit('severity-compute', val)
+      },
+      get() {
+        return this.severity
+      },
+    },
+  },
 
   watch: {
     FORM: {
       handler(val) {
-        let ccvsScore = 0
+        let cveScore = 0
 
         // Attack Vector
         switch (val.attackVector) {
           case 'network':
-            ccvsScore += 2.0
+            cveScore += 2.0
             break
           case 'adjacent':
-            ccvsScore += 1.5
+            cveScore += 1.5
             break
           case 'local':
-            ccvsScore += 1
+            cveScore += 1
             break
           case 'physical':
-            ccvsScore += 0.5
+            cveScore += 0.5
             break
           default:
             break
@@ -204,10 +229,10 @@ export default {
         // Attack complexity
         switch (val.atackComplexity) {
           case 'high':
-            ccvsScore += 1
+            cveScore += 1
             break
           case 'low':
-            ccvsScore += 0.5
+            cveScore += 0.5
             break
           default:
             break
@@ -216,13 +241,13 @@ export default {
         // Attack Previledge
         switch (val.previledgeRequired) {
           case 'none':
-            ccvsScore += 1.5
+            cveScore += 1.5
             break
           case 'high':
-            ccvsScore += 1
+            cveScore += 1
             break
           case 'low':
-            ccvsScore += 0.5
+            cveScore += 0.5
             break
           default:
             break
@@ -231,10 +256,10 @@ export default {
         // User Interaction
         switch (val.userInteraction) {
           case 'required':
-            ccvsScore += 1
+            cveScore += 1
             break
           case 'none':
-            ccvsScore += 0.5
+            cveScore += 0.5
             break
           default:
             break
@@ -243,10 +268,10 @@ export default {
         // User Scope
         switch (val.scope) {
           case 'unchanged':
-            ccvsScore += 0.5
+            cveScore += 0.5
             break
           case 'changed':
-            ccvsScore += 1
+            cveScore += 1
             break
           default:
             break
@@ -255,13 +280,13 @@ export default {
         // Confidentiality
         switch (val.confidentiality) {
           case 'none':
-            ccvsScore += 0
+            cveScore += 0
             break
           case 'high':
-            ccvsScore += 1
+            cveScore += 1
             break
           case 'low':
-            ccvsScore += 0.5
+            cveScore += 0.5
             break
           default:
             break
@@ -270,13 +295,13 @@ export default {
         // Integrity
         switch (val.integrity) {
           case 'none':
-            ccvsScore += 0
+            cveScore += 0
             break
           case 'high':
-            ccvsScore += 1
+            cveScore += 1
             break
           case 'low':
-            ccvsScore += 0.5
+            cveScore += 0.5
             break
           default:
             break
@@ -285,25 +310,27 @@ export default {
         // Availability
         switch (val.availability) {
           case 'none':
-            ccvsScore += 0
+            cveScore += 0
             break
           case 'high':
-            ccvsScore += 1
+            cveScore += 1
             break
           case 'low':
-            ccvsScore += 0.5
+            cveScore += 0.5
             break
           default:
             break
         }
 
         // Severity
-        if (ccvsScore <= 2) this.severity = 'LOW'
-        else if (ccvsScore >= 2.1 && ccvsScore <= 4) this.severity = 'MEDIUM'
-        else if (ccvsScore >= 4.1 && ccvsScore <= 6) this.severity = 'HIGH'
-        else this.severity = 'CRITICAL'
+        if (cveScore <= 2) this.severityComputed = 'LOW'
+        else if (cveScore >= 2.1 && cveScore <= 4)
+          this.severityComputed = 'MEDIUM'
+        else if (cveScore >= 4.1 && cveScore <= 6)
+          this.severityComputed = 'HIGH'
+        else this.severityComputed = 'CRITICAL'
 
-        this.ccvsScore = ccvsScore
+        this.cveScoreComputed = cveScore
       },
       deep: true,
     },
@@ -311,10 +338,16 @@ export default {
 
   methods: {
     saveChanges() {
-      this.$store.dispatch(
-        'notification/warningSnackbar',
-        'Feature not available at the moment'
-      )
+      const URL = '/create/cve'
+      this.$axios
+        .$post(URL, {
+          score: this.cveScore,
+          severity: this.severity,
+          name: this.program.title,
+        })
+        .then((res) => {
+          this.$emit('cveid-compute', res.data.id)
+        })
     },
   },
 }

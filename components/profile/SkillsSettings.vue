@@ -90,17 +90,12 @@
 </template>
 
 <script>
-import countriesJSON from '~/assets/json/countries.json'
-import countryCodesJSON from '~/assets/json/countryCodes.json'
+import { mapState } from 'vuex'
 
 export default {
   data() {
     return {
-      countries: countriesJSON,
-      countryCodes: countryCodesJSON,
-
       FORM: { skills: {} },
-      USER: this.$store.state.auth.user.user,
 
       rules: {
         required: [(value) => !!value || 'This Field Is Required'],
@@ -128,9 +123,15 @@ export default {
       },
     }
   },
+  computed: {
+    ...mapState('auth', { USER: 'user' }),
+  },
 
   created() {
-    this.FORM.skills = { ...this.FORM.skills.skills, ...this.USER.skills[0] }
+    this.FORM.skills = {
+      ...this.FORM.skills,
+      ...this.USER.user.skills[0],
+    }
   },
 
   methods: {
@@ -142,10 +143,11 @@ export default {
         // Make upload request to the API
         await this.$axios
           .$patch(URL, this.FORM)
-          .then(() => {
+          .then((res) => {
+            this.$store.commit('auth/UPDATE_USER_SKILLS', res.data.skills[0])
             this.$store.dispatch(
               'notification/successSnackbar',
-              'Profile updated'
+              'Skills updated'
             )
           })
           .catch((error) => {

@@ -1,7 +1,9 @@
 import debounce from '~/utils/debounce'
 const toggleFavoriteDebounced = debounce(toggleFavorite, 400)
 function toggleFavorite() {
-  this.programFavorited = !this.programFavorited
+  this.fakeAPI(() => {
+    this.programFavorited = !this.programFavorited
+  })
 }
 
 export default {

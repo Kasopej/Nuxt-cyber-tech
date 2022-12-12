@@ -74,8 +74,8 @@
 export default {
   data() {
     return {
-      totalPrivateProgramsNumber: null,
-      submissionsNumber: null,
+      totalPrivateProgramsNumber: 0,
+      submissionsNumber: 0,
       badgesNumber: null,
       bounty: null,
     }
