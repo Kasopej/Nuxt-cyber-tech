@@ -341,12 +341,15 @@
         </v-col>
 
         <submission-severity-settings
+          ref="severitySettings"
           v-model="FORM.cveid"
           hide-actions
           :severity="FORM.severity"
           :cve-score="FORM.cveScore"
+          :validation-state="severityValidated"
           @cve-score-compute="FORM.cveScore = $event"
           @severity-compute="FORM.severity = $event"
+          @validation="severityValidated = $event"
         />
       </v-row>
 
@@ -407,15 +410,6 @@
 import showdown from 'showdown'
 
 // const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i
-// const allowedTypes = [
-//   'image/jpeg',
-//   'image/png',
-//   'application/pdf',
-//   'application/zip',
-//   'application/rar',
-// ]
-
-// const selectedTypes = []
 
 export default {
   layout: 'dashboard',
@@ -433,6 +427,7 @@ export default {
       fileArray: [],
       program: null,
       scopes: [] || null,
+      severityValidated: true,
 
       FORM: {
         cveid: 1670762794442,
@@ -603,11 +598,10 @@ export default {
     },
 
     async submitReport() {
-      // this.FORM.cvssid = this.FORM.cvssid ? this.FORM.cvssid : '1'
-      if (this.$refs.form1.validate()) {
+      this.$refs.severitySettings.validate()
+      if (this.$refs.form1.validate() && this.severityValidated) {
         this.$nuxt.$loading.start()
         this.formSubmitted = true
-
         // const programId = this.$route.params.programId
         const programId = this.program._id
         const reportedTo = 'Tesla'
