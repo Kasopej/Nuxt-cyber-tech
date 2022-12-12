@@ -105,6 +105,7 @@
 
     <v-container class="v-top max-box" :fluid="fluid" :class="fluidClass">
       <Nuxt />
+      <partials-notification-toast />
     </v-container>
   </v-app>
 </template>

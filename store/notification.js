@@ -10,7 +10,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-  async SHOW(state, payload) {
+  SHOW(state, payload) {
     state.text = payload.text || 'Something Occured!'
     state.icon = payload.icon || 'mdi-information-outline'
     state.color = payload.color || 'accent'
@@ -18,8 +18,9 @@ export const mutations = {
     state.status = true
 
     // Kill the snackbar after {timeout} seconds
-    await new Promise((resolve) => setTimeout(resolve, state.timeout))
-    this.commit('notification/CLOSE')
+    setTimeout(() => {
+      this.commit('notification/CLOSE')
+    }, state.timeout)
   },
 
   CLOSE(state) {
