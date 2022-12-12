@@ -47,6 +47,9 @@ export const mutations = {
   UPDATE_USER_SKILLS(state, payload) {
     state.user.user.skills = [{ ...state.user.user.skills[0], ...payload }]
   },
+  UPDATE_USER_PAYMENT(state, payload) {
+    state.user.user.payment = [{ ...state.user.user.payment[0], ...payload }]
+  },
 
   // Log User out
   LOG_USER_OUT(state) {

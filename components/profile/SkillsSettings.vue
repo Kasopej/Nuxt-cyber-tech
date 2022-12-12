@@ -129,7 +129,7 @@ export default {
 
   created() {
     this.FORM.skills = {
-      ...this.FORM.skills.skills,
+      ...this.FORM.skills,
       ...this.USER.user.skills[0],
     }
   },
