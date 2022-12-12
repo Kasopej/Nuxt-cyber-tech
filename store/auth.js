@@ -41,6 +41,9 @@ export const mutations = {
     state.user.lastName = payload.lastName
     state.user.firstName = payload.firstName
   },
+  UPDATE_USER_PROFILE(state, payload) {
+    state.user.user.profile[0] = { ...state.user.user.profile[0], ...payload }
+  },
 
   // Log User out
   LOG_USER_OUT(state) {

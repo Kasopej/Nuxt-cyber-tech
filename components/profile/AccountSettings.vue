@@ -167,6 +167,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import countriesJSON from '~/assets/json/countries.json'
 import languagesJSON from '~/assets/json/languages.json'
 import countryCodesJSON from '~/assets/json/countryCodes.json'
@@ -179,14 +180,14 @@ export default {
       languages: languagesJSON,
 
       FORM: { profile: { phoneNumber: {}, language: 'en' } },
-      USER: this.$store.state.auth.user.user,
 
       rules: {
         required: [(value) => !!value || 'This Field Is Required'],
         name: [
           (v) => !!v || 'Name is required',
           (v) =>
-            (v && v.length <= 100) || 'Name must be less than 100 characters',
+            (v && v.length <= 100) ||
+            'Name must be not be more than 100 characters',
         ],
         phone: [
           (v) => !!v || 'Phone number is required',
@@ -207,9 +208,12 @@ export default {
       },
     }
   },
+  computed: {
+    ...mapState('auth', { USER: 'user' }),
+  },
 
   created() {
-    this.FORM.profile = { ...this.FORM.profile, ...this.USER.profile[0] }
+    this.FORM.profile = { ...this.FORM.profile, ...this.USER.user.profile[0] }
   },
 
   methods: {
@@ -221,9 +225,10 @@ export default {
         // Make upload request to the API
         await this.$axios
           .$patch(URL, this.FORM)
-          .then(() => {
+          .then((res) => {
+            this.$store.commit('auth/UPDATE_USER_PROFILE', res.data.profile[0])
             this.$store.dispatch(
-              'notification/failureSnackbar',
+              'notification/successSnackbar',
               'Profile updated'
             )
           })
