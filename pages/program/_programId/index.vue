@@ -83,18 +83,6 @@
 <script>
 import showdown from 'showdown'
 import ProgramItemBase from '~/components/program/ProgramItemBase'
-import submissions from '~/assets/json/submissions.json'
-// const submissions = [
-//   {
-//     title: 'Bug Injection DDOS',
-//     programId: {
-//       title: 'hello',
-//     },
-//     bugtype: 'buggyyyy!',
-//     actionstate: 'pending',
-//     date: new Date().toDateString(),
-//   },
-// ]
 
 export default {
   extends: ProgramItemBase,
@@ -102,7 +90,7 @@ export default {
     return {
       page: 1,
       program: null,
-      submissions,
+      submissions: [],
       submissionsLoading: false,
       currentTab: 0,
       breadcrumbsItems: [
@@ -121,7 +109,6 @@ export default {
     }
   },
   async fetch() {
-    // rename to disable fetch for now as API is down
     const URL = `/get-program/${this.$route.params.programId}`
     // Make upload request to the API
 
@@ -155,13 +142,12 @@ export default {
   methods: {
     getSubmissions() {
       this.submissionsLoading = true
-      // this.$axios
-      //   .$get(
-      //     `get-submissions?program=${this.$route.params.programId}&page=${this.page}`
-      //   )
-      this.fakeAPI(() => ({ data: submissions }))
+      this.$axios
+        .$get(
+          `/getSubmissionsByProgramIdHunter/${this.$route.params.programId}?page=${this.page}`
+        )
         .then((res) => {
-          this.submissions = res.data
+          this.submissions = res.data.docs
         })
         .catch((err) => {
           console.log({ err })
