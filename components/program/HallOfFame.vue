@@ -11,14 +11,17 @@
         </thead>
         <tbody>
           <template v-if="hallOfFame.length"
-            ><tr v-for="leader in hallOfFame" :key="leader">
-              <td>{{ leader }}</td>
+            ><tr v-for="(leader, index) in hallOfFame" :key="leader">
+              <td>{{ index + 1 }}</td>
               <td>
-                <v-avatar
-                  ><v-icon color="accent">mdi-account-circle</v-icon></v-avatar
-                >Olajide_{{ leader }}_Hammed
+                <v-avatar v-if="leader.image" size="35" class="mr-4">
+                  <img :src="leader.image" :alt="leader.username" />
+                </v-avatar>
+                <v-avatar v-else size="35" class="mr-4">
+                  <v-icon color="accent">mdi-account-circle</v-icon></v-avatar
+                >{{ leader.username }}
               </td>
-              <td>{{ leader }}0 Points</td>
+              <td>{{ leader.points }}</td>
             </tr></template
           >
           <tr v-else class="text-center">
