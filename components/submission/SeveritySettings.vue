@@ -104,6 +104,9 @@
             <v-btn class="text-capitalize" small value="low"> Low </v-btn>
           </v-btn-toggle>
         </div>
+        <small v-if="!validationState" class="red--text">
+          Please select severity parameters
+        </small>
       </section>
 
       <section v-if="!hideActions" class="py-4">
@@ -142,7 +145,7 @@
 
       <v-row v-if="!hideActions" class="flex-sm-row-reverse">
         <v-col cols="12" sm="6">
-          <v-btn color="primary" @click="saveChanges">Save Changes</v-btn>
+          <v-btn color="primary">Save Changes</v-btn>
         </v-col>
         <v-col cols="12" sm="6">
           <v-btn text color="accent">Reset</v-btn>
@@ -166,10 +169,12 @@ export default {
     cveid: { type: Number },
     cveScore: { type: Number },
     severity: { type: String },
+    validationState: { type: Boolean, default: false },
   },
 
   data() {
     return {
+      valuesHaveBeenComputed: false,
       FORM: {
         attackVector: null,
         atackComplexity: null,
@@ -331,23 +336,19 @@ export default {
         else this.severityComputed = 'CRITICAL'
 
         this.cveScoreComputed = cveScore
+        this.valuesHaveBeenComputed = true
+        this.validate()
       },
       deep: true,
     },
   },
 
   methods: {
-    saveChanges() {
-      const URL = '/create/cve'
-      this.$axios
-        .$post(URL, {
-          score: this.cveScore,
-          severity: this.severity,
-          name: this.program.title,
-        })
-        .then((res) => {
-          this.$emit('cveid-compute', res.data.id)
-        })
+    validate() {
+      this.$emit(
+        'validation',
+        !!(this.cveScoreComputed && this.severityComputed)
+      )
     },
   },
 }
