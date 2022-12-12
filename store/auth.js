@@ -42,7 +42,10 @@ export const mutations = {
     state.user.firstName = payload.firstName
   },
   UPDATE_USER_PROFILE(state, payload) {
-    state.user.user.profile[0] = { ...state.user.user.profile[0], ...payload }
+    state.user.user.profile = [{ ...state.user.user.profile[0], ...payload }]
+  },
+  UPDATE_USER_SKILLS(state, payload) {
+    state.user.user.skills = [{ ...state.user.user.skills[0], ...payload }]
   },
 
   // Log User out
