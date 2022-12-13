@@ -4,7 +4,10 @@
       <v-text-field block readonly outlined label="CVE Id" :value="cveid" />
 
       <div class="d-flex justify-center">
-        <div class="accent text-center white--text rounded px-8 py-2 mx-1">
+        <div
+          v-if="!hideButtons"
+          class="accent text-center white--text rounded px-8 py-2 mx-1"
+        >
           <div>CVE Score</div>
           <div class="font-weight-bold" v-text="cveScore.toFixed(1)" />
         </div>

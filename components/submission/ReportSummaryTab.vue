@@ -192,7 +192,12 @@
         </v-row>
       </v-col>
 
-      <submission-severity-settings hide-actions hide-buttons />
+      <submission-severity-settings
+        :severity="submission.severity"
+        :cveid="submission.cveid"
+        hide-actions
+        hide-buttons
+      />
     </v-row>
   </main>
 </template>
