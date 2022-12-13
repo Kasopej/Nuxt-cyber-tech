@@ -37,7 +37,13 @@
             <v-icon color="accent">mdi-bell</v-icon>
           </v-btn>
 
-          <v-menu open-on-hover bottom offset-y min-width="250">
+          <v-menu
+            :close-on-click="true"
+            :close-on-content-click="false"
+            bottom
+            offset-y
+            min-width="250"
+          >
             <template #activator="{ on, attrs }">
               <v-btn icon class="mx-4" v-bind="attrs" v-on="on">
                 <v-avatar color="secondary">
@@ -75,20 +81,34 @@
               </v-list-item>
 
               <v-divider></v-divider>
-              <v-list-item to="/account/settings/availability/">
-                <v-list-item-title>
+              <v-list-item>
+                <v-list-item-title class="d-flex items-center">
                   <v-icon class="mr-3">mdi-calendar-account</v-icon>
                   <span>Availability</span>
+                  <v-switch
+                    input-value="hunterAvailable"
+                    class="ml-2 mt-5"
+                    :loading="availabilityLoading"
+                    @click="toggleHunterAvailabilityWrapper"
+                  ></v-switch>
                 </v-list-item-title>
               </v-list-item>
 
               <v-divider></v-divider>
-              <v-list-item to="#">
-                <v-list-item-title>
-                  <v-icon class="mr-3">mdi-account-plus</v-icon>
-                  <span>Invite Friends</span>
-                </v-list-item-title>
-              </v-list-item>
+              <v-hover>
+                <template #default="{ hover }">
+                  <v-list-item
+                    class="cursor-pointer"
+                    :class="{ 'bg-gray-100': hover }"
+                    @click="copyInviteLink"
+                  >
+                    <v-list-item-title>
+                      <v-icon class="mr-3">mdi-account-plus</v-icon>
+                      <span>Invite Friends</span>
+                    </v-list-item-title>
+                  </v-list-item>
+                </template>
+              </v-hover>
 
               <v-divider></v-divider>
               <v-list-item to="/account/logout/" router exact>
@@ -112,6 +132,13 @@
 
 <script>
 import { mapState } from 'vuex'
+import debounce from '~/utils/debounce'
+
+const toggleHunterAvailabilityDebounced = debounce(toggleHunterAvailabilty, 400)
+function toggleHunterAvailabilty() {
+  this.hunterAvailable = !this.hunterAvailable
+  this.availabilityLoading = false
+}
 export default {
   middleware: 'auth',
 
@@ -141,6 +168,8 @@ export default {
           to: '/leaders-board/',
         },
       ],
+      hunterAvailable: false,
+      availabilityLoading: false,
     }
   },
   computed: {
@@ -163,6 +192,14 @@ export default {
 
     toggleNotification() {
       this.$store.commit('notification/UPDATE_NOTIFICATION_STATE')
+    },
+    toggleHunterAvailabilityWrapper() {
+      this.availabilityLoading = true
+      toggleHunterAvailabilityDebounced.call(this)
+    },
+    copyInviteLink() {
+      navigator.clipboard.writeText('teklabspace.com/invite/djeieisj')
+      this.$store.dispatch('notification/successSnackbar', 'Invite link copied')
     },
   },
 }
