@@ -28,7 +28,12 @@
                 {{ convertUnderscoredStringToSpaced(key) }}
               </v-col>
               <v-col class="pl-2 py-1 py-sm-3">
-                {{ displayField(summaryFieldDescriptor) }}
+                <a
+                  v-if="summaryFieldDescriptor.type == 'link'"
+                  :href="summaryFieldDescriptor.href"
+                  >{{ displayField(summaryFieldDescriptor) }}</a
+                >
+                <span v-else>{{ displayField(summaryFieldDescriptor) }}</span>
               </v-col>
             </v-row>
             <v-row>
@@ -84,7 +89,7 @@ import showdown from 'showdown'
 const SubmissionSummaryFieldsObj = {
   action_state: { name: 'actionstate' },
   scope: { name: 'scope' },
-  reported_to: { name: 'reportedto' },
+  reported_to: { name: 'reportedto', type: 'link', href: '' },
   reported_at: { name: 'reportedat', type: 'date' },
   reference: { name: 'reference' },
   assigned_to: { name: 'assignedTo', fallback: 'No Assignee' },
@@ -113,6 +118,14 @@ export default {
     }
   },
 
+  watch: {
+    SubmissionSummaryFieldsObj: {
+      handler() {
+        SubmissionSummaryFieldsObj.reported_to.href = `/program/${this.submission.programId}`
+      },
+      immediate: true,
+    },
+  },
   methods: {
     convertCommentHTML(val) {
       const converter = new showdown.Converter()
@@ -125,6 +138,8 @@ export default {
       if (!obj[fieldDescriptor.name]) return fieldDescriptor.fallback
       if (fieldDescriptor.type === 'date')
         return new Date(obj[fieldDescriptor.name]).toLocaleString()
+      if (fieldDescriptor.type === 'link')
+        fieldDescriptor.href = `/program/${obj.programId}`
       return obj[fieldDescriptor.name]
     },
   },
