@@ -169,7 +169,7 @@ export default {
   props: {
     hideButtons: { type: Boolean, default: false },
     hideActions: { type: Boolean, default: false },
-    cveid: { type: Number },
+    cveid: { type: String },
     cveScore: { type: Number },
     severity: { type: String },
     validationState: { type: Boolean, default: false },
