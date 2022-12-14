@@ -33,6 +33,12 @@
                   :href="summaryFieldDescriptor.href"
                   >{{ displayField(summaryFieldDescriptor) }}</a
                 >
+                <span v-else-if="summaryFieldDescriptor.name === 'visibility'">
+                  {{ displayField(summaryFieldDescriptor) }}
+                  <v-icon color="primary" class="-mt-0.5">{{
+                    visibilityIcon
+                  }}</v-icon>
+                </span>
                 <span v-else>{{ displayField(summaryFieldDescriptor) }}</span>
               </v-col>
             </v-row>
@@ -116,6 +122,11 @@ export default {
       ],
       SubmissionSummaryFieldsObj,
     }
+  },
+  computed: {
+    visibilityIcon() {
+      return this.submission.visibility === 'Public' ? 'mdi-eye' : 'mdi-eye-off'
+    },
   },
 
   watch: {
