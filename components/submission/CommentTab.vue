@@ -30,11 +30,21 @@
             <v-card-title
               class="flex px-3 py-2 text-body-2 secondary lighten-8"
             >
-              <span>{{
+              <v-tooltip top nudge-bottom="20" class="px-1 py-1">
+                <template #activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on">{{
+                    comment.hunterId
+                      ? comment.hunterId.profile[0].username
+                      : comment.accountId.company[0].name
+                  }}</span>
+                </template>
+                <span class="text-xs">100 points</span>
+              </v-tooltip>
+              <!-- <span>{{
                 comment.hunterId
                   ? comment.hunterId.profile[0].username
                   : comment.accountId.company[0].name
-              }}</span>
+              }}</span> -->
               <v-chip dense class="ml-1 px-2 py-1" small>{{
                 comment.accountType
               }}</v-chip>
