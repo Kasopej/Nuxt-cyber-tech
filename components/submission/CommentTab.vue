@@ -68,11 +68,11 @@
       </v-btn>
     </div>
 
-    <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
+    <p v-if="loadingMore" class="text-end mt-4">Adding to list...</p>
 
     <v-form ref="commentForm">
       <div class="accent--text headline font-weight-bold py-4">
-        Post A Respone
+        Post A Response
       </div>
 
       <v-card class="pa-4" elevation="3">
@@ -94,21 +94,33 @@
             >Preview <v-icon small class="ml-2">mdi-eye</v-icon></v-btn
           >
         </div>
+        <article class="flex">
+          <v-avatar size="50" class="col-1 py-0 px-0">
+            <img src="/img/dummy.jpg" alt="user profile image" />
+          </v-avatar>
+          <div class="col-11 py-0 px-1">
+            <div
+              v-if="commentPreview"
+              class="elevation-2 relative comment-preview rounded px-2 py-4"
+              v-html="commentPreview"
+            />
+            <v-textarea
+              v-else
+              v-model="FORM.comment"
+              else
+              outlined
+              hide-details
+            />
 
-        <div
-          v-if="commentPreview"
-          class="elevation-2 rounded px-2 py-4"
-          v-html="commentPreview"
-        />
-        <v-textarea v-else v-model="FORM.comment" else outlined hide-details />
+            <div class="pb-4">
+              <small class="grey--text darken-2"
+                >Styling with MarkDown is supported</small
+              >
+            </div>
 
-        <div class="pb-4">
-          <small class="grey--text darken-2"
-            >Styling with MarkDown is supported</small
-          >
-        </div>
-
-        <v-btn color="primary" @click="postComment">Post Response</v-btn>
+            <v-btn color="primary" @click="postComment">Post Response</v-btn>
+          </div>
+        </article>
       </v-card>
     </v-form>
   </main>
@@ -142,6 +154,7 @@ const COMMENTS = [
 export default {
   data() {
     return {
+      tab: 0,
       FORM: {},
       comments: COMMENTS,
       commentPreview: null,
@@ -217,7 +230,6 @@ export default {
           .$post(URL, this.FORM)
           .then(() => {
             this.FORM = {}
-            this.commentPreview = null
 
             this.$store.dispatch(
               'notification/successSnackbar',
@@ -286,8 +298,22 @@ export default {
 .comment__info a:hover {
   text-decoration: underline;
 }
+.comment-preview::before {
+  content: '';
+  transform: rotate(45deg);
+  position: absolute;
+  left: -5px;
+  padding: 5px;
+  background-color: white;
+  top: 10px;
+  box-shadow: -1px 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
 
 time span {
   font-size: 10px;
+}
+
+.v-card::before {
+  background-color: inherit;
 }
 </style>
