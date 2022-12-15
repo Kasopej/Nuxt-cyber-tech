@@ -1,13 +1,13 @@
 <template>
   <main class="text-center py-8">
-    <v-card class="mx-auto" :max-width="mobileView('95%', '80%')" outlined>
+    <v-card class="mx-auto" :max-width="mobileView ? '95%' : '80%'" outlined>
       <!-- {{ USER }} -->
       <v-list-item>
         <v-row>
           <v-col cols="12" sm="4" class="py-0 py-sm-4">
             <v-list-item-avatar
               tile
-              :size="mobileView('150px', '200px')"
+              :size="mobileView ? '150px' : '200px'"
               color="grey"
               class="avatar mx-auto rounded"
             >
@@ -76,38 +76,12 @@
                 <v-icon class="mr-1"> mdi-share-variant </v-icon>
                 <span class="subheading">34</span>
               </v-row>
-
-              <!-- <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title
-                    class="text-caption text-sm-h6 text-h5 font-weight-medium"
-                  >
-                    Work Status
-                  </v-list-item-title>
-                  <v-list-item-subtitle class="text-caption text-sm-h6 text-h5">
-                    Location
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item> -->
             </v-list-item-content>
           </v-col>
         </v-row>
       </v-list-item>
 
       <v-divider></v-divider>
-
-      <!-- <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title
-            class="text-caption text-sm-h6 text-h5 font-weight-medium"
-          >
-            Work Status
-          </v-list-item-title>
-          <v-list-item-subtitle class="text-caption text-sm-h6 text-h5">
-            Location
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item> -->
 
       <v-card-actions>
         <v-btn color="accent" text>Education / Work History</v-btn>
@@ -182,12 +156,6 @@ export default {
         },
       ],
     }
-  },
-
-  methods: {
-    mobileView(lowVal, highVal) {
-      return this.$vuetify.breakpoint.mobile ? lowVal : highVal
-    },
   },
 }
 </script>

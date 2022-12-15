@@ -2,194 +2,82 @@
   <main class="px-3 py-6 text-caption text-sm-body-2 text-md-body-1">
     <v-row>
       <v-col cols="12" md="8">
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            REPORT SUMMARY
-          </v-col>
-
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 text-capitalize"
-            cols="12"
-            sm="3"
-          >
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            ACTION STATE
-          </v-col>
-
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 text-capitalize"
-            cols="12"
-            sm="3"
-          >
-            {{ submission.actionstate }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            SCOPE
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3 text-lowercase">{{
-            submission.scope
-          }}</v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            REPORTED BY
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            <nuxt-link
-              :to="`/user/${submission.hunterId._id}/`"
-              class="primary--text"
-              >{{ submission.hunterId.profile[0].username }}</nuxt-link
-            >
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            REPORTED TO
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            <nuxt-link
-              :to="`/program/${submission.reportedto}/`"
-              class="primary--text"
-              >{{ submission.reportedto }}</nuxt-link
-            >
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            REPORTED AT
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            {{ new Date(submission.reportedat).toLocaleString() }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            REFERENCES
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            {{ submission.reference }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            ASSIGNED TO
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            {{ submission.assignedTo || 'Not defined' }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            BUG TYPE
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            {{ submission.bugtype }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            PARTICIPANTS
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            Name-of-participating-Hackers (Add participant)
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            NOTIFICATIONS
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            {{ submission.notification }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            VISIBILITY
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            {{ submission.visibility }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col
-            class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
-            cols="12"
-            sm="3"
-          >
-            REWARD GRID
-          </v-col>
-          <v-col class="pl-2 py-1 py-sm-2 py-md-3">
-            <div class="d-flex justify-space-around">
-              <div
-                v-for="reward in rewards"
-                :key="reward.severtity"
-                class="text-center mx-1 mx-sm-2"
+        <v-card>
+          <v-card-title class="mb-3" primary-title>
+            <v-row>
+              <v-col
+                class="pl-2 py-1 py-sm-2 py-md-3 font-weight-medium"
+                cols="12"
               >
-                <div class="grey--text darken-3">
-                  {{ reward.severtity }}
+                REPORT SUMMARY
+              </v-col>
+            </v-row>
+          </v-card-title>
+          <v-card-text>
+            <v-row
+              v-for="(
+                summaryFieldDescriptor, key
+              ) in SubmissionSummaryFieldsObj"
+              :key="key"
+            >
+              <v-col
+                class="pl-2 -mb-4 font-weight-medium text-uppercase"
+                cols="12"
+                sm="3"
+              >
+                {{ convertUnderscoredStringToSpaced(key) }}
+              </v-col>
+              <v-col class="pl-2 py-1 py-sm-3">
+                <a
+                  v-if="summaryFieldDescriptor.type == 'link'"
+                  :href="summaryFieldDescriptor.href"
+                  >{{ displayField(summaryFieldDescriptor) }}</a
+                >
+                <span v-else-if="summaryFieldDescriptor.name === 'visibility'">
+                  {{ displayField(summaryFieldDescriptor) }}
+                  <v-icon color="primary" class="-mt-0.5">{{
+                    visibilityIcon
+                  }}</v-icon>
+                </span>
+                <span v-else>{{ displayField(summaryFieldDescriptor) }}</span>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="pl-2 -mb-4 font-weight-medium" cols="12" sm="3">
+                REWARD GRID
+              </v-col>
+              <v-col class="pl-2 py-1 py-sm-2 py-md-3">
+                <div class="d-flex justify-space-around">
+                  <div
+                    v-for="reward in rewards"
+                    :key="reward.severtity"
+                    class="text-center mx-1 mx-sm-2"
+                  >
+                    <div class="grey--text darken-3">
+                      {{ reward.severtity }}
+                    </div>
+                    <div>
+                      <v-btn
+                        :color="
+                          submission.severity == reward.severtity
+                            ? 'accent'
+                            : 'secondary'
+                        "
+                        :class="
+                          submission.severity == reward.severtity
+                            ? 'white--text'
+                            : 'primary--text'
+                        "
+                      >
+                        ${{ reward.price }}
+                      </v-btn>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <v-btn color="secondary" class="primary--text">
-                    ${{ reward.price }}
-                  </v-btn>
-                </div>
-              </div>
-            </div>
-          </v-col>
-        </v-row>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
       </v-col>
 
       <submission-severity-settings
@@ -204,6 +92,20 @@
 
 <script>
 import showdown from 'showdown'
+const SubmissionSummaryFieldsObj = {
+  action_state: { name: 'actionstate' },
+  scope: { name: 'scope' },
+  reported_to: { name: 'reportedto', type: 'link', href: '' },
+  reported_at: { name: 'reportedat', type: 'date' },
+  reference: { name: 'reference' },
+  assigned_to: { name: 'assignedTo', fallback: 'No Assignee' },
+  bugtype: { name: 'bugtype' },
+  participants: {
+    name: 'participants',
+    fallback: 'Name-of-participating-Hackers',
+  },
+  visibility: { name: 'visibility' },
+}
 
 export default {
   props: {
@@ -218,13 +120,38 @@ export default {
         { severtity: 'HIGH', price: '0' },
         { severtity: 'CRITICAL', price: '0' },
       ],
+      SubmissionSummaryFieldsObj,
     }
   },
+  computed: {
+    visibilityIcon() {
+      return this.submission.visibility === 'Public' ? 'mdi-eye' : 'mdi-eye-off'
+    },
+  },
 
+  watch: {
+    SubmissionSummaryFieldsObj: {
+      handler() {
+        SubmissionSummaryFieldsObj.reported_to.href = `/program/${this.submission.programId}`
+      },
+      immediate: true,
+    },
+  },
   methods: {
     convertCommentHTML(val) {
       const converter = new showdown.Converter()
       return converter.makeHtml(val)
+    },
+    convertUnderscoredStringToSpaced(string = '') {
+      return string.split('_').join(' ')
+    },
+    displayField(fieldDescriptor = {}, obj = this.submission) {
+      if (!obj[fieldDescriptor.name]) return fieldDescriptor.fallback
+      if (fieldDescriptor.type === 'date')
+        return new Date(obj[fieldDescriptor.name]).toLocaleString()
+      if (fieldDescriptor.type === 'link')
+        fieldDescriptor.href = `/program/${obj.programId}`
+      return obj[fieldDescriptor.name]
     },
   },
 }

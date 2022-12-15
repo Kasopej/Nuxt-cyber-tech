@@ -430,7 +430,7 @@ export default {
       severityValidated: true,
 
       FORM: {
-        cveid: 1670762794442,
+        cveid: '1670762794442',
         cvssid: '1.0',
         cveScore: 0,
         severity: '',

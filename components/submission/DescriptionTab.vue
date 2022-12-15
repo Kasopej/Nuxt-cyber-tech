@@ -1,24 +1,44 @@
 <template>
-  <main>
-    <div class="px-3 py-6" v-html="description" />
-    <hr />
-    <div>
-      <h3 class="mt-3">Download Attachment</h3>
-      <div v-if="submissionAttachment.length > 0">
-        <a
-          v-for="(attachment, index) in submissionAttachment"
-          :key="`attach-${index}`"
-          class="d-flex flex-column"
-          :href="attachment"
-          target="_blank"
-          >Download Attachment</a
-        >
-      </div>
-      <div v-else>
-        <p>No Attachments</p>
-      </div>
-    </div>
-  </main>
+  <section class="py-6">
+    <v-expansion-panels mandatory multiple hover>
+      <v-card class="w-full">
+        <v-card-title primary-title> Bug Description </v-card-title>
+        <v-card-text>
+          <v-expansion-panel class="elevation-2">
+            <v-expansion-panel-header class="text-body-1 mb-2">
+              Details
+            </v-expansion-panel-header>
+            <v-expansion-panel-content class="content grey--text text-caption">
+              <p class="text-sm px-2" v-html="description"></p>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          <!--  -->
+          <v-expansion-panel class="elevation-2">
+            <v-expansion-panel-header class="text-body-1 mb-2">
+              Attachments
+            </v-expansion-panel-header>
+            <v-expansion-panel-content class="content grey--text text-caption">
+              <template v-if="submissionAttachment.length">
+                <span
+                  v-for="(attachment, index) in submissionAttachment"
+                  :key="`attach-${index}`"
+                  class="flex mb-1.5"
+                >
+                  <a class="mr-1" :href="attachment" target="_blank">
+                    <v-icon color="primary">mdi-download</v-icon></a
+                  >
+                  <span class="underline mt-1">Attachment {{ index + 1 }}</span>
+                </span>
+              </template>
+              <p v-else>No Attachments</p>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-card-text>
+      </v-card>
+    </v-expansion-panels>
+    <!-- <div class="px-3 py-6" v-html="description" />
+    <hr /> -->
+  </section>
 </template>
 
 <script>
@@ -43,3 +63,9 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.heading {
+  font-weight: 400 !important;
+}
+</style>
