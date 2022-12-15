@@ -14,7 +14,7 @@
 
     <section v-else>
       <v-timeline dense align-top>
-        <v-timeline-item v-for="comment in comments" :key="comment._id">
+        <v-timeline-item v-for="comment in sortedComments" :key="comment._id">
           <template #icon>
             <v-avatar>
               <img
@@ -163,6 +163,14 @@ export default {
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
       })
+  },
+
+  computed: {
+    sortedComments() {
+      return new Array(...this.comments).sort((a, b) => {
+        return new Date(a.createdAt) < new Date(b.createdAt)
+      })
+    },
   },
 
   created() {
