@@ -13,69 +13,45 @@
     </section>
 
     <section v-else>
-      <div
-        v-for="comment in comments"
-        :key="comment._id"
-        class="comment d-flex"
-      >
-        <SubmissionCommentCardImage
-          v-if="comment.hunterId"
-          :name="comment.hunterId.profile[0].username"
-          :user-type="comment.accountType"
-          :image="comment.hunterId.profile[0].image"
-        />
-
-        <SubmissionCommentCardImage
-          v-else
-          :name="comment.accountId.company[0].name"
-          :user-type="comment.accountType"
-          :image="comment.accountId.company[0].image"
-        />
-
-        <v-card class="flex-grow-1 pa-3" elevation="0" outlined>
-          <header class="d-sm-flex justify-space-between flex-grow-1">
-            <div class="comment__info body-2 text-small">
-              <span class="action">Comment by</span>
-              <a
-                v-if="comment.hunterId"
-                href="http://"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {{ comment.hunterId.profile[0].username }}
-              </a>
-              <a
-                v-else
-                href="http://"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {{ comment.accountId.company[0].name }}
-              </a>
-            </div>
-
-            <time class="grey--text body-2 text-small">
-              {{ customDate(comment.createdAt) }}
-              <span>({{ new Date(comment.createdAt).toLocaleString() }})</span>
-            </time>
-          </header>
-
-          <article
-            class="py-4 body-1 text-medium"
-            v-html="convertCommentHTML(comment.comment)"
-          ></article>
-
-          <footer class="text-right">
-            <span
-              class="accent--text text-caption font-weight-medium"
-              v-text="comment.status"
-            ></span>
-            <v-icon small class="ml-2" color="accent">{{
-              comment.type == 'Public' ? 'mdi-eye' : 'mdi-eye-off'
-            }}</v-icon>
-          </footer>
-        </v-card>
-      </div>
+      <v-timeline dense align-top>
+        <v-timeline-item v-for="comment in comments" :key="comment._id">
+          <template #icon>
+            <v-avatar>
+              <img
+                :src="
+                  comment.hunterId
+                    ? comment.hunterId.profile[0].image ?? '/img/dummy.jpg'
+                    : comment.accountId.company[0].image ?? '/img/dummy.jpg'
+                "
+              />
+            </v-avatar>
+          </template>
+          <v-card>
+            <v-card-title
+              class="flex px-3 py-2 text-body-2 secondary lighten-8"
+            >
+              <span>{{
+                comment.hunterId
+                  ? comment.hunterId.profile[0].username
+                  : comment.accountId.company[0].name
+              }}</span>
+              <v-chip dense class="ml-1 px-2 py-1" small>{{
+                comment.accountType
+              }}</v-chip>
+              <div class="ml-auto fit-content flex">
+                Commented on
+                {{ new Date(comment.createdAt).toDateString() }}
+                <v-icon color="primary" class="-mt-0.5 ml-1">{{
+                  visibilityIcon(comment)
+                }}</v-icon>
+              </div>
+            </v-card-title>
+            <v-card-text class="px-3 py-3">
+              <article v-html="convertCommentHTML(comment.comment)"></article>
+            </v-card-text>
+          </v-card>
+        </v-timeline-item>
+      </v-timeline>
     </section>
 
     <div class="text-center mt-8">
@@ -132,7 +108,7 @@
           >
         </div>
 
-        <v-btn color="primary" @click="postComment()">Post Response</v-btn>
+        <v-btn color="primary" @click="postComment">Post Response</v-btn>
       </v-card>
     </v-form>
   </main>
@@ -143,13 +119,31 @@ import showdown from 'showdown'
 import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import relativeTime from 'dayjs/plugin/relativeTime'
-// import 'assets/styles/custom.css'
+
+const COMMENTS = [
+  {
+    hunterId: {
+      profile: [
+        {
+          username: 'Kasope',
+          image: '/img/dummy.jpg',
+        },
+      ],
+    },
+    createdAt: new Date().toISOString(),
+    accountType: 'Hunter',
+    status: 'valid',
+    type: 'Private',
+    comment:
+      '## Summary:\n[add summary of the vulnerability]\n\n## Steps To Reproduce:\n[add details for how we can reproduce the issue]\n\n  1. [add step]\n  2. [add step]\n  3. [add step]\n\n## Supporting Material/References:\n\n[list any additional material (e.g. screenshots, logs, etc.)]\n\n## Remediation:\n\n[add details for possible remidiation]\n\n  * [attachment / reference]',
+  },
+]
 
 export default {
   data() {
     return {
       FORM: {},
-      comments: [],
+      comments: COMMENTS,
       commentPreview: null,
 
       pagination: { page: 1, length: 0 },
@@ -209,10 +203,10 @@ export default {
       if (this.$refs.commentForm.validate()) {
         this.$nuxt.$loading.start()
 
-        const URLL = `/create-comment/${this.$route.params.submissionId}`
+        const URL = `/create-comment/${this.$route.params.submissionId}`
         // Make upload request to the API
         await this.$axios
-          .$post(URLL, this.FORM)
+          .$post(URL, this.FORM)
           .then(() => {
             this.FORM = {}
             this.commentPreview = null
@@ -231,6 +225,10 @@ export default {
             this.$nuxt.$loading.finish()
           })
       }
+    },
+
+    visibilityIcon(comment) {
+      return comment.type === 'Public' ? 'mdi-eye' : 'mdi-eye-off'
     },
 
     customDate(date) {
