@@ -8,7 +8,7 @@
       <div class="headline accent--text font-weight-medium">Leader board</div>
       <div class="py-2">
         <span>Total points earned:</span>
-        <strong>{{ totalPoints }}</strong>
+        <strong>{{ USER.user.points }}</strong>
       </div>
     </header>
 
@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -89,20 +90,18 @@ export default {
       totalPoints: 0,
     }
   },
+  computed: {
+    ...mapState('auth', { USER: 'user' }),
+  },
   async fetch() {
     const URL = `/get-leaders-board`
     try {
       const response = await this.$axios.$get(URL)
       const sum = response.data
       this.leaderBoard = sum
-      this.totalPoints = sum.reduce(function (a, b) {
-        return a + b.points
-      }, 0)
     } catch (e) {
       this.$store.dispatch('notification/failureSnackbar', e)
     }
   },
-  mounted() {},
-  methods: {},
 }
 </script>
