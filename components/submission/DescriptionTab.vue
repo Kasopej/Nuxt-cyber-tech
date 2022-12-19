@@ -8,7 +8,9 @@
             <v-expansion-panel-header class="text-body-1 mb-2">
               Details
             </v-expansion-panel-header>
-            <v-expansion-panel-content class="content grey--text text-caption">
+            <v-expansion-panel-content
+              class="content grey--text text--darken-3 text-caption"
+            >
               <p class="text-sm px-2" v-html="description"></p>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -25,9 +27,9 @@
                   class="flex mb-1.5"
                 >
                   <a class="mr-1" :href="attachment" target="_blank">
-                    <v-icon color="primary">mdi-download</v-icon></a
-                  >
-                  <span class="underline mt-1">Attachment {{ index + 1 }}</span>
+                    <v-icon color="primary">mdi-download</v-icon>
+                    <span class="underline">Attachment {{ index + 1 }}</span>
+                  </a>
                 </span>
               </template>
               <p v-else>No Attachments</p>
