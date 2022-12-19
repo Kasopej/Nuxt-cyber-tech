@@ -92,9 +92,12 @@
 
 <script>
 import showdown from 'showdown'
+import { getCompoundField } from '~/plugins/utils'
+
 const SubmissionSummaryFieldsObj = {
   action_state: { name: 'actionstate' },
   scope: { name: 'scope' },
+  reported_by: { name: 'hunterId.profile.username' },
   reported_to: { name: 'reportedto', type: 'link', href: '' },
   reported_at: { name: 'reportedat', type: 'date' },
   reference: { name: 'reference' },
@@ -108,6 +111,7 @@ const SubmissionSummaryFieldsObj = {
 }
 
 export default {
+  mixins: [{ methods: { getCompoundField } }],
   props: {
     submission: { type: Object, default: () => {} },
   },
@@ -128,15 +132,6 @@ export default {
       return this.submission.visibility === 'Public' ? 'mdi-eye' : 'mdi-eye-off'
     },
   },
-
-  watch: {
-    SubmissionSummaryFieldsObj: {
-      handler() {
-        SubmissionSummaryFieldsObj.reported_to.href = `/program/${this.submission.programId}`
-      },
-      immediate: true,
-    },
-  },
   methods: {
     convertCommentHTML(val) {
       const converter = new showdown.Converter()
@@ -146,12 +141,24 @@ export default {
       return string.split('_').join(' ')
     },
     displayField(fieldDescriptor = {}, obj = this.submission) {
-      if (!obj[fieldDescriptor.name]) return fieldDescriptor.fallback
+      if (!this.getCompoundField(obj, fieldDescriptor.name))
+        return fieldDescriptor.fallback
       if (fieldDescriptor.type === 'date')
-        return new Date(obj[fieldDescriptor.name]).toLocaleString()
-      if (fieldDescriptor.type === 'link')
-        fieldDescriptor.href = `/program/${obj.programId}`
-      return obj[fieldDescriptor.name]
+        return new Date(
+          this.getCompoundField(obj, fieldDescriptor.name)
+        ).toLocaleString()
+      if (fieldDescriptor.type === 'link') {
+        if (fieldDescriptor.name === 'reportedto') {
+          fieldDescriptor.href = `/program/${obj.programId}`
+        }
+        if (fieldDescriptor.name === 'hunterId.profile.username') {
+          fieldDescriptor.href = `/user/${this.getCompoundField(
+            obj,
+            fieldDescriptor.name
+          )}`
+        }
+      }
+      return this.getCompoundField(obj, fieldDescriptor.name)
     },
   },
 }
