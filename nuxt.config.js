@@ -21,7 +21,13 @@ export default {
       },
       { hid: 'description', name: 'description', content: '' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css?family=Open+Sans',
+      },
+    ],
   },
 
   loading: {
@@ -40,7 +46,7 @@ export default {
   css: ['~/assets/styles/custom.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [{ src: '~/plugins/axios' }, { src: '~/plugins/mixins' }],
+  plugins: [{ src: '~/plugins/axios' }, { src: '~/plugins/global_mixins' }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,

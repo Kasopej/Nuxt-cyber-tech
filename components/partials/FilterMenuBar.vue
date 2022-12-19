@@ -12,7 +12,9 @@
     >
     <v-card-title class="d-flex">
       <v-icon color="primary"> mdi-filter </v-icon>
-      <span class="text-primary text-base cursor ml-auto">clear all</span>
+      <span class="text-primary text-base cursor ml-auto" @click="clearFilters"
+        >clear all</span
+      >
     </v-card-title>
     <v-card-text class="mt-4 program-filter-menu-body">
       <div
@@ -56,6 +58,11 @@ export default {
       default: () => ({}),
     },
   },
+  data() {
+    return {
+      clear: true,
+    }
+  },
   computed: {
     filterOptionsEntries() {
       return Object.entries(this.filterOptions)
@@ -67,10 +74,21 @@ export default {
   methods: {
     update(groupLabel, itemLabel, newValue) {
       this.localFilterOptions[groupLabel][itemLabel] = newValue
+      this.clear = false
       this.$emit('filter', this.localFilterOptions)
     },
     toggleOverlay() {
       this.$emit('toggle-overlay')
+    },
+    clearFilters() {
+      if (this.clear) return
+      this.filterOptionsEntries.forEach((groupEntry) => {
+        Object.entries(groupEntry[1]).forEach((itemEntry) => {
+          this.localFilterOptions[groupEntry[0]][itemEntry[0]] = false
+        })
+      })
+      this.clear = true
+      this.$emit('filter', this.localFilterOptions)
     },
   },
 }
