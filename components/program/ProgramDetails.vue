@@ -5,7 +5,9 @@
         <v-expansion-panel-header class="header text-body-1 mb-1">
           Scope
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="content grey--text text-caption">
+        <v-expansion-panel-content
+          class="content grey--text longform-content font-medium"
+        >
           <section v-for="(scope, index) in scopeItems" :key="index">
             <h4 class="text-primary">{{ scope.title }}</h4>
             <p>{{ scope.info.join(', ') }}</p>
@@ -18,7 +20,7 @@
         <v-expansion-panel-header class="header text-body-1 mb-1">
           Policy
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="content text-caption">
+        <v-expansion-panel-content class="content longform-content font-medium">
           <section class="mt-4" v-html="DESCRIPTION" />
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -28,7 +30,9 @@
         <v-expansion-panel-header class="header text-body-1 mb-1">
           Out of scope
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="content grey--text text-caption">
+        <v-expansion-panel-content
+          class="content grey--text longform-content font-medium"
+        >
           <section v-for="(scope, index) in outOfScopeItems" :key="index">
             <h4 class="text-primary">{{ scope.title }}</h4>
             <p>{{ scope.info.join(', ') }}</p>
@@ -41,7 +45,7 @@
         <v-expansion-panel-header class="header text-body-1 mb-1">
           Reward
         </v-expansion-panel-header>
-        <v-expansion-panel-content class="content text-caption">
+        <v-expansion-panel-content class="content longform-content font-medium">
           <v-btn
             v-for="(val, key) in program.rewardGrid"
             :key="key"

@@ -252,7 +252,11 @@ export default {
   margin-right: auto;
 }
 </style>
+<!-- Newer -->
 <style lang="scss">
+.longform-content {
+  font-family: 'Open Sans' !important;
+}
 .fit-content {
   width: fit-content !important;
   max-width: fit-content !important;

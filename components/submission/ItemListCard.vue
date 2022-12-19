@@ -16,7 +16,9 @@
               submission.title
             }}</span>
           </v-card-title>
-          <v-card-text class="submission-card-text">
+          <v-card-text
+            class="submission-card-text grey--text text--darken-3 longform-content font-medium"
+          >
             <div class="flex">
               <span>Status: {{ submission.actionstate }}</span>
               <div class="ml-auto flex severity-indicator-wrapper items-center">
@@ -108,6 +110,13 @@ export default {
 .severity-indicator-wrapper {
   flex: 1 1 30%;
   max-width: 30%;
+}
+
+@media screen and (min-width: 999px) {
+  .severity-indicator-wrapper {
+    flex: 1 1 21%;
+    max-width: 21%;
+  }
 }
 
 @media screen and (max-width: 425px) {
