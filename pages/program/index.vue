@@ -114,8 +114,8 @@
         </p>
         <v-select
           id="v-select-sorting"
+          v-model="sortBy"
           :items="['newest', 'oldest']"
-          :value="'newest'"
           class="fit-content ml-auto mt-2 col-6"
           dense
         >
@@ -174,6 +174,7 @@ export default {
           compliance: false,
         },
       },
+      sortBy: null,
     }
   },
 
@@ -204,6 +205,10 @@ export default {
   watch: {
     filterOptions(val) {
       this.filtersSet = true
+      console.log({ val })
+      this.$fetch()
+    },
+    sortBy(val) {
       console.log({ val })
       this.$fetch()
     },
