@@ -60,7 +60,7 @@
           ></v-skeleton-loader>
         </v-col>
       </v-card>
-      <v-card v-else class="row justify-center mx-auto">
+      <v-card v-else class="row mx-auto">
         <v-col v-for="program in programs" :key="program._id" cols="12" md="4">
           <program-item-list-card :program="program" hoverable />
         </v-col>
@@ -133,12 +133,22 @@ export default {
   watch: {
     filterOptions(val) {
       this.filtersSet = true
-      console.log({ val })
       this.$fetch()
     },
     sortBy(val) {
-      console.log({ val })
-      this.$fetch()
+      if (val === 'newest') {
+        this.programs.sort((a, b) => {
+          return (
+            new Date(a.updatedAt).valueOf() - new Date(b.updatedAt).valueOf()
+          )
+        })
+      } else if (val === 'oldest') {
+        this.programs.sort((a, b) => {
+          return (
+            new Date(b.updatedAt).valueOf() - new Date(a.updatedAt).valueOf()
+          )
+        })
+      }
     },
   },
   created() {
