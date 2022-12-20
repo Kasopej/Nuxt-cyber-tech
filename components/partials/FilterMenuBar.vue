@@ -1,10 +1,10 @@
 <template>
   <v-card
-    class="no-flex-stretch program-filter-menu border border-solid border-primary"
+    class="no-flex-stretch filter-menu border border-solid border-primary"
     color="white"
   >
     <v-icon
-      v-if="mobileView"
+      v-if="mobileView || showBackBtn"
       class="px-2 pt-2"
       color="primary"
       @click="toggleOverlay"
@@ -16,31 +16,40 @@
         >clear all</span
       >
     </v-card-title>
-    <v-card-text class="mt-4 program-filter-menu-body">
+    <v-card-text class="mt-4 filter-menu-body overflow-y-auto">
       <div
         v-for="(groupEntry, groupEntryIndex) in filterOptionsEntries"
         :key="groupEntryIndex"
       >
-        <p class="fit-content text-sm mb-0 text-black">{{ groupEntry[0] }}</p>
-        <v-checkbox
-          v-for="(itemEntry, itemEntryIndex) in Object.entries(groupEntry[1])"
-          id="public-visibility-check"
-          :key="itemEntryIndex"
-          v-model="groupEntry[1][itemEntry[0]]"
-          color="black"
-          class="my-1 visibility-check"
-          dense
-          @change="(evt) => update(groupEntry[0], itemEntry[0], evt)"
-        >
-          <template #default>
-            <input type="checkbox" name="" />
-          </template>
-          <template #label>
-            <label for="public-visibility-check" class="text-black text-sm">{{
-              itemEntry[0]
-            }}</label>
-          </template>
-        </v-checkbox>
+        <slot
+          v-if="groupEntry[0].includes('_slot')"
+          name="filterInput"
+          :filterEntry="groupEntry"
+        ></slot>
+        <template v-else>
+          <p class="fit-content text-sm mb-0 text-black">{{ groupEntry[0] }}</p>
+          <v-checkbox
+            v-for="(itemEntry, itemEntryIndex) in Object.entries(groupEntry[1])"
+            :id="`filter-input-${itemEntryIndex}`"
+            :key="itemEntryIndex"
+            v-model="groupEntry[1][itemEntry[0]]"
+            color="black"
+            class="my-1"
+            dense
+            @change="(evt) => update(groupEntry[0], itemEntry[0], evt)"
+          >
+            <template #default>
+              <input type="checkbox" name="" />
+            </template>
+            <template #label>
+              <label
+                :for="`filter-input-${itemEntryIndex}`"
+                class="text-black text-sm"
+                >{{ itemEntry[0] }}</label
+              >
+            </template>
+          </v-checkbox>
+        </template>
       </div>
     </v-card-text>
   </v-card>
@@ -56,6 +65,10 @@ export default {
     filterOptions: {
       type: Object,
       default: () => ({}),
+    },
+    showBackBtn: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -84,7 +97,7 @@ export default {
       if (this.clear) return
       this.filterOptionsEntries.forEach((groupEntry) => {
         Object.entries(groupEntry[1]).forEach((itemEntry) => {
-          this.localFilterOptions[groupEntry[0]][itemEntry[0]] = false
+          this.localFilterOptions[groupEntry[0]][itemEntry[0]] = null
         })
       })
       this.clear = true
