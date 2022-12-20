@@ -302,7 +302,7 @@
                   <li>
                     <small
                       >You can attach up to 5 files. Total upload size is under
-                      400MB.</small
+                      30MB.</small
                     >
                   </li>
                   <li>
@@ -484,7 +484,7 @@ export default {
             (value) =>
               !value ||
               this.attachmentSizeCheck(value) ||
-              'Attachments should be less than or equals 400 MB.',
+              'Attachments should be less than or equals 30 MB.',
           ],
 
           empty: [
@@ -690,7 +690,7 @@ export default {
         sizes.push(item.size)
       })
 
-      return sizes.reduce((total, size) => total + size, 0) <= 40000000
+      return sizes.reduce((total, size) => total + size, 0) <= 3000000
     },
   },
 }
