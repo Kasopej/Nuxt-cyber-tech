@@ -227,7 +227,9 @@ export default {
         await this.$axios
           .$post(URL, this.FORM)
           .then(() => {
-            this.FORM = {}
+            this.FORM = {
+              comment: '',
+            }
 
             this.$store.dispatch(
               'notification/successSnackbar',
