@@ -96,21 +96,27 @@
 
         <v-col cols="12" sm="6" class="py-1">
           <v-file-input
-            v-model="newIdCard"
-            label="Valid ID card (Government Issued)"
-            hint="Upload size under 5MB. (Image format only)"
+            :value="newIdCard"
+            :label="
+              idCard
+                ? `ID Card already uploaded: ${idCardSlug}`
+                : `Valid ID card (Government Issued)`
+            "
+            :hint="idCard ? '' : 'Upload size under 5MB. (Image format only)'"
             accept="image/*"
             truncate-length="15"
+            :disabled="idCard"
             persistent-hint
             show-size
             outlined
             block
+            @change="updateIdCard"
           />
           <small
             v-if="idCard"
-            class="text-center inline-block w-full text-green-700"
+            class="text-center relative bottom-6 inline-block w-full text-green-700"
           >
-            <a :href="idCard" target="_blank">View upoladed ID</a>
+            <a :href="idCard" target="_blank">View uploaded ID</a>
           </small>
         </v-col>
       </v-row>
@@ -167,36 +173,24 @@ export default {
 
   computed: {
     ...mapState('auth', { USER: 'user' }),
-  },
-  watch: {
-    async newIdCard(file) {
-      const URL = `/payment-idcard`
-      const formData = new FormData()
-      formData.append('file', file)
-      // Make upload request to the API
-      await this.$axios
-        .$put(URL, formData)
-        .then((res) => {
-          this.$store.dispatch(
-            'notification/successSnackbar',
-            'Payment ID updated'
-          )
-        })
-        .catch((error) => {
-          this.$store.dispatch('notification/failureSnackbar', error)
-        })
-        .finally(() => {
-          this.$nuxt.$loading.finish()
-        })
+    idCardSlug() {
+      if (!this.idCard) return
+      return this.idCard.slice(this.idCard.indexOf('validId/') + 8)
     },
   },
-
   created() {
     this.FORM.payment = {
       ...this.FORM.payment,
       ...JSON.parse(JSON.stringify(this.USER.user.payment[0])),
     }
     delete this.FORM.payment.validId
+    if (this.USER.user.payment[0].validId.endsWith('/')) {
+      this.USER.user.payment[0].validId =
+        this.USER.user.payment[0].validId.slice(
+          0,
+          this.USER.user.payment[0].validId.length - 1
+        )
+    }
     this.idCard = this.USER.user.payment[0].validId
   },
 
@@ -234,6 +228,27 @@ export default {
             this.$nuxt.$loading.finish()
           })
       }
+    },
+    async updateIdCard(file) {
+      if (this.idCard) return
+      const URL = `/payment-idcard`
+      const formData = new FormData()
+      formData.append('file', file)
+      // Make upload request to the API
+      await this.$axios
+        .$put(URL, formData)
+        .then(() => {
+          this.$store.dispatch(
+            'notification/successSnackbar',
+            'Payment ID updated'
+          )
+        })
+        .catch((error) => {
+          this.$store.dispatch('notification/failureSnackbar', error)
+        })
+        .finally(() => {
+          this.$nuxt.$loading.finish()
+        })
     },
   },
 }

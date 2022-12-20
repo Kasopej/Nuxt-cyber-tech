@@ -290,4 +290,20 @@ export default {
   outline-offset: -1px;
   outline: solid 1px white;
 }
+.filter-menu {
+  min-height: 80vh;
+  flex: 1 1 100%;
+  max-width: 100%;
+  &.v-card {
+  }
+  .filter-menu-body {
+    max-height: 80vh;
+    .mdi-checkbox-blank-outline {
+      color: black;
+    }
+    .v-messages {
+      min-height: fit-content;
+    }
+  }
+}
 </style>
