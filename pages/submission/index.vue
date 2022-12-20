@@ -1,9 +1,5 @@
 <template>
   <main>
-    <nav>
-      <v-breadcrumbs divider="»" :items="breadcrumbsItems" class="pa-0 py-4" />
-    </nav>
-
     <header class="py-4">
       <v-btn
         v-for="filter in filters"
@@ -72,15 +68,6 @@ export default {
 
       submissions: [],
       pagination: { page: 1, length: 0 },
-
-      breadcrumbsItems: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          to: '/',
-        },
-        { disabled: true, text: 'Leader board' },
-      ],
 
       loadingMore: false,
     }

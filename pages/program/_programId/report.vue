@@ -531,6 +531,19 @@ export default {
           to: '/',
         },
         {
+          exact: true,
+          text: 'Programs',
+          to: '/program/',
+        },
+        {
+          exact: true,
+          text: 'Program details',
+          to: location.pathname.slice(
+            0,
+            location.pathname.lastIndexOf('/report')
+          ),
+        },
+        {
           text: 'Report Vulnerability',
           disabled: true,
           to: '/program/add/',
