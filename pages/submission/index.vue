@@ -1,9 +1,5 @@
 <template>
   <main>
-    <nav>
-      <v-breadcrumbs divider="»" :items="breadcrumbsItems" class="pa-0 py-4" />
-    </nav>
-
     <header class="py-4">
       <v-btn
         v-for="filter in filters"
@@ -56,6 +52,12 @@
 </template>
 
 <script>
+const severityRank = {
+  low: 1,
+  medium: 2,
+  high: 3,
+  critical: 4,
+}
 export default {
   data() {
     return {
@@ -73,15 +75,6 @@ export default {
       submissions: [],
       pagination: { page: 1, length: 0 },
 
-      breadcrumbsItems: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          to: '/',
-        },
-        { disabled: true, text: 'Leader board' },
-      ],
-
       loadingMore: false,
     }
   },
@@ -91,7 +84,11 @@ export default {
     await this.$axios
       .$get(URL, this.FORM)
       .then((res) => {
-        this.submissions = res.data.docs
+        this.submissions = res.data.docs.sort(
+          (a, b) =>
+            severityRank[a.severity.toLowerCase()] -
+            severityRank[b.severity.toLowerCase()]
+        )
         this.pagination.length = res.data.totalPages
       })
       .catch((error) => {

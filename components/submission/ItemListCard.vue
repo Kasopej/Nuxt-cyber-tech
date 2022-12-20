@@ -30,7 +30,9 @@
                   :value="submissionSeverityDisplayVals.percentage"
                   height="8"
                 ></v-progress-linear>
-                Critical
+                <span class="capitalize">{{
+                  submission.severity.toLowerCase()
+                }}</span>
               </div>
             </div>
             <span>Last Modified: {{ submissionDateFormatted }}</span>
