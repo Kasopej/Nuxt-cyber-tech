@@ -128,7 +128,12 @@
               >
             </div>
 
-            <v-btn color="primary" @click="postComment">Post Response</v-btn>
+            <v-btn
+              color="primary"
+              :disabled="!FORM.comment.length"
+              @click="postComment"
+              >Post Response</v-btn
+            >
           </div>
         </article>
       </v-card>
@@ -142,31 +147,14 @@ import dayjs from 'dayjs'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
-const COMMENTS = [
-  {
-    hunterId: {
-      profile: [
-        {
-          username: 'Kasope',
-          image: '/img/dummy.jpg',
-        },
-      ],
-    },
-    createdAt: new Date().toISOString(),
-    accountType: 'Hunter',
-    status: 'valid',
-    type: 'Private',
-    comment:
-      '## Summary:\n[add summary of the vulnerability]\n\n## Steps To Reproduce:\n[add details for how we can reproduce the issue]\n\n  1. [add step]\n  2. [add step]\n  3. [add step]\n\n## Supporting Material/References:\n\n[list any additional material (e.g. screenshots, logs, etc.)]\n\n## Remediation:\n\n[add details for possible remidiation]\n\n  * [attachment / reference]',
-  },
-]
-
 export default {
   data() {
     return {
       tab: 0,
-      FORM: {},
-      comments: COMMENTS,
+      FORM: {
+        comment: '',
+      },
+      comments: [],
       commentPreview: null,
 
       pagination: { page: 1, length: 0 },
@@ -239,7 +227,9 @@ export default {
         await this.$axios
           .$post(URL, this.FORM)
           .then(() => {
-            this.FORM = {}
+            this.FORM = {
+              comment: '',
+            }
 
             this.$store.dispatch(
               'notification/successSnackbar',
