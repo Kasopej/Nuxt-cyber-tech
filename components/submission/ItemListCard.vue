@@ -6,7 +6,7 @@
           class="submission-card cursor-pointer"
           :class="
             hover
-              ? `grey ${$vuetify.theme.light ? 'lighten-5' : 'darken-5'} `
+              ? `grey ${!$vuetify.theme.dark ? 'lighten-5' : 'darken-5'} `
               : ''
           "
           @click="openDetails(submission)"

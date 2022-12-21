@@ -1,7 +1,7 @@
 <template>
   <v-card
     class="no-flex-stretch filter-menu border border-solid border-primary"
-    :color="$vuetify.theme.light ? 'white' : 'grey lighten-1'"
+    :color="!$vuetify.theme.dark ? 'white' : 'grey lighten-1'"
   >
     <v-icon
       v-if="mobileView || showBackBtn"
