@@ -198,7 +198,7 @@ export default {
       toggleHunterAvailabilityDebounced.call(this)
     },
     copyInviteLink() {
-      navigator.clipboard.writeText('teklabspace.com/invite/djeieisj')
+      navigator.clipboard.writeText('app.teklabspace.com?invite=djeieisj')
       this.$store.dispatch('notification/successSnackbar', 'Invite link copied')
     },
   },
