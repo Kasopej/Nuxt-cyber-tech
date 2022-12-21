@@ -1,11 +1,11 @@
 <template>
   <v-card
     class="no-flex-stretch filter-menu border border-solid border-primary"
-    color="white"
+    :color="!$vuetify.theme.dark ? 'white' : 'grey lighten-1'"
   >
     <v-icon
       v-if="mobileView || showBackBtn"
-      class="px-2 pt-2"
+      class="px-4 pt-2"
       color="primary"
       @click="toggleOverlay"
       >mdi-arrow-left</v-icon

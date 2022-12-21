@@ -4,7 +4,11 @@
       <template #default="{ hover }">
         <v-card
           class="submission-card cursor-pointer"
-          :class="hover ? 'grey lighten-5' : ''"
+          :class="
+            hover
+              ? `grey ${!$vuetify.theme.dark ? 'lighten-5' : 'darken-5'} `
+              : ''
+          "
           @click="openDetails(submission)"
         >
           <v-card-title primary-title class="flex">
@@ -17,7 +21,11 @@
             }}</span>
           </v-card-title>
           <v-card-text
-            class="submission-card-text grey--text text--darken-3 longform-content font-medium"
+            class="submission-card-text grey--text longform-content font-medium"
+            :class="{
+              'text--darken-3': $vuetify.theme.light,
+              'text--lighten-3': $vuetify.theme.dark,
+            }"
           >
             <div class="flex">
               <span>Status: {{ submission.actionstate }}</span>
