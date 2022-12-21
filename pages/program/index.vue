@@ -140,6 +140,9 @@ export default {
   created() {
     this.$store.commit('program/changeFluidState', true)
   },
+  destroyed() {
+    this.$store.commit('program/changeFluidState', false)
+  },
   methods: {
     getPrograms() {
       this.$fetch()
