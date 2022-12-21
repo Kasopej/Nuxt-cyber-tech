@@ -86,6 +86,13 @@ import { mapState } from 'vuex'
 import showdown from 'showdown'
 import ProgramItemBase from '~/components/program/ProgramItemBase'
 
+const severityRank = {
+  low: 1,
+  medium: 2,
+  high: 3,
+  critical: 4,
+}
+
 export default {
   extends: ProgramItemBase,
   data() {
@@ -150,7 +157,11 @@ export default {
           `/getSubmissionsByProgramIdHunter/${this.$route.params.programId}?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
         )
         .then((res) => {
-          this.submissions = res.data.docs
+          this.submissions = res.data.docs.sort(
+            (a, b) =>
+              severityRank[a.severity.toLowerCase()] -
+              severityRank[b.severity.toLowerCase()]
+          )
           this.pagination.length = res.data.totalPages
         })
         .catch((err) => {
