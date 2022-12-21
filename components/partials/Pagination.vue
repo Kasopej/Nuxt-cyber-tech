@@ -5,15 +5,16 @@
       v-bind="$attrs"
       v-on="$listeners"
     ></v-pagination>
-    <span>
+    <span v-if="pageLimit">
       Per Page:
       <select
         id="pagination-limit"
         v-model="localPageLimit"
         name="pagination-limit"
         class="border border-solid border-gray-400 cursor-pointer"
+        readonly
       >
-        <option v-for="n in [5, 10, 20]" :key="n" :value="n">
+        <option v-for="n in [localPageLimit]" :key="n" :value="n">
           {{ n }}
         </option>
       </select>
@@ -34,7 +35,7 @@ export default {
     },
     pageLimit: {
       type: Number,
-      default: 5,
+      default: 0,
     },
   },
   computed: {

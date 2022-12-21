@@ -67,20 +67,22 @@
         </section>
 
         <partials-pagination
-          v-model="page"
-          :length="6"
+          v-model="pagination.page"
+          :length="pagination.length"
+          :page-limit="pageLimit"
           @input="getSubmissions"
         ></partials-pagination>
       </v-tab-item>
 
       <v-tab-item class="px-4 py-8">
-        <program-hall-of-fame :program-id="11119" />
+        <program-hall-of-fame :program-id="$route.params.programId" />
       </v-tab-item>
     </v-tabs>
   </main>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import showdown from 'showdown'
 import ProgramItemBase from '~/components/program/ProgramItemBase'
 
@@ -88,7 +90,7 @@ export default {
   extends: ProgramItemBase,
   data() {
     return {
-      page: 1,
+      pagination: { page: 1, length: 1 },
       program: null,
       submissions: [],
       submissionsLoading: false,
@@ -123,6 +125,7 @@ export default {
   },
 
   computed: {
+    ...mapState('program', ['pageLimit']),
     description() {
       const converter = new showdown.Converter()
       return converter.makeHtml(this.program.description)
@@ -144,10 +147,11 @@ export default {
       this.submissionsLoading = true
       this.$axios
         .$get(
-          `/getSubmissionsByProgramIdHunter/${this.$route.params.programId}?page=${this.page}`
+          `/getSubmissionsByProgramIdHunter/${this.$route.params.programId}?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
         )
         .then((res) => {
           this.submissions = res.data.docs
+          this.pagination.length = res.data.totalPages
         })
         .catch((err) => {
           console.log({ err })

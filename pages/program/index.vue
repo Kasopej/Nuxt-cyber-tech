@@ -65,30 +65,23 @@
           <program-item-list-card :program="program" hoverable />
         </v-col>
       </v-card>
-      <div class="text-center mt-8">
-        <v-btn
-          v-if="pagination.page < pagination.length"
-          color="primary"
-          elevation="2"
-          :loading="loadingMore"
-          small
-          rounded
-          @click="loadMorePrograms"
-        >
-          Add More
-        </v-btn>
-      </div>
 
-      <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
+      <partials-pagination
+        v-model="pagination.page"
+        :length="pagination.length"
+        :page-limit="pageLimit"
+        @input="getPrograms"
+      ></partials-pagination>
     </v-col>
   </v-row>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      pagination: { page: 1, length: 0 },
+      pagination: { page: 1, length: 1 },
       programs: [],
       loadingMore: false,
       overlay: false,
@@ -114,6 +107,7 @@ export default {
       .$get(URL)
       .then((res) => {
         this.programs = res.data.docs
+        this.sortPrograms(this.sortBy)
         this.pagination.length = res.data.totalPages
       })
       .catch((error) => {
@@ -129,6 +123,7 @@ export default {
         this.filterOptions.visibility.public ? 'public' : ''
       }`
     },
+    ...mapState('program', ['pageLimit']),
   },
   watch: {
     filterOptions(val) {
@@ -136,6 +131,17 @@ export default {
       this.$fetch()
     },
     sortBy(val) {
+      this.sortPrograms(val)
+    },
+  },
+  created() {
+    this.$store.commit('program/changeFluidState', true)
+  },
+  methods: {
+    getPrograms() {
+      this.$fetch()
+    },
+    sortPrograms(val) {
       if (val === 'newest') {
         this.programs.sort((a, b) => {
           return (
@@ -148,28 +154,6 @@ export default {
             new Date(b.updatedAt).valueOf() - new Date(a.updatedAt).valueOf()
           )
         })
-      }
-    },
-  },
-  created() {
-    this.$store.commit('program/changeFluidState', true)
-  },
-  methods: {
-    async loadMorePrograms() {
-      this.loadingMore = true
-      ++this.pagination.page
-
-      const URL = `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
-
-      try {
-        const response = await this.$axios.$get(URL)
-
-        this.loadingMore = false
-        this.programs.push(...response.data.docs)
-      } catch (e) {
-        --this.pagination.page
-        this.loadingMore = false
-        this.$store.dispatch('notification/failureSnackbar', e)
       }
     },
     clickSelect() {

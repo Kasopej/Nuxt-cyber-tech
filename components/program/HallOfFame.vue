@@ -1,8 +1,11 @@
 <template>
   <section class="elevation-2">
-    <!-- <div>You have no group yet</div> -->
+    <v-skeleton-loader
+      v-if="$fetchState.pending"
+      type="table"
+    ></v-skeleton-loader>
 
-    <v-simple-table v-if="!$fetchState.pending">
+    <v-simple-table v-else>
       <template #default>
         <thead class="font-weight-medium secondary accent--text">
           <td class="pa-4">Rank</td>
@@ -32,25 +35,34 @@
     </v-simple-table>
 
     <div class="text-center py-8">
-      <v-pagination v-model="page" :length="6"></v-pagination>
+      <partials-pagination
+        v-model="pagination.page"
+        :length="pagination.length"
+        :page-limit="pageLimit"
+        @input="$fetch"
+      ></partials-pagination>
     </div>
   </section>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   props: {
     programId: { type: String, default: null },
   },
   data() {
     return {
-      page: 1,
+      pagination: { page: 1, length: 1 },
       hallOfFame: [],
     }
   },
   async fetch() {
     // No API endpoint for getting leaderboard for a SPECIFIC program yet
     await this.fakeAPI(() => (this.hallOfFame = []))
+  },
+  computed: {
+    ...mapState('program', ['pageLimit']),
   },
 }
 </script>
