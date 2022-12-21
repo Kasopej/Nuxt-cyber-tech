@@ -33,25 +33,17 @@
       <partials-empty-data caption="No Submissions Found" />
     </section>
 
-    <div class="text-center mt-8">
-      <v-btn
-        v-if="pagination.page < pagination.length"
-        color="primary"
-        elevation="2"
-        :loading="loadingMore"
-        small
-        rounded
-        @click="loadMoreSubmissions"
-      >
-        Add More
-      </v-btn>
-    </div>
-
-    <p v-if="loadingMore" class="text-center mt-4">Adding to list...</p>
+    <partials-pagination
+      v-model="pagination.page"
+      :length="pagination.length"
+      :page-limit="pageLimit"
+      @input="getSubmissions"
+    ></partials-pagination>
   </main>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 const severityRank = {
   low: 1,
   medium: 2,
@@ -74,8 +66,6 @@ export default {
 
       submissions: [],
       pagination: { page: 1, length: 0 },
-
-      loadingMore: false,
     }
   },
 
@@ -96,28 +86,18 @@ export default {
       })
   },
 
+  computed: {
+    ...mapState('program', ['pageLimit']),
+  },
+
   methods: {
     changeFilter(filter) {
       this.status = filter
       this.$fetch()
     },
 
-    async loadMoreSubmissions() {
-      this.loadingMore = true
-      ++this.pagination.page
-
-      const URL = `/get-all-submissions/${this.status}?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}`
-
-      try {
-        const response = await this.$axios.$get(URL, this.FORM)
-
-        this.loadingMore = false
-        this.submissions.push(...response.data.docs)
-      } catch (error) {
-        --this.pagination.page
-        this.loadingMore = false
-        this.$store.dispatch('notification/failureSnackbar', error)
-      }
+    getSubmissions() {
+      this.$fetch()
     },
   },
 }

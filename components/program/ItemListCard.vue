@@ -44,7 +44,7 @@
         @mouseleave="reveal = false"
       >
         <v-card-text class="pb-0">
-          <p class="p-3">
+          <p class="p-3 longform-content font-medium">
             {{ briefDescription }}
           </p>
           <v-btn color="primary" @click="reveal = false">Close</v-btn>
@@ -70,7 +70,10 @@ export default {
   },
   computed: {
     briefDescription() {
-      return this.program.description.slice(0, 148) + '...'
+      return (
+        this.program.description.slice(0, 400) +
+        `${this.program.description.length > 400 ? '...' : ''}`
+      )
     },
     visibilityIcon() {
       return this.program.private ? 'mdi-eye-off' : 'mdi-eye'

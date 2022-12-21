@@ -27,7 +27,7 @@
               >Submissions</nuxt-link
             >
             <nuxt-link to="/leaders-board/" class="xbar-link px-2"
-              >Leadersboard</nuxt-link
+              >Leaderboard</nuxt-link
             >
           </nav>
         </div>

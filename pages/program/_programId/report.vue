@@ -380,12 +380,12 @@
           large
           color="primary"
           class="px-3 py-2"
-          :disabled="formSubmitted"
+          :disabled="formSubmitting"
           @click="submitReport"
         >
           Submit Report
           <v-progress-circular
-            v-if="formSubmitted"
+            v-if="formSubmitting"
             class="ml-3"
             :size="23"
             :width="2"
@@ -418,7 +418,7 @@ export default {
   data() {
     return {
       isVisible: false,
-      formSubmitted: false,
+      formSubmitting: false,
       query: '',
       selectedScope: null,
       dialog: false,
@@ -611,10 +611,11 @@ export default {
     },
 
     async submitReport() {
+      if (this.formSubmitting) return
       this.$refs.severitySettings.validate()
       if (this.$refs.form1.validate() && this.severityValidated) {
         this.$nuxt.$loading.start()
-        this.formSubmitted = true
+        this.formSubmitting = true
         // const programId = this.$route.params.programId
         const programId = this.program._id
         const reportedTo = 'Tesla'
@@ -626,11 +627,6 @@ export default {
         formData.append('bugtype', this.FORM.bugtype)
         formData.append('scope', this.selectedScope.options)
         formData.append('reportedto', reportedTo)
-        // formData.append('cveid', this.FORM.cveid)
-        // formData.append(
-        //   'reference',
-        //   'tek' + String(Math.ceil(Math.random() * 100000))
-        // )
         formData.append(
           'visibility',
           this.FORM.visibility ? 'Public' : 'Private'
@@ -660,7 +656,7 @@ export default {
             }
           })
           .finally(() => {
-            this.formSubmitted = false
+            this.formSubmitting = false
             this.$nuxt.$loading.finish()
           })
       } else {

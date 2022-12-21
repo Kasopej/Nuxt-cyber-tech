@@ -130,10 +130,18 @@
 
             <v-btn
               color="primary"
-              :disabled="!FORM.comment.length"
+              :disabled="!FORM.comment.length || formSubmitting"
               @click="postComment"
-              >Post Response</v-btn
-            >
+              >Post Response
+              <v-progress-circular
+                v-if="formSubmitting"
+                class="ml-3"
+                :size="23"
+                :width="2"
+                indeterminate
+                color="primary"
+              ></v-progress-circular>
+            </v-btn>
           </div>
         </article>
       </v-card>
@@ -156,7 +164,7 @@ export default {
       },
       comments: [],
       commentPreview: null,
-
+      formSubmitting: false,
       pagination: { page: 1, length: 0 },
       loadingMore: false,
     }
@@ -198,19 +206,16 @@ export default {
 
       try {
         const response = await this.$axios.$get(URL, this.FORM)
-
-        this.loadingMore = false
         this.comments.push(...response.data.docs)
       } catch (e) {
         --this.pagination.page
-        this.loadingMore = false
         this.$store.dispatch('notification/failureSnackbar', e)
       }
+      this.loadingMore = false
     },
 
     sortedComment() {
       return this.comments.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
-      // return this.comments.sort((a, b) => (a.updatedAt > b.updatedAt ? 1 : -1))
     },
 
     convertCommentHTML(val) {
@@ -219,8 +224,10 @@ export default {
     },
 
     async postComment() {
+      if (this.formSubmitting) return
       if (this.$refs.commentForm.validate()) {
         this.$nuxt.$loading.start()
+        this.formSubmitting = true
 
         const URL = `/create-comment/${this.$route.params.submissionId}`
         // Make upload request to the API
@@ -243,6 +250,7 @@ export default {
           })
           .finally(() => {
             this.$nuxt.$loading.finish()
+            this.formSubmitting = false
           })
       }
     },
@@ -266,11 +274,6 @@ export default {
       }
       return dayjs(date).fromNow()
     },
-
-    // checkResponse(option1, option2) {
-    //   comment.accounttype == 'company'
-    //   if()
-    // },
   },
 }
 </script>
