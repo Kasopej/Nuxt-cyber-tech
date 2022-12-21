@@ -60,6 +60,9 @@
           ></v-skeleton-loader>
         </v-col>
       </v-card>
+      <section v-else-if="$fetchState.error" class="text-center py-12">
+        <partials-empty-data caption="An error occured" />
+      </section>
       <v-card v-else class="row mx-auto">
         <v-col v-for="program in programs" :key="program._id" cols="12" md="4">
           <program-item-list-card :program="program" hoverable />
@@ -163,7 +166,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .sort-programs {
   display: inline-block !important;
 }
