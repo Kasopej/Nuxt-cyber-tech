@@ -23,7 +23,7 @@
           <v-card-text
             class="submission-card-text grey--text longform-content font-medium"
             :class="{
-              'text--darken-3': $vuetify.theme.light,
+              'text--darken-3': !$vuetify.theme.dark,
               'text--lighten-3': $vuetify.theme.dark,
             }"
           >

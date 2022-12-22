@@ -9,7 +9,11 @@
               Details
             </v-expansion-panel-header>
             <v-expansion-panel-content
-              class="content grey--text text--darken-3 longform-content font-medium"
+              class="content grey--text longform-content font-medium"
+              :class="{
+                'text--darken-3': !$vuetify.theme.dark,
+                'text--lighten-3': $vuetify.theme.dark,
+              }"
             >
               <p class="text-sm px-2" v-html="description"></p>
             </v-expansion-panel-content>

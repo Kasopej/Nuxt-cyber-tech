@@ -107,6 +107,7 @@ export default {
       `/get-programs?page=${this.pagination.page}&limit=${this.$store.state.program.pageLimit}` +
       this.filterURLEncoded
     await this.$axios
+
       .$get(URL)
       .then((res) => {
         this.programs = res.data.docs
