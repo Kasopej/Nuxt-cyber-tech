@@ -101,7 +101,7 @@ export default {
       })
     },
     async getNumberOfSubmissions() {
-      const URL = `get-all-submissions/all?page=1&limit=10`
+      const URL = `get-all-submissions/all?page=1&limit=1000`
       await this.$axios.$get(URL).then(({ data: { docs = [] } }) => {
         this.submissionsNumber = docs.length
       })

@@ -1,6 +1,18 @@
 <template>
   <main class="text-center py-8">
-    <v-card class="mx-auto" :max-width="mobileView ? '95%' : '80%'" outlined>
+    <v-skeleton-loader
+      v-if="$fetchState.pending"
+      class="mx-auto"
+      :max-width="mobileView ? '95%' : '80%'"
+      type="list-item-two-line, image"
+      elevation="3"
+    ></v-skeleton-loader>
+    <v-card
+      v-else
+      class="mx-auto"
+      :max-width="mobileView ? '95%' : '80%'"
+      outlined
+    >
       <!-- {{ USER }} -->
       <v-list-item>
         <v-row>
@@ -57,24 +69,26 @@
                 justify="center"
                 class="mt-4 text-caption text-sm-body-1"
               >
-                <v-icon class="mr-1"> mdi-account-cowboy-hat </v-icon>
-                <span class="subheading mr-2">45</span>
+                <!-- <v-icon class="mr-1"> mdi-account-cowboy-hat </v-icon>
+                <span class="subheading mr-2">45</span> -->
 
                 <span class="mr-1">·</span>
                 <v-icon class="mr-1"> mdi-bug-check </v-icon>
-                <span class="subheading mr-2">78</span>
+                <span class="subheading mr-2">{{
+                  totalAcceptedSubmissions
+                }}</span>
 
                 <span class="mr-1">·</span>
                 <v-icon class="mr-1"> mdi-star </v-icon>
-                <span class="subheading mr-2">90</span>
+                <span class="subheading mr-2">{{ USER.user.points }}</span>
 
                 <span class="mr-1">·</span>
                 <v-icon class="mr-1"> mdi-heart </v-icon>
-                <span class="subheading mr-2">12</span>
+                <span class="subheading mr-2">{{ totalFavoritePrograms }}</span>
 
-                <span class="mr-1">·</span>
+                <!-- <span class="mr-1">·</span>
                 <v-icon class="mr-1"> mdi-share-variant </v-icon>
-                <span class="subheading">34</span>
+                <span class="subheading">34</span> -->
               </v-row>
             </v-list-item-content>
           </v-col>
@@ -83,7 +97,7 @@
 
       <v-divider></v-divider>
 
-      <v-card-actions>
+      <!-- <v-card-actions>
         <v-btn color="accent" text>Education / Work History</v-btn>
 
         <v-spacer></v-spacer>
@@ -91,11 +105,11 @@
         <v-btn icon @click="show = !show">
           <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
         </v-btn>
-      </v-card-actions>
+      </v-card-actions> -->
 
-      <v-expand-transition>
+      <!-- <v-expand-transition>
         <div v-show="show" class="px-2">
-          <!-- <v-divider></v-divider> -->
+          <v-divider></v-divider>
 
           <v-timeline
             align-top
@@ -124,7 +138,7 @@
             </v-timeline-item>
           </v-timeline>
         </div>
-      </v-expand-transition>
+      </v-expand-transition> -->
     </v-card>
   </main>
 </template>
@@ -134,9 +148,7 @@ export default {
   data() {
     return {
       USER: this.$store.state.auth.user,
-
       show: false,
-
       items: [
         {
           color: 'red lighten-2',
@@ -155,7 +167,20 @@ export default {
           icon: 'mdi-buffer',
         },
       ],
+      totalAcceptedSubmissions: 0,
+      totalFavoritePrograms: 0,
     }
+  },
+  async fetch() {
+    await Promise.all([this.getNumberOfAcceptedSubmissions()])
+  },
+  methods: {
+    async getNumberOfAcceptedSubmissions() {
+      const URL = `get-all-submissions/accepted?page=1&limit=1000`
+      await this.$axios.$get(URL).then(({ data: { docs = [] } }) => {
+        this.totalAcceptedSubmissions = docs.length
+      })
+    },
   },
 }
 </script>

@@ -97,7 +97,7 @@ import { getCompoundField } from '~/plugins/utils'
 const SubmissionSummaryFieldsObj = {
   action_state: { name: 'actionstate' },
   scope: { name: 'scope' },
-  reported_by: { name: 'hunterId.profile.username' },
+  reported_by: { name: 'hunterId.profile.username', type: 'link', href: '' },
   reported_to: { name: 'reportedto', type: 'link', href: '' },
   reported_at: { name: 'reportedat', type: 'date' },
   reference: { name: 'reference' },
