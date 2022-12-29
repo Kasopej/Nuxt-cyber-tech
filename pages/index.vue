@@ -41,7 +41,9 @@
             <v-icon color="accent" left>mdi-star-box</v-icon>
             <div class="cursor">
               <h3 class="w-max">Points Earned</h3>
-              <span class="fit-content mx-auto text-h3">{{ 10 }}</span>
+              <span class="fit-content mx-auto text-h3">{{
+                USER.user.points
+              }}</span>
             </div>
           </v-col>
           <v-col cols="6" md="4" class="d-flex align-start">
@@ -71,6 +73,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -87,6 +90,7 @@ export default {
     ])
   },
   computed: {
+    ...mapState('auth', { USER: 'user' }),
     notificationState() {
       return this.$store.state.notification.showNotification
     },
