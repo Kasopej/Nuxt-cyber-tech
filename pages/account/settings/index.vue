@@ -3,10 +3,10 @@
     <section class="pb-8">
       <label class="pt-8">
         <v-avatar style="background: #f2f2f2" size="250">
-          <v-img :src="USER_PIC" class="rounded" />
+          <v-img :src="USER.user.profile[0].image" class="rounded" />
         </v-avatar>
         <div
-          class="d-block grey--text text-center text-caption pt-3"
+          class="d-block grey--text text-center text-caption pt-3 cursor-pointer"
           style="width: 250px"
         >
           {{ labelText }}
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -65,9 +66,11 @@ export default {
       profileEditTab: 0,
       FILE: null,
       blob: '',
-      USER: this.$store.state.auth.user,
-      USER_PIC: this.$store.state.auth.user.user.profile[0].image,
+      USER_PIC: null,
     }
+  },
+  computed: {
+    ...mapState('auth', { USER: 'user' }),
   },
 
   methods: {
@@ -78,9 +81,7 @@ export default {
       reader.readAsDataURL(file)
       reader.onload = () => (this.USER_PIC = reader.result)
 
-      setTimeout(() => {
-        this.uploadPhoto()
-      }, 2000)
+      setTimeout(() => this.uploadPhoto(), 2000)
     },
 
     async uploadPhoto() {
@@ -99,7 +100,6 @@ export default {
           this.$store.commit('auth/CHANGE_USER_PIC', response.data)
         })
         .catch((error) => {
-          this.USER_PIC = this.USER.user.profile[0].image
           this.$store.commit('notification/SHOW', {
             color: 'accent',
             icon: 'mdi-alert-outline',

@@ -33,22 +33,33 @@
       </v-card>
       <v-card raised hover class="mb-6 no-cursor">
         <v-card-title primary-title>
-          <v-icon color="primary" x-large left>mdi-podium-gold</v-icon>
-          Your Ranking</v-card-title
+          <v-icon color="primary" x-large left>mdi-podium</v-icon>
+          Your Stats</v-card-title
         >
         <v-card-text class="d-flex">
-          <v-col cols="6" md="4" class="d-flex align-start">
+          <v-col cols="4" class="d-flex align-start">
             <v-icon color="accent" left>mdi-star-box</v-icon>
             <div class="cursor">
               <h3 class="w-max">Points Earned</h3>
-              <span class="fit-content mx-auto text-h3">{{ 10 }}</span>
+              <span class="fit-content mx-auto text-h3">{{
+                USER.user.points
+              }}</span>
             </div>
           </v-col>
-          <v-col cols="6" md="4" class="d-flex align-start">
+          <v-col cols="4" class="d-flex align-start">
             <v-icon color="accent" left>mdi-seal</v-icon>
             <div class="cursor">
               <h3 class="w-max">Badges</h3>
               <span class="fit-content mx-auto text-h3">{{ 10 }}</span>
+            </div>
+          </v-col>
+          <v-col cols="4" class="d-flex align-start">
+            <v-icon color="accent" left>mdi-podium-gold</v-icon>
+            <div class="cursor">
+              <h3 class="w-max">Ranking</h3>
+              <span class="fit-content mx-auto text-h3">{{
+                USER.user.ranking
+              }}</span>
             </div>
           </v-col>
         </v-card-text>
@@ -71,6 +82,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -87,17 +99,16 @@ export default {
     ])
   },
   computed: {
+    ...mapState('auth', { USER: 'user' }),
     notificationState() {
       return this.$store.state.notification.showNotification
     },
   },
   methods: {
     async getNumberOfPrivatePrograms() {
-      const URL = `get-programs?page=1&limit=1000`
+      const URL = `get-private-submission`
       await this.$axios.$get(URL).then((res) => {
-        this.totalPrivateProgramsNumber = res.data.docs.filter(
-          (program) => program.private
-        ).length
+        this.totalPrivateProgramsNumber = res.data
       })
     },
     async getNumberOfSubmissions() {

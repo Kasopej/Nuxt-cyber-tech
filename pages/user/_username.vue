@@ -23,13 +23,7 @@
               color="grey"
               class="avatar mx-auto rounded"
             >
-              <v-img
-                :src="
-                  USER.image ||
-                  '/img/dummy.jpg' ||
-                  'https://cdn.vuetifyjs.com/images/john.png'
-                "
-              ></v-img>
+              <v-img :src="USER.image || '/img/dummy.jpg'"></v-img>
             </v-list-item-avatar>
           </v-col>
           <!-- </v-row>
@@ -40,14 +34,11 @@
               <v-list-item-title
                 class="mt-sm-3 text-h5 text-sm-h5 text-md-h4 font-weight-medium"
               >
-                @{{
-                  USER.user.profile[0].username ||
-                  'Blanditiis Mollitia Autem Vitae'
-                }}
+                @{{ USER.user.profile[0].username }}
               </v-list-item-title>
 
               <v-list-item-subtitle class="text-caption text-sm-h6 text-md-h5">
-                {{ USER.user.profile[0].email || 'john@teklabspace.com' }}
+                {{ USER.user.profile[0].email }}
               </v-list-item-subtitle>
 
               <!-- <v-list-item> -->
@@ -60,7 +51,8 @@
                 <v-list-item-subtitle
                   class="text-caption text-sm-body-1 font-weight-regular"
                 >
-                  Place of work
+                  Teklabspace
+                  <!-- Place of work -->
                 </v-list-item-subtitle>
               </v-list-item-content>
 
@@ -172,13 +164,22 @@ export default {
     }
   },
   async fetch() {
-    await Promise.all([this.getNumberOfAcceptedSubmissions()])
+    await Promise.all([
+      this.getNumberOfAcceptedSubmissions(),
+      this.getNumberOfFavoritePrograms(),
+    ])
   },
   methods: {
     async getNumberOfAcceptedSubmissions() {
       const URL = `get-all-submissions/accepted?page=1&limit=1000`
       await this.$axios.$get(URL).then(({ data: { docs = [] } }) => {
         this.totalAcceptedSubmissions = docs.length
+      })
+    },
+    async getNumberOfFavoritePrograms() {
+      const URL = `getFavourite?page=1&limit=1000`
+      await this.$axios.$get(URL).then((res) => {
+        this.totalFavoritePrograms = res.totalDOcs
       })
     },
   },

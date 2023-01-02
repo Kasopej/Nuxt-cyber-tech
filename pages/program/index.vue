@@ -64,7 +64,12 @@
         <partials-empty-data caption="An error occured" />
       </section>
       <v-card v-else class="row mx-auto">
-        <v-col v-for="program in programs" :key="program._id" cols="12" md="4">
+        <v-col
+          v-for="program in processedPrograms"
+          :key="program._id"
+          cols="12"
+          md="4"
+        >
           <program-item-list-card :program="program" hoverable />
         </v-col>
       </v-card>
@@ -86,6 +91,7 @@ export default {
     return {
       pagination: { page: 1, length: 1 },
       programs: [],
+      favoritePorgrams: [],
       loadingMore: false,
       overlay: false,
       filtersSet: false,
@@ -117,6 +123,11 @@ export default {
       .catch((error) => {
         this.$store.dispatch('notification/failureSnackbar', error)
       })
+      .then(() => this.$axios.$get('getFavourite'))
+      .then((res) => {
+        this.favoritePorgrams = res.data.docs
+      })
+      .catch(() => (this.favoritePorgrams = []))
   },
   computed: {
     filterURLEncoded() {
@@ -126,6 +137,18 @@ export default {
       }&visibility=${this.filterOptions.visibility.private ? 'private,' : ''}${
         this.filterOptions.visibility.public ? 'public' : ''
       }`
+    },
+    processedPrograms() {
+      return [...this.programs].map((programObj) => {
+        if (
+          this.favoritePorgrams.some(
+            (favProgramObj) => favProgramObj._id === programObj._id
+          )
+        ) {
+          return Object.assign({ ...programObj }, { programFavorited: true })
+        }
+        return Object.assign({ ...programObj }, { programFavorited: false })
+      })
     },
     ...mapState('program', ['pageLimit']),
   },
