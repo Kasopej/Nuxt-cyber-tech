@@ -97,11 +97,9 @@ export default {
   },
   methods: {
     async getNumberOfPrivatePrograms() {
-      const URL = `get-programs?page=1&limit=1000`
+      const URL = `get-private-submission`
       await this.$axios.$get(URL).then((res) => {
-        this.totalPrivateProgramsNumber = res.data.docs.filter(
-          (program) => program.private
-        ).length
+        this.totalPrivateProgramsNumber = res.data
       })
     },
     async getNumberOfSubmissions() {
