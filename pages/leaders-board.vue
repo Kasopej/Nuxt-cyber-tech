@@ -164,6 +164,16 @@ export default {
       filtersSet: false,
     }
   },
+  async fetch() {
+    const URL = `/get-leaders-board` + this.filterURLEncoded()
+    try {
+      const response = await this.$axios.$get(URL)
+      const sum = response.data
+      this.leaderBoard = sum
+    } catch (e) {
+      this.$store.dispatch('notification/failureSnackbar', e)
+    }
+  },
   computed: {
     ...mapState('auth', { USER: 'user' }),
   },
@@ -185,33 +195,23 @@ export default {
             filterURL += `${countryName},`
         })
       }
-      if (
-        Object.values(this.filterOptions.date_slot).find(
-          (dateValue) => dateValue
-        )
-      ) {
-        filterURL += filterURL ? '&' : '?'
-        filterURL += this.filterOptions.date_slot.start
-          ? `start=${this.filterOptions.date_slot.start}`
-          : ''
+      // if (
+      //   Object.values(this.filterOptions.date_slot).find(
+      //     (dateValue) => dateValue
+      //   )
+      // ) {
+      //   filterURL += filterURL ? '&' : '?'
+      //   filterURL += this.filterOptions.date_slot.start
+      //     ? `start=${this.filterOptions.date_slot.start}`
+      //     : ''
 
-        filterURL += filterURL ? '&' : '?'
-        filterURL += this.filterOptions.date_slot.end
-          ? `end=${this.filterOptions.date_slot.end}`
-          : ''
-      }
+      //   filterURL += filterURL ? '&' : '?'
+      //   filterURL += this.filterOptions.date_slot.end
+      //     ? `end=${this.filterOptions.date_slot.end}`
+      //     : ''
+      // }
       return filterURL
     },
-  },
-  async fetch() {
-    const URL = `/get-leaders-board` + this.filterURLEncoded()
-    try {
-      const response = await this.$axios.$get(URL)
-      const sum = response.data
-      this.leaderBoard = sum
-    } catch (e) {
-      this.$store.dispatch('notification/failureSnackbar', e)
-    }
   },
 }
 </script>

@@ -48,8 +48,8 @@
               <v-btn icon class="mx-4" v-bind="attrs" v-on="on">
                 <v-avatar color="secondary">
                   <v-img
-                    v-if="USER"
-                    :src="USER.profile[0].image || '/img/dummy.jpg'"
+                    v-if="USER.user"
+                    :src="USER.user.profile[0].image || '/img/dummy.jpg'"
                     alt="Profile"
                   />
                 </v-avatar>
@@ -60,9 +60,11 @@
               <v-list-item to="/account/settings/">
                 <v-list-item-title>
                   <div class="subtitle-1 text-capitalize font-weight-bold">
-                    {{ USER.profile[0].username }}
+                    {{ USER.user.profile[0].username }}
                   </div>
-                  <div class="grey--text my-2">{{ USER.profile[0].email }}</div>
+                  <div class="grey--text my-2">
+                    {{ USER.user.profile[0].email }}
+                  </div>
                 </v-list-item-title>
               </v-list-item>
 
@@ -145,7 +147,6 @@ export default {
   data() {
     return {
       drawer: false,
-      USER: this.$store.state.auth.user.user,
       items: [
         {
           icon: 'mdi-home',
@@ -174,6 +175,7 @@ export default {
   },
   computed: {
     ...mapState('program', ['fluid']),
+    ...mapState('auth', { USER: 'user' }),
     fluidClass() {
       return {
         fluid: this.fluid,
