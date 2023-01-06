@@ -69,7 +69,7 @@
               </v-list-item>
 
               <v-divider />
-              <v-list-item @click="toggleDarkMode()">
+              <v-list-item @click="toggleDarkMode">
                 <v-list-item-title>
                   <v-icon class="mr-3">{{
                     $vuetify.theme.dark
@@ -176,20 +176,25 @@ export default {
   computed: {
     ...mapState('program', ['fluid']),
     ...mapState('auth', { USER: 'user' }),
+    ...mapState('settings', ['darkMode']),
     fluidClass() {
       return {
         fluid: this.fluid,
       }
     },
   },
-  created() {
-    this.$vuetify.theme.dark = this.$store.state.settings.darkMode
+  watch: {
+    darkMode: {
+      handler(val) {
+        this.$vuetify.theme.dark = val
+      },
+      immediate: true,
+    },
   },
 
   methods: {
     toggleDarkMode() {
       this.$store.commit('settings/TOGGLE_DARK_MODE')
-      this.$vuetify.theme.dark = this.$store.state.settings.darkMode
     },
 
     toggleNotification() {
