@@ -4,20 +4,34 @@
       <v-row>
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
-            v-model="FORM.profile.firstName"
+            :value="FORM.profile.firstName"
+            :disabled="FORM.profile.firstName"
             block
             outlined
             label="First Name"
             :rules="[...rules.name]"
+            @input="
+              (evt) => {
+                if (FORM.profile.firstName) return
+                FORM.profile.firstName = evt
+              }
+            "
           />
         </v-col>
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
-            v-model="FORM.profile.lastName"
+            :value="FORM.profile.lastName"
+            :disabled="FORM.profile.lastName"
             block
             outlined
             label="Last Name"
             :rules="[...rules.name]"
+            @input="
+              (evt) => {
+                if (FORM.profile.lastName) return
+                FORM.profile.lastName = evt
+              }
+            "
           />
         </v-col>
 
@@ -51,12 +65,19 @@
         </v-col>
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
-            v-model="FORM.profile.email"
+            :value="FORM.profile.email"
+            :disabled="FORM.profile.email"
             :rules="[...rules.email]"
             label="Email"
             type="email"
             outlined
             block
+            @input="
+              (evt) => {
+                if (FORM.profile.email) return
+                FORM.profile.email = evt
+              }
+            "
           />
         </v-col>
 
