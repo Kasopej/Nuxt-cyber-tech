@@ -80,7 +80,7 @@ export default {
       payload.append('file', file)
 
       await this.$axios
-        .$patcdh(URL, payload)
+        .$patch(URL, payload)
         .then((response) => {
           this.$store.commit('notification/SHOW', {
             icon: 'mdi-check',
