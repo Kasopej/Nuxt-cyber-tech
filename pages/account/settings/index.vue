@@ -16,7 +16,7 @@
           type="file"
           name="myImage"
           accept="image/*"
-          @change="setImageBlob($event.target.files[0])"
+          @change="uploadPhoto($event.target.files[0])"
         />
       </label>
     </section>
@@ -74,22 +74,13 @@ export default {
   },
 
   methods: {
-    setImageBlob(file) {
-      this.labelText = 'Please wait...'
-
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = () => (this.USER_PIC = reader.result)
-
-      setTimeout(() => this.uploadPhoto(), 2000)
-    },
-
-    async uploadPhoto() {
-      const endpoint = '/update-profile-picture'
-      const payload = { image: this.USER_PIC }
+    async uploadPhoto(file) {
+      const URL = '/update-profile-picture'
+      const payload = new FormData()
+      payload.append('file', file)
 
       await this.$axios
-        .$patch(endpoint, payload)
+        .$patcdh(URL, payload)
         .then((response) => {
           this.$store.commit('notification/SHOW', {
             icon: 'mdi-check',

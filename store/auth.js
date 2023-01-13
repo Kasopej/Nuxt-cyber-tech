@@ -30,8 +30,8 @@ export const mutations = {
   },
 
   // change user profile picture from the user state
-  CHANGE_USER_PIC(state, payload) {
-    state.user.user.profile[0].image = payload
+  CHANGE_USER_PIC(state, { profile: [{ image }] }) {
+    state.user.user.profile[0].image = image
   },
 
   // Log user in
