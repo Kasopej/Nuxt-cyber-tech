@@ -5,7 +5,7 @@
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
             :value="FORM.profile.firstName"
-            :disabled="FORM.profile.firstName"
+            :disabled="!!FORM.profile.firstName"
             block
             outlined
             label="First Name"
@@ -21,7 +21,7 @@
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
             :value="FORM.profile.lastName"
-            :disabled="FORM.profile.lastName"
+            :disabled="!!FORM.profile.lastName"
             block
             outlined
             label="Last Name"
@@ -66,7 +66,7 @@
         <v-col cols="12" sm="6" class="py-1">
           <v-text-field
             :value="FORM.profile.email"
-            :disabled="FORM.profile.email"
+            :disabled="!!FORM.profile.email"
             :rules="[...rules.email]"
             label="Email"
             type="email"
