@@ -18,9 +18,11 @@
     <v-form ref="loginForm" @submit.prevent="login">
       <v-text-field
         v-model="FORM.email"
+        autofocus
         dense
         outlined
         :rules="[rules.required]"
+        type="email"
         label="E-mail"
         required
       ></v-text-field>
