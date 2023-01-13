@@ -105,7 +105,7 @@
             :hint="idCard ? '' : 'Upload size under 5MB. (Image format only)'"
             accept="image/*"
             truncate-length="15"
-            :disabled="idCard"
+            :disabled="!!idCard"
             persistent-hint
             show-size
             outlined
