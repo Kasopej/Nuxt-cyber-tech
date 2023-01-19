@@ -120,7 +120,7 @@
                       ></v-avatar
                     >{{ leader.username }}
                   </td>
-                  <td></td>
+                  <td>{{ leader.countryFlag }}</td>
                   <td>{{ leader.points }}</td>
                 </tr>
               </template>
@@ -138,6 +138,7 @@
 <script>
 import { mapState } from 'vuex'
 import countries from '~/assets/json/countries.json'
+import countryCodes from '~/assets/json/countryCodes.json'
 const countryFilterArray = countries.map((country) => [country, false])
 export default {
   data() {
@@ -165,11 +166,17 @@ export default {
     }
   },
   async fetch() {
-    const URL = `/get-leaders-board` + this.filterURLEncoded()
+    const path = this.filtersSet ? `/filter-leader-board` : `/get-leaders-board`
+    const URL = path + this.filterURLEncoded()
     try {
       const response = await this.$axios.$get(URL)
-      const sum = response.data
-      this.leaderBoard = sum
+      this.leaderBoard = response.data
+      this.leaderBoard.forEach((hunter) => {
+        hunter.countryFlag = countryCodes.find(
+          (country) =>
+            hunter.country?.toLowerCase() === country.name.toLowerCase()
+        )?.flag
+      })
     } catch (e) {
       this.$store.dispatch('notification/failureSnackbar', e)
     }
@@ -191,8 +198,10 @@ export default {
       if (Object.values(this.filterOptions.country).includes(true)) {
         filterURL += '?country='
         Object.keys(this.filterOptions.country).forEach((countryName) => {
-          if (this.filterOptions.country[countryName] === true)
-            filterURL += `${countryName},`
+          if (this.filterOptions.country[countryName] === true) {
+            filterURL += filterURL.endsWith('=') ? '' : ','
+            filterURL += `${countryName}`
+          }
         })
       }
       // if (
