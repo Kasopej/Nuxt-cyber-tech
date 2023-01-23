@@ -79,7 +79,9 @@ export default {
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
-  axios: {},
+  axios: {
+    timeout: 60000,
+  },
 
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
@@ -113,8 +115,7 @@ export default {
   },
 
   publicRuntimeConfig: {
-    axiosTimeout: 60000,
-    baseURL: process.env.BASE_URL,
+    axios: { baseURL: process.env.BASEURL },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
