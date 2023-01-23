@@ -22,4 +22,5 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 ## How to use
 
 - Ensure you have the enviroment variables set before starting your server.
+- .env
 - In case you are unable to retrieve any response, try creating before retrieving a response. Your account may not have access to the defaults data.
