@@ -88,11 +88,9 @@ export default {
   pwa: {
     manifest: {
       lang: 'en',
-      icons: [
-        {
-          source: '/favicon.ico',
-        },
-      ],
+    },
+    icon: {
+      source: '/favicon.ico',
     },
   },
 
