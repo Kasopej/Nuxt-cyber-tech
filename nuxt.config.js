@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import colors from 'vuetify/es5/util/colors'
 // import 'assets/styles/custom.css'
 
@@ -90,7 +91,7 @@ export default {
       lang: 'en',
     },
     icon: {
-      source: '/favicon.ico',
+      source: resolve(__dirname, '/static', '/favicon.ico'),
     },
   },
 
