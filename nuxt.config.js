@@ -23,6 +23,7 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'shortcut icon', type: 'image/x-icon', href: '/favicon.ico' },
       {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css?family=Open+Sans',
@@ -87,6 +88,11 @@ export default {
   pwa: {
     manifest: {
       lang: 'en',
+      icons: [
+        {
+          source: '/favicon.ico',
+        },
+      ],
     },
   },
 
