@@ -40,11 +40,6 @@
                 </template>
                 <span class="text-xs">100 points</span>
               </v-tooltip>
-              <!-- <span>{{
-                comment.hunterId
-                  ? comment.hunterId.profile[0].username
-                  : comment.accountId.company[0].name
-              }}</span> -->
               <v-chip dense class="ml-1 px-2 py-1" small>{{
                 comment.accountType
               }}</v-chip>
